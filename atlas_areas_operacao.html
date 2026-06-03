@@ -1,0 +1,2753 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torre de Controle — AtlasOps</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <style>
+        :root {
+            --color-bg: #09090b;
+            --color-surface: #18181b;
+            --color-surface-hover: #27272a;
+            --color-border: rgba(255, 255, 255, 0.1);
+            --color-border-secondary: rgba(255, 255, 255, 0.2);
+            --color-border-tertiary: rgba(255, 255, 255, 0.08);
+            --color-background-primary: #09090b;
+            --color-background-secondary: #18181b;
+            --color-background-info: rgba(59, 130, 246, 0.1);
+            --color-text-primary: #fafafa;
+            --color-text-secondary: #a1a1aa;
+            --color-text-tertiary: #71717a;
+            --color-text-info: #60a5fa;
+            --color-accent: #3b82f6;
+            --color-accent-soft: rgba(59, 130, 246, 0.1);
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text-primary);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+
+        .master-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: var(--color-surface);
+            border-right: 1px solid var(--color-border);
+            padding: 2rem 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 12px; margin-bottom: 3rem; }
+        .logo-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--color-accent), #60a5fa);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; color: white;
+        }
+        .logo-text { font-size: 20px; font-weight: 700; font-family: 'Outfit', sans-serif; }
+
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        .nav-item i { font-size: 18px; }
+        .nav-item:hover { background: var(--color-surface-hover); color: var(--color-text-primary); }
+        .nav-item.active { background: var(--color-accent-soft); color: var(--color-accent); font-weight: 500; }
+
+        /* CONTENT */
+        .main-content {
+            padding: 3rem 4rem;
+            max-width: 1200px;
+        }
+        .module-section {
+            display: none;
+        }
+        .module-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="master-container">
+    <aside class="sidebar">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="ti ti-infinity"></i></div>
+            <div class="logo-text">AtlasOps</div>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="openMasterModule(0, this)"><i class="ti ti-briefcase"></i> Comercial</div>
+            <div class="nav-item " onclick="openMasterModule(1, this)"><i class="ti ti-rocket"></i> Delivery</div>
+            <div class="nav-item " onclick="openMasterModule(2, this)"><i class="ti ti-heart-handshake"></i> Customer Success</div>
+            <div class="nav-item " onclick="openMasterModule(3, this)"><i class="ti ti-megaphone"></i> Marketing</div>
+            <div class="nav-item " onclick="openMasterModule(4, this)"><i class="ti ti-coins"></i> Precificação</div>
+            <div class="nav-item " onclick="openMasterModule(5, this)"><i class="ti ti-calendar-stats"></i> Planejamento</div>
+            <div class="nav-item " onclick="openMasterModule(6, this)"><i class="ti ti-gavel"></i> Contratos</div>
+        </div>
+    </aside>
+    <main class="main-content">
+        <div id="module_0" class="module-section active">
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;}
+  .tab{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:.15s;}
+  .tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent;}
+  .panel{display:none;} .panel.active{display:block;}
+
+  /* FUNIL */
+  .funnel-stage{display:flex;align-items:stretch;gap:10px;margin-bottom:8px;cursor:pointer;}
+  .funnel-bar-wrap{flex:1;display:flex;align-items:center;}
+  .funnel-bar{height:52px;border-radius:var(--border-radius-md);display:flex;align-items:center;padding:0 14px;transition:width .4s ease;position:relative;}
+  .funnel-label{display:flex;flex-direction:column;justify-content:center;min-width:130px;}
+  .funnel-count{min-width:50px;text-align:right;display:flex;flex-direction:column;justify-content:center;}
+  .funnel-detail{display:none;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;margin-bottom:4px;font-size:12px;color:var(--color-text-secondary);}
+  .funnel-detail.open{display:block;}
+  .conv-pill{font-size:11px;padding:2px 8px;border-radius:20px;margin-top:4px;display:inline-block;}
+
+  /* CADÊNCIA */
+  .cadence-row{display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:start;margin-bottom:14px;}
+  .cadence-day{font-size:12px;font-weight:500;color:var(--color-text-secondary);padding-top:10px;}
+  .cadence-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 14px;}
+  .cadence-channel{font-size:11px;padding:2px 8px;border-radius:20px;margin-right:4px;display:inline-block;}
+  .cadence-action{font-size:13px;color:var(--color-text-primary);margin:4px 0 2px;}
+  .cadence-tip{font-size:12px;color:var(--color-text-secondary);}
+
+  /* ROTEIRO */
+  .script-phase{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
+  .script-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .script-time{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;}
+  .script-q{font-size:13px;color:var(--color-text-primary);line-height:1.6;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary);}
+  .script-q:last-child{border-bottom:none;}
+  .script-q::before{content:"» ";color:var(--color-text-tertiary);}
+
+  /* OBJEÇÕES */
+  .obj-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
+  .obj-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .obj-resp{font-size:13px;color:var(--color-text-secondary);line-height:1.65;padding:10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);}
+
+  .metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+  .metric-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .metric-val{font-size:20px;font-weight:500;color:var(--color-text-primary);}
+  .metric-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+</style>
+
+<h2 class="sr-only">Processo comercial e funil de vendas do Atlas RPA</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Funil comercial Atlas</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Estrutura completa de vendas para serviços de RPA B2B</div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab_0('funil',this)">Funil de vendas</div>
+    <div class="tab" onclick="switchTab_0('cadencia',this)">Cadência de prospecção</div>
+    <div class="tab" onclick="switchTab_0('roteiro',this)">Roteiro de discovery</div>
+    <div class="tab" onclick="switchTab_0('objecoes',this)">Objeções comuns</div>
+  </div>
+
+  <!-- FUNIL -->
+  <div class="panel active" id="m0-panel-funil">
+    <div class="metric-grid">
+      <div class="metric-box"><div class="metric-val" id="m-leads">40</div><div class="metric-lbl">leads/mês necessários</div></div>
+      <div class="metric-box"><div class="metric-val" id="m-reunioes">8</div><div class="metric-lbl">reuniões de discovery</div></div>
+      <div class="metric-box"><div class="metric-val" id="m-fechamentos">2</div><div class="metric-lbl">fechamentos esperados</div></div>
+    </div>
+    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;">Clique em cada etapa para ver atividades e critérios de avanço</div>
+    <div id="funnel-container"></div>
+  </div>
+
+  <!-- CADÊNCIA -->
+  <div class="panel" id="m0-panel-cadencia">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:14px;">Sequência de 8 toques em 21 dias para prospects frios. Meta: 1 reunião a cada 5 empresas abordadas.</div>
+    <div id="cadence-container"></div>
+  </div>
+
+  <!-- ROTEIRO -->
+  <div class="panel" id="m0-panel-roteiro">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:14px;">Roteiro estruturado para a reunião de discovery de 45 minutos. O objetivo não é vender — é diagnosticar e gerar confiança.</div>
+    <div id="roteiro-container"></div>
+  </div>
+
+  <!-- OBJEÇÕES -->
+  <div class="panel" id="m0-panel-objecoes">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:14px;">As 5 objeções mais comuns em vendas de RPA e como responder com segurança.</div>
+    <div id="objecoes-container"></div>
+  </div>
+</div>
+
+<script>
+function switchTab_0(id, el) {
+  document.getElementById('module_0').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('module_0').querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('m0-panel-'+id).classList.add('active');
+}
+
+const stages = [
+  { label:"Leads identificados", sub:"Empresas que se encaixam no ICP", n:40, pct:100, color:"#534AB7", bg:"#EEEDFE",
+    activities:["Pesquisa no LinkedIn Sales Navigator por segmento e porte","Indicações de clientes e parceiros","Eventos e feiras de automação","Conteúdo orgânico que atrai inbound"],
+    criteria:"Tem CNPJ ativo, +10 funcionários, opera com processos repetitivos em sistemas digitais", conv:"Próxima etapa: 20%" },
+  { label:"Contato iniciado", sub:"1º toque realizado (e-mail, LinkedIn, ligação)", n:40, pct:90, color:"#0F6E56", bg:"#E1F5EE",
+    activities:["Mensagem personalizada no LinkedIn (sem pitch, com curiosidade)","E-mail de prospecção com case relevante ao segmento","Cold call de 2 minutos com abertura de valor"],
+    criteria:"Prospect respondeu ou aceitou conexão — qualquer sinal de vida", conv:"Taxa de resposta esperada: 20–30%" },
+  { label:"Reunião agendada", sub:"Discovery confirmado na agenda", n:8, pct:55, color:"#854F0B", bg:"#FAEEDA",
+    activities:["Enviar confirmação com pauta e link de videoconferência","Pesquisar a empresa antes da reunião (site, LinkedIn, notícias)","Preparar 3 perguntas específicas para o segmento do prospect"],
+    criteria:"Data e hora confirmadas, decisor presente na reunião", conv:"Show-up rate esperado: 70–80%" },
+  { label:"Discovery realizado", sub:"Problema mapeado e ROI calculado", n:6, pct:38, color:"#185FA5", bg:"#E6F1FB",
+    activities:["Aplicar roteiro de discovery (aba ao lado)","Mapear 1–3 processos candidatos à automação","Calcular ROI estimado ao vivo com o cliente","Apresentar casos similares ao segmento do prospect"],
+    criteria:"Prospect identificou processo doloroso e reconheceu o valor da automação", conv:"Qualificação: 75% das reuniões" },
+  { label:"Proposta enviada", sub:"Escopo, prazo e valor formalizados", n:4, pct:25, color:"#3B6D11", bg:"#EAF3DE",
+    activities:["Enviar proposta em até 48h após a reunião","Personalizar proposta com dados levantados no discovery","Incluir ROI calculado e comparativo antes/depois","Agendar call de revisão da proposta (não deixar por e-mail)"],
+    criteria:"Prospect recebeu, leu e agendou call de revisão", conv:"Taxa de avanço: 50–60%" },
+  { label:"Negociação", sub:"Ajustes de escopo, prazo ou preço", n:3, pct:15, color:"#993C1D", bg:"#FAECE7",
+    activities:["Entender objeção real (preço, prazo, prioridade ou medo)","Ter flexibilidade em escopo — nunca só em preço","Oferecer projeto piloto para reduzir risco percebido","Definir prazo para decisão (urgência legítima)"],
+    criteria:"Prospect pediu ajuste específico — sinal de interesse real", conv:"Conversão: 60–70%" },
+  { label:"Contrato assinado", sub:"Cliente oficial do Atlas", n:2, pct:8, color:"#A32D2D", bg:"#FCEBEB",
+    activities:["Enviar contrato via DocuSign ou similar","Coletar assinatura do NDA junto com o contrato","Emitir NF da entrada (se houver) ou da mensalidade","Iniciar onboarding — agendar kickoff em até 3 dias úteis"],
+    criteria:"Contrato assinado, primeiro pagamento confirmado", conv:"Conversão geral do funil: 5%" }
+];
+
+const funnel = document.getElementById('funnel-container');
+stages.forEach((s,i)=>{
+  const wrap = document.createElement('div');
+  wrap.innerHTML = `
+    <div class="funnel-stage" onclick="toggleFunnelDetail(${i})">
+      <div class="funnel-label">
+        <span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">${s.label}</span>
+        <span style="font-size:11px;color:var(--color-text-secondary)">${s.sub}</span>
+      </div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="width:${s.pct}%;background:${s.bg};border:0.5px solid ${s.color}40">
+          <span style="font-size:12px;color:${s.color};font-weight:500">${s.conv}</span>
+        </div>
+      </div>
+      <div class="funnel-count">
+        <span style="font-size:18px;font-weight:500;color:var(--color-text-primary)">${s.n}</span>
+        <span style="font-size:11px;color:var(--color-text-secondary)">leads</span>
+      </div>
+    </div>
+    <div class="funnel-detail" id="fd-${i}">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px">Atividades nesta etapa</div>
+      ${s.activities.map(a=>`<div style="padding:3px 0;display:flex;gap:6px"><span style="color:var(--color-text-tertiary)">·</span><span>${a}</span></div>`).join('')}
+      <div style="margin-top:8px;padding:8px;background:var(--color-background-primary);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary)">
+        <span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">Critério de avanço: </span>
+        <span style="font-size:12px;color:var(--color-text-primary)">${s.criteria}</span>
+      </div>
+    </div>
+  `;
+  funnel.appendChild(wrap);
+});
+
+function toggleFunnelDetail(i){
+  const d = document.getElementById('fd-'+i);
+  d.classList.toggle('open');
+}
+
+const cadence = [
+  {day:"Dia 1", channel:"LinkedIn", chBg:"#E6F1FB", chColor:"#0C447C", action:"Conexão + mensagem de abertura personalizada", tip:"Mencione algo específico da empresa: crescimento, setor, post recente. Não fale de RPA ainda."},
+  {day:"Dia 3", channel:"E-mail", chBg:"#EEEDFE", chColor:"#3C3489", action:"E-mail de valor: case de RPA no mesmo setor do prospect", tip:"Assunto: '[Nome da empresa deles] faz isso manualmente?'. Inclua 1 número de ROI real."},
+  {day:"Dia 5", channel:"LinkedIn", chBg:"#E6F1FB", chColor:"#0C447C", action:"Follow-up no LinkedIn com pergunta aberta", tip:"'Vi que vocês atuam com [segmento] — qual processo mais toma tempo do time hoje?'"},
+  {day:"Dia 8", channel:"Ligação", chBg:"#EAF3DE", chColor:"#27500A", action:"Cold call de 2 minutos com abertura de curiosidade", tip:"'Estou ligando porque ajudei uma empresa como a de vocês a economizar X horas por mês — faz sentido falar por 15 minutos?'"},
+  {day:"Dia 11", channel:"E-mail", chBg:"#EEEDFE", chColor:"#3C3489", action:"E-mail com vídeo curto (Loom) de demonstração", tip:"Grave 2 minutos mostrando um bot em funcionamento. Vídeo aumenta resposta em 3×."},
+  {day:"Dia 14", channel:"LinkedIn", chBg:"#E6F1FB", chColor:"#0C447C", action:"Compartilhar conteúdo relevante com menção", tip:"Marque o prospect num post sobre automação no setor dele. Visibilidade sem pressão."},
+  {day:"Dia 18", channel:"E-mail", chBg:"#EEEDFE", chColor:"#3C3489", action:"E-mail de breakup — encerra a sequência com elegância", tip:"'Se não faz sentido agora, tudo bem — posso voltar em 3 meses. Só me diga.' Gera resposta por culpa."},
+  {day:"Dia 21", channel:"Ligação", chBg:"#EAF3DE", chColor:"#27500A", action:"Última tentativa: ligação rápida de encerramento", tip:"Se não atender, deixe voicemail curto e mova para nurturing. Nunca insista além desse ponto."}
+];
+
+const cadenceEl = document.getElementById('cadence-container');
+cadence.forEach(c=>{
+  cadenceEl.innerHTML += `
+    <div class="cadence-row">
+      <div class="cadence-day">${c.day}</div>
+      <div class="cadence-card">
+        <span class="cadence-channel" style="background:${c.chBg};color:${c.chColor}">${c.channel}</span>
+        <div class="cadence-action">${c.action}</div>
+        <div class="cadence-tip">${c.tip}</div>
+      </div>
+    </div>
+  `;
+});
+
+const roteiro = [
+  {phase:"Abertura (5 min)", timeBg:"#EEEDFE", timeColor:"#3C3489", perguntas:[
+    "Antes de começar, posso te contar em 2 minutos o que fazemos? [pitch curto] — faz sentido para vocês?",
+    "Me conta um pouco sobre sua operação atual — qual é o time e o volume de trabalho?"
+  ]},
+  {phase:"Diagnóstico do processo (15 min)", timeBg:"#E1F5EE", timeColor:"#085041", perguntas:[
+    "Quais tarefas o time faz hoje que são repetitivas — todo dia ou toda semana, sempre do mesmo jeito?",
+    "Quanto tempo por dia uma pessoa passa nessa atividade? Quantas pessoas fazem isso?",
+    "Quais sistemas vocês usam para isso? ERP, planilha, portal web?",
+    "Já aconteceu erro nesse processo? Qual foi o impacto?"
+  ]},
+  {phase:"Qualificação e dor (10 min)", timeBg:"#FAEEDA", timeColor:"#633806", perguntas:[
+    "Se esse processo estivesse 100% automático, o que seu time faria com esse tempo?",
+    "Isso é prioridade pra vocês agora, ou tem algo mais urgente pela frente?",
+    "Quem mais precisa estar envolvido na decisão de avançar com isso?"
+  ]},
+  {phase:"Educação e validação (10 min)", timeBg:"#E6F1FB", timeColor:"#0C447C", perguntas:[
+    "[Apresente como o bot funcionaria para o processo deles — específico, não genérico]",
+    "Faz sentido o que eu descrevi? Tem alguma parte do processo que eu não entendi bem?",
+    "Já consideraram automação antes? O que parou?"
+  ]},
+  {phase:"Próximo passo (5 min)", timeBg:"#EAF3DE", timeColor:"#27500A", perguntas:[
+    "Com base no que conversamos, consigo te mandar uma proposta até quinta-feira — tudo bem?",
+    "Prefere receber por e-mail e revisar antes, ou marcamos uma call de 30 minutos para apresentar?"
+  ]}
+];
+
+const roteiroEl = document.getElementById('roteiro-container');
+roteiro.forEach(r=>{
+  roteiroEl.innerHTML += `
+    <div class="script-phase">
+      <div class="script-header">
+        <span class="script-time" style="background:${r.timeBg};color:${r.timeColor}">${r.phase}</span>
+      </div>
+      ${r.perguntas.map(q=>`<div class="script-q">${q}</div>`).join('')}
+    </div>
+  `;
+});
+
+const objecoes = [
+  {obj:"'Está caro, não temos budget para isso agora'", iconBg:"#FCEBEB", iconColor:"#A32D2D", icon:"ti-coin",
+   resp:"Certo — posso te mostrar o cálculo de ROI que fizemos? Se o processo leva 40h/mês a R$25/hora, são R$1.000/mês em custo. Nossa solução custa R$X. Em Y meses o investimento se paga. A pergunta real é: custa mais fazer ou não fazer?"},
+  {obj:"'Vamos desenvolver internamente, temos TI aqui'", iconBg:"#FAEEDA", iconColor:"#633806", icon:"ti-tools",
+   resp:"Ótimo que vocês têm TI — isso facilita o projeto. A maioria dos nossos clientes também tem. A diferença é que automação de processos é especialidade nossa: já entregamos X projetos similares e sabemos exatamente onde estão as armadilhas. Seu time de TI fica livre para projetos estratégicos."},
+  {obj:"'Precisamos pensar melhor, vamos avaliar outras opções'", iconBg:"#EEEDFE", iconColor:"#3C3489", icon:"ti-clock",
+   resp:"Faz todo sentido. O que eu posso fazer para ajudar nessa avaliação? Posso preparar uma comparação de abordagens, uma sessão técnica com seu time, ou um projeto piloto menor para vocês testarem sem risco."},
+  {obj:"'E se o bot parar de funcionar? Ficamos dependentes de vocês'", iconBg:"#E1F5EE", iconColor:"#085041", icon:"ti-shield",
+   resp:"Essa é uma preocupação legítima. Por isso todo projeto inclui: documentação completa do código, treinamento do seu time para monitoramento básico, e SLA de suporte com tempo de resposta garantido em contrato. O código é seu — não somos caixa-preta."},
+  {obj:"'Não é o momento certo, tem muitas prioridades'", iconBg:"#EAF3DE", iconColor:"#27500A", icon:"ti-calendar",
+   resp:"Entendo. Posso perguntar: esse processo que mapeamos é urgente ou pode esperar? Se puder esperar, combinamos uma conversa em 60 dias. Se for urgente, cada mês sem automação é exatamente o custo que calculamos multiplicado. Quando seria o momento certo?"}
+];
+
+const objecoesEl = document.getElementById('objecoes-container');
+objecoes.forEach(o=>{
+  objecoesEl.innerHTML += `
+    <div class="obj-card">
+      <div class="obj-title">
+        <div style="width:32px;height:32px;border-radius:var(--border-radius-md);background:${o.iconBg};color:${o.iconColor};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ${o.icon}" aria-hidden="true" style="font-size:16px"></i>
+        </div>
+        ${o.obj}
+      </div>
+      <div class="obj-resp">${o.resp}</div>
+    </div>
+  `;
+});
+</script>
+
+        </div>
+        <div id="module_1" class="module-section ">
+
+<style>
+/* ===== DELIVERY MODULE — SHARED ===== */
+.dlv-metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+.dlv-metric-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+.dlv-metric-val{font-size:20px;font-weight:600;color:var(--color-text-primary);}
+.dlv-metric-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+
+.dlv-tabs{display:flex;gap:6px;margin-bottom:20px;}
+.dlv-tab{font-size:12px;padding:6px 16px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:.15s;display:flex;align-items:center;gap:6px;}
+.dlv-tab:hover{background:var(--color-surface-hover);color:var(--color-text-primary);}
+.dlv-tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent;}
+.dlv-view{display:none;}
+.dlv-view.active{display:block;}
+
+.dlv-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;}
+.dlv-status.on-track{background:rgba(99,153,34,0.12);color:#8BC34A;}
+.dlv-status.attention{background:rgba(239,159,39,0.12);color:#EF9F27;}
+.dlv-status.delayed{background:rgba(226,75,74,0.12);color:#E24B4A;}
+.dlv-status-dot{width:6px;height:6px;border-radius:50%;}
+.dlv-status.on-track .dlv-status-dot{background:#8BC34A;}
+.dlv-status.attention .dlv-status-dot{background:#EF9F27;}
+.dlv-status.delayed .dlv-status-dot{background:#E24B4A;}
+
+/* ===== KANBAN VIEW ===== */
+.dlv-kanban{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;}
+.dlv-kanban::-webkit-scrollbar{height:6px;}
+.dlv-kanban::-webkit-scrollbar-track{background:transparent;}
+.dlv-kanban::-webkit-scrollbar-thumb{background:var(--color-border-secondary);border-radius:3px;}
+
+.dlv-col{min-width:170px;flex:1;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:10px;display:flex;flex-direction:column;gap:8px;border-top:3px solid var(--col-accent);}
+.dlv-col-hdr{display:flex;align-items:center;gap:8px;padding-bottom:8px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:2px;}
+.dlv-col-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.dlv-col-name{font-size:12px;font-weight:500;color:var(--color-text-primary);}
+.dlv-col-count{font-size:11px;color:var(--color-text-tertiary);margin-left:auto;background:var(--color-background-secondary);padding:2px 7px;border-radius:10px;}
+.dlv-col-empty{font-size:11px;color:var(--color-text-tertiary);text-align:center;padding:24px 8px;font-style:italic;opacity:0.6;}
+
+.dlv-kcard{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;cursor:pointer;transition:border-color 0.2s,transform 0.15s,box-shadow 0.2s;}
+.dlv-kcard:hover{border-color:var(--color-border-secondary);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.dlv-kcard-client{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dlv-kcard-bot{font-size:11px;color:var(--color-text-secondary);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dlv-kcard-progress{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.dlv-kcard-bar{flex:1;height:4px;background:var(--color-border-tertiary);border-radius:2px;overflow:hidden;}
+.dlv-kcard-bar-fill{height:100%;border-radius:2px;transition:width 0.4s ease;}
+.dlv-kcard-frac{font-size:11px;color:var(--color-text-secondary);white-space:nowrap;}
+.dlv-kcard-footer{display:flex;align-items:center;justify-content:space-between;}
+.dlv-kcard-days{font-size:11px;color:var(--color-text-tertiary);}
+
+/* ===== LIST VIEW ===== */
+.dlv-list{display:flex;flex-direction:column;gap:8px;}
+
+.dlv-lcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 18px;cursor:pointer;transition:border-color 0.2s,box-shadow 0.2s;border-left:3px solid var(--card-accent);}
+.dlv-lcard:hover{border-color:var(--color-border-secondary);box-shadow:0 2px 10px rgba(0,0,0,0.25);}
+
+.dlv-lcard-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.dlv-lcard-icon{width:32px;height:32px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.dlv-lcard-info{flex:1;min-width:0;}
+.dlv-lcard-client{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+.dlv-lcard-bot{font-size:12px;color:var(--color-text-secondary);}
+.dlv-lcard-meta{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.dlv-lcard-days{font-size:11px;color:var(--color-text-tertiary);}
+
+/* ===== PIPELINE PROGRESS BAR ===== */
+.dlv-pipe{position:relative;padding:0 21px;}
+.dlv-pipe-line{position:absolute;top:6px;left:21px;right:21px;height:2px;z-index:0;}
+.dlv-pipe-bg{position:absolute;inset:0;background:var(--color-border-tertiary);border-radius:1px;}
+.dlv-pipe-fill{position:absolute;top:0;left:0;bottom:0;border-radius:1px;transition:width 0.6s ease;}
+.dlv-pipe-points{display:flex;justify-content:space-between;position:relative;z-index:1;}
+.dlv-pipe-pt{display:flex;flex-direction:column;align-items:center;gap:5px;width:42px;}
+.dlv-pipe-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--color-border-secondary);background:var(--color-surface);display:flex;align-items:center;justify-content:center;font-size:0;color:transparent;transition:all 0.3s;}
+.dlv-pipe-pt.done .dlv-pipe-dot{border-color:#1D9E75;background:#1D9E75;font-size:8px;color:#fff;font-weight:700;}
+.dlv-pipe-pt.active .dlv-pipe-dot{width:18px;height:18px;margin-top:-2px;border-width:3px;background:transparent;}
+.dlv-pipe-lbl{font-size:10px;color:var(--color-text-tertiary);white-space:nowrap;}
+.dlv-pipe-pt.done .dlv-pipe-lbl{color:var(--color-text-secondary);}
+.dlv-pipe-pt.active .dlv-pipe-lbl{color:var(--color-text-primary);font-weight:600;}
+@keyframes dlv-pulse{0%,100%{box-shadow:0 0 0 0 rgba(55,138,221,0.4);}50%{box-shadow:0 0 0 6px rgba(55,138,221,0);}}
+.dlv-pipe-pt.active .dlv-pipe-dot{animation:dlv-pulse 2.5s ease-in-out infinite;}
+
+/* ===== DETAIL DRAWER ===== */
+.dlv-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);opacity:0;visibility:hidden;transition:all 0.3s;z-index:900;backdrop-filter:blur(2px);}
+.dlv-overlay.active{opacity:1;visibility:visible;}
+.dlv-drawer{position:fixed;top:0;right:0;width:min(720px,90vw);height:100vh;background:var(--color-bg);border-left:1px solid var(--color-border);transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);z-index:901;overflow-y:auto;padding:0;}
+.dlv-drawer.active{transform:translateX(0);}
+
+.dlv-drawer-header{padding:24px 28px 20px;border-bottom:0.5px solid var(--color-border-tertiary);position:sticky;top:0;background:var(--color-bg);z-index:5;}
+.dlv-drawer-back{font-size:13px;color:var(--color-text-secondary);cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-bottom:12px;transition:color 0.15s;border:none;background:none;padding:0;}
+.dlv-drawer-back:hover{color:var(--color-text-primary);}
+.dlv-drawer-title{font-size:18px;font-weight:600;color:var(--color-text-primary);margin-bottom:2px;}
+.dlv-drawer-sub{font-size:13px;color:var(--color-text-secondary);}
+.dlv-drawer-meta{display:flex;align-items:center;gap:12px;margin-top:10px;}
+
+.dlv-drawer-body{padding:20px 28px 40px;}
+
+/* Drawer stepper */
+.dlv-drawer-stepper{display:flex;gap:0;margin-bottom:20px;border-radius:var(--border-radius-lg);overflow:hidden;border:0.5px solid var(--color-border-tertiary);}
+.dlv-drawer-step{flex:1;padding:10px 4px;font-size:11px;font-weight:500;text-align:center;cursor:pointer;background:var(--color-background-secondary);color:var(--color-text-secondary);border-right:0.5px solid var(--color-border-tertiary);transition:.15s;line-height:1.3;position:relative;}
+.dlv-drawer-step:last-child{border-right:none;}
+.dlv-drawer-step.active{background:var(--color-text-primary);color:var(--color-background-primary);}
+.dlv-drawer-step.completed{color:var(--color-text-primary);}
+.dlv-drawer-step:hover:not(.active){background:var(--color-background-primary);}
+.dlv-drawer-step .step-check{font-size:10px;color:#1D9E75;margin-right:3px;}
+
+/* Drawer phase card */
+.dlv-phase-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;}
+.dlv-phase-hdr{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.dlv-phase-icon{width:44px;height:44px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.dlv-phase-title{font-size:16px;font-weight:500;color:var(--color-text-primary);}
+.dlv-phase-sub{font-size:12px;color:var(--color-text-secondary);margin-top:2px;}
+
+.dlv-dur-bar{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:12px;}
+.dlv-dur-fill{height:6px;border-radius:3px;flex-shrink:0;}
+.dlv-dur-label{font-size:12px;color:var(--color-text-secondary);}
+.dlv-dur-val{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-left:auto;}
+
+.dlv-cols2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.dlv-sec-label{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+.dlv-info-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+
+.dlv-chk-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;color:var(--color-text-primary);line-height:1.5;}
+.dlv-chk-item:last-child{border-bottom:none;}
+.dlv-chk-box{width:16px;height:16px;border-radius:4px;border:0.5px solid var(--color-border-secondary);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;}
+.dlv-chk-box.checked{background:var(--color-text-primary);border-color:transparent;}
+.dlv-chk-box.checked::after{content:"✓";font-size:10px;color:var(--color-background-primary);}
+
+.dlv-deliverable{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:6px;font-size:13px;}
+.dlv-deliverable i{font-size:16px;color:var(--color-text-secondary);}
+
+.dlv-warn-box{background:rgba(239,159,39,0.06);border:0.5px solid rgba(239,159,39,0.15);border-radius:var(--border-radius-md);padding:10px 12px;font-size:12px;color:var(--color-text-secondary);display:flex;gap:8px;align-items:flex-start;margin-top:12px;}
+.dlv-warn-box i{color:#EF9F27;flex-shrink:0;margin-top:1px;}
+
+.dlv-nav-btns{display:flex;justify-content:space-between;margin-top:16px;}
+
+.dlv-btn{padding:8px 18px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);font-size:13px;font-family:inherit;cursor:pointer;transition:all 0.15s;}
+.dlv-btn:hover{background:var(--color-surface-hover);color:var(--color-text-primary);}
+.dlv-btn:disabled{opacity:0.35;cursor:not-allowed;}
+.dlv-btn:disabled:hover{background:var(--color-background-secondary);color:var(--color-text-secondary);}
+
+/* ===== PLAYBOOK STEPPER ===== */
+.pb-stepper-nav{display:flex;gap:0;margin-bottom:20px;border-radius:var(--border-radius-lg);overflow:hidden;border:0.5px solid var(--color-border-tertiary);}
+.pb-step-tab{flex:1;padding:10px 4px;font-size:11px;font-weight:500;text-align:center;cursor:pointer;background:var(--color-background-secondary);color:var(--color-text-secondary);border-right:0.5px solid var(--color-border-tertiary);transition:.15s;line-height:1.3;}
+.pb-step-tab:last-child{border-right:none;}
+.pb-step-tab.active{background:var(--color-text-primary);color:var(--color-background-primary);}
+.pb-step-tab:hover:not(.active){background:var(--color-background-primary);}
+.pb-dots{display:flex;gap:6px;align-items:center;justify-content:center;margin-bottom:12px;}
+.pb-dot{width:8px;height:8px;border-radius:50%;background:var(--color-border-secondary);transition:.2s;}
+.pb-dot.active{background:var(--color-text-primary);}
+</style>
+
+<h2 class="sr-only">Pipeline de entrega de projetos Atlas RPA</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Pipeline de Delivery</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Acompanhe todos os projetos em andamento e o fluxo de entrega</div>
+
+  <div class="dlv-metric-grid" id="dlv-metrics"></div>
+
+  <div class="dlv-tabs">
+    <div class="dlv-tab active" onclick="dlv_switchView('kanban',this)"><i class="ti ti-layout-columns" style="font-size:14px"></i> Pipeline Kanban</div>
+    <div class="dlv-tab" onclick="dlv_switchView('lista',this)"><i class="ti ti-list" style="font-size:14px"></i> Pipeline Lista</div>
+    <div class="dlv-tab" onclick="dlv_switchView('playbook',this)"><i class="ti ti-book" style="font-size:14px"></i> Playbook</div>
+  </div>
+
+  <!-- KANBAN VIEW -->
+  <div class="dlv-view active" id="dlv-view-kanban">
+    <div class="dlv-kanban" id="dlv-kanban-board"></div>
+  </div>
+
+  <!-- LIST VIEW -->
+  <div class="dlv-view" id="dlv-view-lista">
+    <div class="dlv-list" id="dlv-list-container"></div>
+  </div>
+
+  <!-- PLAYBOOK VIEW -->
+  <div class="dlv-view" id="dlv-view-playbook">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:14px;">Processo padrão de entrega — da descoberta ao deploy. Use como referência para cada fase do projeto.</div>
+    <div class="pb-stepper-nav" id="pb-stepper-nav"></div>
+    <div class="pb-dots" id="pb-dots"></div>
+    <div id="pb-phase-content"></div>
+    <div class="dlv-nav-btns">
+      <button class="dlv-btn" id="pb-btn-prev" onclick="pb_navigate(-1)">← Anterior</button>
+      <button class="dlv-btn" id="pb-btn-next" onclick="pb_navigate(1)">Próxima →</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ========================================
+// PHASE TEMPLATE DATA
+// ========================================
+const dlv_phaseInfo = [
+  {
+    id:0, name:"Discovery", short:"Disc.", icon:"ti-search", color:"#7F77DD", bg:"#EEEDFE",
+    title:"Discovery — entendendo o processo",
+    sub:"Objetivo: mapear o processo candidato à automação e validar se vale automatizar",
+    duration:"3–5 dias úteis", durColor:"#7F77DD", durW:15,
+    tasks:[
+      "Agendar reunião de discovery com o cliente (45–60 min)",
+      "Mapear o processo AS-IS: quem faz, com que frequência, quanto tempo leva",
+      "Identificar sistemas envolvidos (ERP, planilhas, portais web)",
+      "Levantar volume de transações por mês",
+      "Identificar exceções e variações do processo",
+      "Calcular o ROI estimado (horas economizadas × custo hora)",
+      "Validar acesso técnico aos sistemas (login, API, permissões)"
+    ],
+    deliverables:[
+      {icon:"ti-file-text", text:"Relatório de viabilidade (processo, ROI, riscos)"},
+      {icon:"ti-table", text:"Planilha de mapeamento AS-IS"},
+      {icon:"ti-checklist", text:"Checklist de pré-requisitos técnicos"}
+    ],
+    warn:"Processos com muitas exceções ou que mudam com frequência têm ROI baixo. Seja honesto com o cliente.",
+    warnIcon:"ti-alert-triangle"
+  },
+  {
+    id:1, name:"Proposta", short:"Prop.", icon:"ti-file-invoice", color:"#1D9E75", bg:"#E1F5EE",
+    title:"Proposta técnica e comercial",
+    sub:"Objetivo: formalizar escopo, prazo e valor antes de iniciar o desenvolvimento",
+    duration:"1–2 dias úteis", durColor:"#1D9E75", durW:10,
+    tasks:[
+      "Definir escopo: o que o bot faz e o que não faz (limitações explícitas)",
+      "Estimar horas de desenvolvimento com buffer de 20%",
+      "Definir modelo de cobrança: projeto fixo ou mensalidade (managed)",
+      "Redigir proposta com: escopo, prazo, preço, SLA pós-entrega e exclusões",
+      "Enviar proposta e agendar reunião de alinhamento",
+      "Coletar assinatura do contrato e NDA antes de qualquer acesso"
+    ],
+    deliverables:[
+      {icon:"ti-file-invoice", text:"Proposta comercial assinada"},
+      {icon:"ti-writing", text:"Contrato de prestação de serviço"},
+      {icon:"ti-lock", text:"NDA assinado pelas duas partes"}
+    ],
+    warn:"Nunca inicie o desenvolvimento sem contrato assinado. Escopo verbal é o principal gerador de retrabalho.",
+    warnIcon:"ti-alert-circle"
+  },
+  {
+    id:2, name:"Design (PDD)", short:"PDD", icon:"ti-sitemap", color:"#BA7517", bg:"#FAEEDA",
+    title:"Design do processo automatizado (PDD)",
+    sub:"Objetivo: documentar exatamente o que o bot vai fazer — passo a passo",
+    duration:"2–4 dias úteis", durColor:"#BA7517", durW:20,
+    tasks:[
+      "Criar o PDD (Process Design Document) — fluxo detalhado do bot",
+      "Mapear cada passo: input, ação, output, condição de erro",
+      "Definir regras de negócio e exceções tratadas",
+      "Documentar credenciais e acessos necessários (cofre de senhas)",
+      "Validar PDD com o cliente antes de codar — aprovação formal",
+      "Definir ambiente de desenvolvimento vs produção",
+      "Estabelecer critérios de aceite do projeto"
+    ],
+    deliverables:[
+      {icon:"ti-sitemap", text:"PDD aprovado e assinado pelo cliente"},
+      {icon:"ti-key", text:"Mapa de acessos e credenciais"},
+      {icon:"ti-circle-check", text:"Critérios de aceite definidos"}
+    ],
+    warn:"O PDD é seu seguro contra escopo-creep. Algo fora do PDD é mudança de escopo — com prazo e custo revisados.",
+    warnIcon:"ti-shield"
+  },
+  {
+    id:3, name:"Desenvolvimento", short:"Dev", icon:"ti-code", color:"#378ADD", bg:"#E6F1FB",
+    title:"Desenvolvimento do bot",
+    sub:"Objetivo: construir o bot no ambiente de dev com base no PDD aprovado",
+    duration:"5–15 dias úteis", durColor:"#378ADD", durW:60,
+    tasks:[
+      "Configurar ambiente de desenvolvimento isolado do cliente",
+      "Desenvolver o fluxo principal (happy path) primeiro",
+      "Implementar tratamento de erros e exceções mapeadas",
+      "Configurar logs de execução e alertas de falha",
+      "Criar versionamento no GitHub (uma branch por projeto)",
+      "Registrar em diário de desenvolvimento: decisões e mudanças",
+      "Comunicar progresso ao cliente semanalmente (status report)"
+    ],
+    deliverables:[
+      {icon:"ti-brand-github", text:"Código versionado no repositório"},
+      {icon:"ti-file-code", text:"Diário de desenvolvimento"},
+      {icon:"ti-bell", text:"Sistema de alertas configurado"}
+    ],
+    warn:"Desenvolva sempre em cima do PDD. Se descobrir algo diferente, documente e comunique o cliente antes.",
+    warnIcon:"ti-git-branch"
+  },
+  {
+    id:4, name:"Testes (UAT)", short:"UAT", icon:"ti-test-pipe", color:"#639922", bg:"#EAF3DE",
+    title:"Testes e homologação (UAT)",
+    sub:"Objetivo: garantir que o bot funciona conforme os critérios de aceite",
+    duration:"3–5 dias úteis", durColor:"#639922", durW:20,
+    tasks:[
+      "Executar testes unitários em cada etapa do fluxo",
+      "Testar cenários de exceção mapeados no PDD",
+      "Executar teste de volume com dados reais do cliente",
+      "Documentar todos os bugs encontrados e corrigidos",
+      "Conduzir sessão de UAT com usuário-chave do cliente",
+      "Coletar aprovação formal do cliente por escrito (e-mail ou assinatura)",
+      "Registrar performance: tempo de execução, taxa de erro"
+    ],
+    deliverables:[
+      {icon:"ti-clipboard-check", text:"Relatório de testes com resultado"},
+      {icon:"ti-circle-check", text:"Termo de aceite assinado pelo cliente"},
+      {icon:"ti-chart-line", text:"Relatório de performance do bot"}
+    ],
+    warn:"Sem termo de aceite, qualquer problema pós-deploy vira sua responsabilidade.",
+    warnIcon:"ti-writing-sign"
+  },
+  {
+    id:5, name:"Deploy", short:"Deploy", icon:"ti-rocket", color:"#D85A30", bg:"#FAECE7",
+    title:"Deploy, handover e sustentação",
+    sub:"Objetivo: colocar o bot em produção e garantir a transição para operação",
+    duration:"2–3 dias úteis", durColor:"#D85A30", durW:15,
+    tasks:[
+      "Migrar bot para ambiente de produção do cliente",
+      "Configurar agendamento das execuções (scheduler)",
+      "Treinar usuário responsável no cliente para monitoramento básico",
+      "Entregar manual de operação e troubleshooting",
+      "Configurar dashboard de monitoramento (logs, alertas)",
+      "Definir canal de suporte pós-entrega (e-mail, WhatsApp, ticket)",
+      "Agendar check-in de 30 dias para avaliar performance"
+    ],
+    deliverables:[
+      {icon:"ti-rocket", text:"Bot rodando em produção"},
+      {icon:"ti-book", text:"Manual de operação e suporte"},
+      {icon:"ti-chart-dots", text:"Dashboard de monitoramento ativo"}
+    ],
+    warn:"O deploy não é o fim — é o início. O check-in de 30 dias é a melhor chance de expandir o contrato.",
+    warnIcon:"ti-heart"
+  }
+];
+
+// ========================================
+// MOCK PROJECT DATA
+// ========================================
+const dlv_projects = [
+  {
+    id:1, client:"Logística Express", bot:"Bot de Emissão de NF-e",
+    responsible:"Detlef", currentPhase:3, status:"on-track",
+    startDate:"10 Abr", daysTotal:25,
+    taskState:[
+      [1,1,1,1,1,1,1],
+      [1,1,1,1,1,1],
+      [1,1,1,1,1,1,1],
+      [1,1,1,1,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0]
+    ]
+  },
+  {
+    id:2, client:"Construtora Horizonte", bot:"Bot de Conciliação Bancária",
+    responsible:"Detlef", currentPhase:0, status:"delayed",
+    startDate:"05 Mai", daysTotal:15,
+    taskState:[
+      [1,1,1,0,0,0,0],
+      [0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0]
+    ]
+  },
+  {
+    id:3, client:"Farmácia Vital", bot:"Bot de Pedidos de Compra",
+    responsible:"Detlef", currentPhase:4, status:"on-track",
+    startDate:"15 Mar", daysTotal:42,
+    taskState:[
+      [1,1,1,1,1,1,1],
+      [1,1,1,1,1,1],
+      [1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1],
+      [1,1,1,1,1,0,0],
+      [0,0,0,0,0,0,0]
+    ]
+  },
+  {
+    id:4, client:"TechSolve LTDA", bot:"Bot de Onboarding RH",
+    responsible:"Detlef", currentPhase:1, status:"attention",
+    startDate:"12 Mai", daysTotal:8,
+    taskState:[
+      [1,1,1,1,1,1,1],
+      [1,1,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0]
+    ]
+  },
+  {
+    id:5, client:"Grupo Minas", bot:"Bot de Relatórios Gerenciais",
+    responsible:"Detlef", currentPhase:5, status:"on-track",
+    startDate:"01 Mar", daysTotal:55,
+    taskState:[
+      [1,1,1,1,1,1,1],
+      [1,1,1,1,1,1],
+      [1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,0]
+    ]
+  }
+];
+
+// ========================================
+// UTILITY FUNCTIONS
+// ========================================
+function dlv_statusText(s) {
+  return s === 'on-track' ? 'No prazo' : s === 'attention' ? 'Atenção' : 'Atrasado';
+}
+
+function dlv_phaseDone(proj, phaseIdx) {
+  return proj.taskState[phaseIdx].every(t => t === 1);
+}
+
+function dlv_phaseTasksDone(proj, phaseIdx) {
+  return proj.taskState[phaseIdx].filter(t => t === 1).length;
+}
+
+function dlv_phaseTasksTotal(proj, phaseIdx) {
+  return proj.taskState[phaseIdx].length;
+}
+
+function dlv_calcFill(proj) {
+  const p = proj.currentPhase;
+  const tasks = proj.taskState[p];
+  const done = tasks.filter(t => t === 1).length;
+  const ratio = done / tasks.length;
+  if (p === 5) return 80 + ratio * 20;
+  return (p + ratio) * 20;
+}
+
+function dlv_totalProgress(proj) {
+  let done = 0, total = 0;
+  proj.taskState.forEach(t => { done += t.filter(v=>v===1).length; total += t.length; });
+  return Math.round((done / total) * 100);
+}
+
+// ========================================
+// METRICS
+// ========================================
+function dlv_renderMetrics() {
+  const total = dlv_projects.length;
+  const onTrack = dlv_projects.filter(p => p.status === 'on-track').length;
+  const delayed = dlv_projects.filter(p => p.status === 'delayed').length;
+  const avgDays = Math.round(dlv_projects.reduce((s,p) => s + p.daysTotal, 0) / total);
+
+  document.getElementById('dlv-metrics').innerHTML = `
+    <div class="dlv-metric-box"><div class="dlv-metric-val">${total}</div><div class="dlv-metric-lbl">projetos ativos</div></div>
+    <div class="dlv-metric-box"><div class="dlv-metric-val" style="color:#8BC34A">${onTrack}</div><div class="dlv-metric-lbl">no prazo</div></div>
+    <div class="dlv-metric-box"><div class="dlv-metric-val" style="color:#E24B4A">${delayed}</div><div class="dlv-metric-lbl">atrasados</div></div>
+    <div class="dlv-metric-box"><div class="dlv-metric-val">${avgDays}d</div><div class="dlv-metric-lbl">tempo médio de entrega</div></div>
+  `;
+}
+
+// ========================================
+// VIEW SWITCHING
+// ========================================
+function dlv_switchView(viewId, el) {
+  document.querySelectorAll('#module_1 .dlv-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#module_1 .dlv-view').forEach(v => v.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('dlv-view-' + viewId).classList.add('active');
+}
+
+// ========================================
+// KANBAN VIEW
+// ========================================
+function dlv_renderKanban() {
+  const board = document.getElementById('dlv-kanban-board');
+  board.innerHTML = dlv_phaseInfo.map((phase, idx) => {
+    const projects = dlv_projects.filter(p => p.currentPhase === idx);
+    const cardsHTML = projects.length > 0
+      ? projects.map(p => {
+          const done = dlv_phaseTasksDone(p, idx);
+          const total = dlv_phaseTasksTotal(p, idx);
+          const pct = Math.round((done / total) * 100);
+          return `
+            <div class="dlv-kcard" onclick="dlv_openDrawer(${p.id})">
+              <div class="dlv-kcard-client">${p.client}</div>
+              <div class="dlv-kcard-bot">${p.bot}</div>
+              <div class="dlv-kcard-progress">
+                <div class="dlv-kcard-bar"><div class="dlv-kcard-bar-fill" style="width:${pct}%;background:${phase.color}"></div></div>
+                <span class="dlv-kcard-frac">${done}/${total}</span>
+              </div>
+              <div class="dlv-kcard-footer">
+                <div class="dlv-status ${p.status}"><div class="dlv-status-dot"></div>${dlv_statusText(p.status)}</div>
+                <span class="dlv-kcard-days">${p.daysTotal}d</span>
+              </div>
+            </div>`;
+        }).join('')
+      : `<div class="dlv-col-empty">Nenhum projeto</div>`;
+
+    return `
+      <div class="dlv-col" style="--col-accent:${phase.color}">
+        <div class="dlv-col-hdr">
+          <div class="dlv-col-icon" style="background:${phase.bg};color:${phase.color}"><i class="ti ${phase.icon}"></i></div>
+          <span class="dlv-col-name">${phase.short}</span>
+          <span class="dlv-col-count">${projects.length}</span>
+        </div>
+        ${cardsHTML}
+      </div>`;
+  }).join('');
+}
+
+// ========================================
+// LIST VIEW
+// ========================================
+function dlv_renderList() {
+  const container = document.getElementById('dlv-list-container');
+  container.innerHTML = dlv_projects.map(p => {
+    const phase = dlv_phaseInfo[p.currentPhase];
+    const fillPct = dlv_calcFill(p);
+    const doneCur = dlv_phaseTasksDone(p, p.currentPhase);
+    const totalCur = dlv_phaseTasksTotal(p, p.currentPhase);
+
+    const milestonesHTML = dlv_phaseInfo.map((ph, idx) => {
+      let cls = '';
+      if (idx < p.currentPhase) cls = 'done';
+      else if (idx === p.currentPhase) cls = 'active';
+      const dotContent = idx < p.currentPhase ? '✓' : '';
+      const dotStyle = idx === p.currentPhase
+        ? `border-color:${phase.color};color:${phase.color};`
+        : '';
+      return `
+        <div class="dlv-pipe-pt ${cls}">
+          <div class="dlv-pipe-dot" style="${dotStyle}">${dotContent}</div>
+          <div class="dlv-pipe-lbl">${ph.short}</div>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="dlv-lcard" style="--card-accent:${phase.color}" onclick="dlv_openDrawer(${p.id})">
+        <div class="dlv-lcard-top">
+          <div class="dlv-lcard-icon" style="background:${phase.bg};color:${phase.color}">
+            <i class="ti ${phase.icon}"></i>
+          </div>
+          <div class="dlv-lcard-info">
+            <div class="dlv-lcard-client">${p.client}</div>
+            <div class="dlv-lcard-bot">${p.bot}</div>
+          </div>
+          <div class="dlv-lcard-meta">
+            <div class="dlv-status ${p.status}"><div class="dlv-status-dot"></div>${dlv_statusText(p.status)}</div>
+            <span class="dlv-lcard-days">${p.daysTotal} dias</span>
+          </div>
+        </div>
+        <div class="dlv-pipe">
+          <div class="dlv-pipe-line">
+            <div class="dlv-pipe-bg"></div>
+            <div class="dlv-pipe-fill" style="width:${fillPct}%;background:${phase.color}"></div>
+          </div>
+          <div class="dlv-pipe-points">
+            ${milestonesHTML}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ========================================
+// DETAIL DRAWER
+// ========================================
+let dlv_activeProject = null;
+let dlv_activePhase = 0;
+
+function dlv_openDrawer(projectId) {
+  dlv_activeProject = dlv_projects.find(p => p.id === projectId);
+  dlv_activePhase = dlv_activeProject.currentPhase;
+  document.getElementById('dlv-overlay').classList.add('active');
+  document.getElementById('dlv-drawer').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  dlv_renderDrawer();
+}
+
+function dlv_closeDrawer() {
+  document.getElementById('dlv-overlay').classList.remove('active');
+  document.getElementById('dlv-drawer').classList.remove('active');
+  document.body.style.overflow = '';
+  dlv_activeProject = null;
+}
+
+function dlv_drawerGoTo(phaseIdx) {
+  dlv_activePhase = phaseIdx;
+  dlv_renderDrawer();
+}
+
+function dlv_drawerNavigate(dir) {
+  const next = dlv_activePhase + dir;
+  if (next >= 0 && next < 6) dlv_drawerGoTo(next);
+}
+
+function dlv_drawerToggleTask(taskIdx) {
+  const proj = dlv_activeProject;
+  const ts = proj.taskState[dlv_activePhase];
+  ts[taskIdx] = ts[taskIdx] ? 0 : 1;
+  dlv_renderDrawer();
+  dlv_renderKanban();
+  dlv_renderList();
+  dlv_renderMetrics();
+}
+
+function dlv_renderDrawer() {
+  const proj = dlv_activeProject;
+  const phase = dlv_phaseInfo[dlv_activePhase];
+  const tasks = proj.taskState[dlv_activePhase];
+  const doneCount = tasks.filter(t => t === 1).length;
+  const totalCount = tasks.length;
+  const totalProg = dlv_totalProgress(proj);
+
+  // Header
+  document.getElementById('dlv-drawer-header').innerHTML = `
+    <button class="dlv-drawer-back" onclick="dlv_closeDrawer()">
+      <i class="ti ti-arrow-left" style="font-size:16px"></i> Voltar ao pipeline
+    </button>
+    <div class="dlv-drawer-title">${proj.client}</div>
+    <div class="dlv-drawer-sub">${proj.bot}</div>
+    <div class="dlv-drawer-meta">
+      <div class="dlv-status ${proj.status}"><div class="dlv-status-dot"></div>${dlv_statusText(proj.status)}</div>
+      <span style="font-size:12px;color:var(--color-text-tertiary)">${proj.daysTotal} dias</span>
+      <span style="font-size:12px;color:var(--color-text-tertiary)">·</span>
+      <span style="font-size:12px;color:var(--color-text-secondary)">${totalProg}% concluído</span>
+    </div>
+  `;
+
+  // Stepper
+  const stepperHTML = dlv_phaseInfo.map((ph, idx) => {
+    let cls = '';
+    if (idx === dlv_activePhase) cls = 'active';
+    else if (idx < proj.currentPhase) cls = 'completed';
+    const check = idx < proj.currentPhase ? '<span class="step-check">✓</span>' : '';
+    return `<div class="dlv-drawer-step ${cls}" onclick="dlv_drawerGoTo(${idx})">${check}${ph.short}</div>`;
+  }).join('');
+
+  // Checklist
+  const checklistHTML = phase.tasks.map((t, i) => `
+    <div class="dlv-chk-item">
+      <div class="dlv-chk-box ${tasks[i]?'checked':''}" onclick="event.stopPropagation();dlv_drawerToggleTask(${i})"></div>
+      <span style="${tasks[i]?'opacity:.45;text-decoration:line-through':''}">${t}</span>
+    </div>
+  `).join('');
+
+  // Deliverables
+  const deliverablesHTML = phase.deliverables.map(d => `
+    <div class="dlv-deliverable">
+      <i class="ti ${d.icon}" aria-hidden="true"></i>
+      <span>${d.text}</span>
+    </div>
+  `).join('');
+
+  // Body
+  document.getElementById('dlv-drawer-body').innerHTML = `
+    <div class="dlv-drawer-stepper">${stepperHTML}</div>
+
+    <div class="dlv-phase-card">
+      <div class="dlv-phase-hdr">
+        <div class="dlv-phase-icon" style="background:${phase.bg};color:${phase.color}">
+          <i class="ti ${phase.icon}" aria-hidden="true"></i>
+        </div>
+        <div>
+          <div class="dlv-phase-title">${phase.title}</div>
+          <div class="dlv-phase-sub">${phase.sub}</div>
+        </div>
+      </div>
+
+      <div class="dlv-dur-bar">
+        <i class="ti ti-clock" aria-hidden="true" style="font-size:16px;color:var(--color-text-secondary)"></i>
+        <div class="dlv-dur-fill" style="width:${phase.durW}%;background:${phase.durColor}"></div>
+        <span class="dlv-dur-label">Duração estimada</span>
+        <span class="dlv-dur-val">${phase.duration}</span>
+      </div>
+
+      <div class="dlv-cols2">
+        <div>
+          <div class="dlv-sec-label">Checklist (${doneCount}/${totalCount})</div>
+          <div class="dlv-info-box">${checklistHTML}</div>
+        </div>
+        <div>
+          <div class="dlv-sec-label">Entregáveis desta fase</div>
+          <div>${deliverablesHTML}</div>
+          <div class="dlv-warn-box">
+            <i class="ti ${phase.warnIcon}" aria-hidden="true" style="font-size:16px"></i>
+            <span>${phase.warn}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dlv-nav-btns">
+      <button class="dlv-btn" ${dlv_activePhase===0?'disabled':''} onclick="dlv_drawerNavigate(-1)">← Anterior</button>
+      <button class="dlv-btn" ${dlv_activePhase===5?'disabled':''} onclick="dlv_drawerNavigate(1)">Próxima →</button>
+    </div>
+  `;
+
+  // Scroll to top of drawer
+  document.getElementById('dlv-drawer').scrollTop = 0;
+}
+
+// ========================================
+// PLAYBOOK (preserved from original)
+// ========================================
+const pb_phases = dlv_phaseInfo; // reuse same data
+let pb_current = 0;
+const pb_checked = pb_phases.map(p => new Array(p.tasks.length).fill(false));
+
+function pb_renderNav() {
+  const nav = document.getElementById('pb-stepper-nav');
+  nav.innerHTML = pb_phases.map((p,i) => `<div class="pb-step-tab ${i===pb_current?'active':''}" onclick="pb_goTo(${i})">${p.name}</div>`).join('');
+  const dots = document.getElementById('pb-dots');
+  dots.innerHTML = pb_phases.map((_,i) => `<div class="pb-dot ${i===pb_current?'active':''}"></div>`).join('');
+  document.getElementById('pb-btn-prev').disabled = pb_current === 0;
+  document.getElementById('pb-btn-next').textContent = pb_current === pb_phases.length - 1 ? 'Concluído ✓' : 'Próxima →';
+}
+
+function pb_renderPhase() {
+  const p = pb_phases[pb_current];
+  const doneCount = pb_checked[pb_current].filter(Boolean).length;
+  const total = p.tasks.length;
+
+  document.getElementById('pb-phase-content').innerHTML = `
+    <div class="dlv-phase-card">
+      <div class="dlv-phase-hdr">
+        <div class="dlv-phase-icon" style="background:${p.bg};color:${p.color}">
+          <i class="ti ${p.icon}" aria-hidden="true"></i>
+        </div>
+        <div>
+          <div class="dlv-phase-title">${p.title}</div>
+          <div class="dlv-phase-sub">${p.sub}</div>
+        </div>
+      </div>
+
+      <div class="dlv-dur-bar">
+        <i class="ti ti-clock" aria-hidden="true" style="font-size:16px;color:var(--color-text-secondary)"></i>
+        <div class="dlv-dur-fill" style="width:${p.durW}%;background:${p.durColor}"></div>
+        <span class="dlv-dur-label">Duração estimada</span>
+        <span class="dlv-dur-val">${p.duration}</span>
+      </div>
+
+      <div class="dlv-cols2">
+        <div>
+          <div class="dlv-sec-label">Checklist (${doneCount}/${total})</div>
+          <div class="dlv-info-box">
+            ${p.tasks.map((t,i) => `
+              <div class="dlv-chk-item">
+                <div class="dlv-chk-box ${pb_checked[pb_current][i]?'checked':''}" onclick="pb_toggleCheck(${i})"></div>
+                <span style="${pb_checked[pb_current][i]?'opacity:.45;text-decoration:line-through':''}">${t}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div>
+          <div class="dlv-sec-label">Entregáveis desta fase</div>
+          <div>
+            ${p.deliverables.map(d => `
+              <div class="dlv-deliverable">
+                <i class="ti ${d.icon}" aria-hidden="true"></i>
+                <span>${d.text}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="dlv-warn-box">
+            <i class="ti ${p.warnIcon}" aria-hidden="true" style="font-size:16px"></i>
+            <span>${p.warn}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function pb_toggleCheck(i) {
+  pb_checked[pb_current][i] = !pb_checked[pb_current][i];
+  pb_renderPhase();
+}
+function pb_goTo(i) { pb_current = i; pb_renderNav(); pb_renderPhase(); }
+function pb_navigate(dir) {
+  if (pb_current + dir >= 0 && pb_current + dir < pb_phases.length) pb_goTo(pb_current + dir);
+}
+
+// ========================================
+// INIT
+// ========================================
+dlv_renderMetrics();
+dlv_renderKanban();
+dlv_renderList();
+pb_renderNav();
+pb_renderPhase();
+</script>
+        </div>
+        <div id="module_2" class="module-section ">
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:.15s;}
+  .tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent;}
+  .panel{display:none;}.panel.active{display:block;}
+
+  /* JORNADA */
+  .journey-stage{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
+  .journey-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .journey-icon{width:40px;height:40px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .journey-title{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+  .journey-sub{font-size:12px;color:var(--color-text-secondary);}
+  .journey-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .journey-col{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .journey-col-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .journey-item{font-size:12px;color:var(--color-text-primary);line-height:1.6;display:flex;gap:6px;padding:2px 0;}
+  .journey-item::before{content:"·";color:var(--color-text-tertiary);}
+  .risk-badge{font-size:11px;padding:2px 8px;border-radius:20px;margin-left:auto;}
+
+  /* RITUAIS */
+  .ritual-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:border-color .2s;}
+  .ritual-card:hover{border-color:var(--color-border-secondary);}
+  .ritual-header{display:flex;align-items:center;gap:10px;}
+  .ritual-freq{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;flex-shrink:0;}
+  .ritual-title{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+  .ritual-who{font-size:12px;color:var(--color-text-secondary);}
+  .ritual-detail{display:none;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--color-border-tertiary);}
+  .ritual-detail.open{display:block;}
+  .ritual-agenda{font-size:12px;color:var(--color-text-primary);line-height:1.8;}
+  .ritual-agenda li{margin-bottom:2px;}
+  .template-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;margin-top:8px;font-size:12px;color:var(--color-text-secondary);font-style:italic;line-height:1.7;}
+  .chevron{font-size:11px;color:var(--color-text-tertiary);margin-left:auto;transition:transform .2s;}
+  .chevron.open{transform:rotate(180deg);}
+
+  /* SAÚDE */
+  .health-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .signal-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
+  .signal-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .signal-list{font-size:12px;color:var(--color-text-secondary);line-height:1.8;}
+  .signal-action{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:var(--color-text-primary);margin-top:8px;}
+  .dot-red{width:10px;height:10px;border-radius:50%;background:#E24B4A;flex-shrink:0;}
+  .dot-amber{width:10px;height:10px;border-radius:50%;background:#EF9F27;flex-shrink:0;}
+  .dot-green{width:10px;height:10px;border-radius:50%;background:#639922;flex-shrink:0;}
+
+  /* EXPANSÃO */
+  .expand-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
+  .expand-title{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+  .expand-trigger{font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;}
+  .expand-script{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;font-size:13px;color:var(--color-text-primary);line-height:1.65;border-left:3px solid var(--color-border-secondary);}
+
+  .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+  .metric-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .metric-val{font-size:18px;font-weight:500;color:var(--color-text-primary);}
+  .metric-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+</style>
+
+<h2 class="sr-only">Processo de customer success para clientes de RPA do Atlas</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Customer Success — Atlas</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Jornada completa do cliente: do onboarding à expansão</div>
+
+  <div class="metric-grid">
+    <div class="metric-box"><div class="metric-val">90d</div><div class="metric-lbl">período crítico de retenção</div></div>
+    <div class="metric-box"><div class="metric-val">&lt;5%</div><div class="metric-lbl">churn meta anual</div></div>
+    <div class="metric-box"><div class="metric-val">NPS</div><div class="metric-lbl">meta ≥ 50</div></div>
+    <div class="metric-box"><div class="metric-val">2×</div><div class="metric-lbl">expansão média/cliente</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab_2('jornada',this)">Jornada do cliente</div>
+    <div class="tab" onclick="switchTab_2('rituais',this)">Rituais de CS</div>
+    <div class="tab" onclick="switchTab_2('saude',this)">Sinais de saúde</div>
+    <div class="tab" onclick="switchTab_2('expansao',this)">Expansão e upsell</div>
+  </div>
+
+  <div class="panel active" id="m2-panel-jornada">
+    <div id="jornada-container"></div>
+  </div>
+  <div class="panel" id="m2-panel-rituais">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">Clique em cada ritual para ver a pauta e o template de mensagem.</div>
+    <div id="rituais-container"></div>
+  </div>
+  <div class="panel" id="m2-panel-saude">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">Indicadores que revelam se um cliente vai ficar, crescer ou cancelar — antes que ele diga qualquer coisa.</div>
+    <div id="saude-container"></div>
+  </div>
+  <div class="panel" id="m2-panel-expansao">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">O momento certo e o script certo para transformar um cliente satisfeito em um cliente maior.</div>
+    <div id="expansao-container"></div>
+  </div>
+</div>
+
+<script>
+function switchTab_2(id,el){
+  document.getElementById('module_2').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('module_2').querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('m2-panel-'+id).classList.add('active');
+}
+
+const jornada = [
+  { icon:"ti-rocket", iconBg:"#EEEDFE", iconColor:"#534AB7",
+    title:"Onboarding (Dias 0–7)", sub:"Semana 1: transformar contrato em confiança",
+    risk:"Alto risco", riskBg:"#FCEBEB", riskColor:"#A32D2D",
+    acoes:["Kickoff em até 3 dias úteis","Apresentar o time e papéis","Alinhar expectativas de prazo e comunicação","Criar canal de suporte exclusivo (WhatsApp ou Slack)"],
+    entregaveis:["Canal de comunicação ativo","Cronograma do projeto compartilhado","Acesso técnico concedido"],
+    sentimento:["Cliente ansioso e empolgado","Qualquer atraso gera desconfiança","Comunicação excessiva é bem-vinda aqui"]
+  },
+  { icon:"ti-settings-automation", iconBg:"#E1F5EE", iconColor:"#0F6E56",
+    title:"Desenvolvimento ativo (Dias 8–45)", sub:"Período de construção — cliente precisa sentir progresso",
+    risk:"Risco médio", riskBg:"#FAEEDA", riskColor:"#633806",
+    acoes:["Status report semanal por escrito","Demo de progresso a cada 2 semanas","Comunicar imprevistos antes que o cliente pergunte","Validar decisões técnicas com o cliente"],
+    entregaveis:["Status reports semanais","Demos intermediárias documentadas","Log de decisões e mudanças"],
+    sentimento:["Silêncio = preocupação no cliente","Updates proativos criam confiança","Mostre o bot funcionando, mesmo incompleto"]
+  },
+  { icon:"ti-circle-check", iconBg:"#FAEEDA", iconColor:"#854F0B",
+    title:"Go-live e UAT (Dias 45–60)", sub:"Momento de maior vulnerabilidade — gestão cuidadosa",
+    risk:"Alto risco", riskBg:"#FCEBEB", riskColor:"#A32D2D",
+    acoes:["Conduzir UAT com usuário-chave do cliente","Treinamento do time operacional","Acompanhar primeiras execuções em produção ao vivo","Resolver bugs críticos em até 4 horas"],
+    entregaveis:["Termo de aceite assinado","Manual de operação entregue","Primeiras execuções documentadas"],
+    sentimento:["Expectativa máxima — não falhe aqui","Presença física ou por vídeo aumenta confiança","Problemas normais resolvidos rápido = herói"]
+  },
+  { icon:"ti-chart-line", iconBg:"#E6F1FB", iconColor:"#185FA5",
+    title:"Adoção e estabilização (Dias 60–90)", sub:"O bot está rodando — agora é sobre valor percebido",
+    risk:"Risco médio", riskBg:"#FAEEDA", riskColor:"#633806",
+    acoes:["Check-in de 30 dias com relatório de performance","Mostrar horas economizadas e ROI real","Identificar fricções na operação do bot","Coletar NPS informal"],
+    entregaveis:["Relatório de performance (30 dias)","Dashboard de monitoramento ativo","Primeiras métricas de ROI documentadas"],
+    sentimento:["Cliente calculando se valeu a pena","Dados de ROI concretos são mais poderosos que qualquer pitch","Esse é o momento de pedir indicação"]
+  },
+  { icon:"ti-stars", iconBg:"#EAF3DE", iconColor:"#3B6D11",
+    title:"Expansão e parceria (90+ dias)", sub:"Cliente maduro — foco em crescimento da conta",
+    risk:"Baixo risco", riskBg:"#EAF3DE", riskColor:"#27500A",
+    acoes:["QBR trimestral (Quarterly Business Review)","Propor novos processos para automação","Solicitar case de sucesso ou depoimento","Pedir indicações para o network do cliente"],
+    entregaveis:["QBR com novos processos identificados","Case de sucesso aprovado pelo cliente","Ao menos 1 indicação ativa"],
+    sentimento:["Cliente virou advogado da marca","Custo de aquisição = zero (indicação)","Receita previsível via expansão"]
+  }
+];
+
+const jornadaEl = document.getElementById('jornada-container');
+jornada.forEach(j=>{
+  jornadaEl.innerHTML += `
+    <div class="journey-stage">
+      <div class="journey-header">
+        <div class="journey-icon" style="background:${j.iconBg};color:${j.iconColor}"><i class="ti ${j.icon}" aria-hidden="true"></i></div>
+        <div style="flex:1"><div class="journey-title">${j.title}</div><div class="journey-sub">${j.sub}</div></div>
+        <span class="risk-badge" style="background:${j.riskBg};color:${j.riskColor}">${j.risk}</span>
+      </div>
+      <div class="journey-cols">
+        <div class="journey-col">
+          <div class="journey-col-title">Ações do Atlas</div>
+          ${j.acoes.map(a=>`<div class="journey-item">${a}</div>`).join('')}
+        </div>
+        <div class="journey-col">
+          <div class="journey-col-title">Entregáveis</div>
+          ${j.entregaveis.map(a=>`<div class="journey-item">${a}</div>`).join('')}
+        </div>
+        <div class="journey-col">
+          <div class="journey-col-title">Estado emocional do cliente</div>
+          ${j.sentimento.map(a=>`<div class="journey-item">${a}</div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+});
+
+const rituais = [
+  { freq:"Diário", freqBg:"#FCEBEB", freqColor:"#A32D2D",
+    title:"Monitoramento dos bots", who:"Responsável: você (CEO/tech)",
+    agenda:["Verificar logs de execução de todos os bots","Checar alertas de erro ou falha","Registrar qualquer anomalia no log interno","Resolver falhas críticas antes que o cliente perceba"],
+    template:"Verificação diária feita. Todos os bots operando normalmente. [Se houver falha: 'Identificamos uma falha às XX:XX e corrigimos às XX:XX — nenhum impacto no resultado final.']"
+  },
+  { freq:"Semanal", freqBg:"#FAEEDA", freqColor:"#633806",
+    title:"Status report por escrito", who:"Responsável: ambos",
+    agenda:["Volume processado na semana","Erros encontrados e resolvidos","O que será feito na semana seguinte","Algum ponto de atenção ou decisão pendente"],
+    template:"Olá [Nome], segue o resumo da semana do projeto Atlas:\n✅ Executamos X processos com sucesso\n⚡ Resolvemos Y ocorrências\n📅 Esta semana: [próximos passos]\nQualquer dúvida, é só chamar."
+  },
+  { freq:"Mensal", freqBg:"#EEEDFE", freqColor:"#3C3489",
+    title:"Check-in de performance", who:"Responsável: sócia (CS) + você (dados)",
+    agenda:["Apresentar relatório de performance do bot","Mostrar horas economizadas e ROI acumulado","Ouvir feedbacks e pontos de melhoria","Identificar novos processos candidatos à automação","Confirmar satisfação e coletar NPS"],
+    template:"[Nome], passando para nosso check-in mensal! Tenho os dados de performance de [mês] prontos — ficou incrível o resultado. Posso te ligar na [data]? São 20 minutos só."
+  },
+  { freq:"Trimestral", freqBg:"#E1F5EE", freqColor:"#085041",
+    title:"QBR — Quarterly Business Review", who:"Responsável: ambos + decisor do cliente",
+    agenda:["Apresentar ROI acumulado dos últimos 3 meses","Benchmark: como está vs. expectativa inicial","Roadmap: quais processos automatizar a seguir","Revisão do contrato e condições para o próximo trimestre","Coleta de depoimento ou case de sucesso"],
+    template:"[Nome], chegou a hora do nosso QBR do trimestre! Preparei uma apresentação com os resultados de [período] — tenho certeza que vai gostar dos números. Podemos reunir o time na [data]?"
+  },
+  { freq:"Pontual", freqBg:"#EAF3DE", freqColor:"#27500A",
+    title:"Pesquisa de NPS", who:"Responsável: sócia",
+    agenda:["Enviar após 30 dias do go-live","Repetir a cada 6 meses","1 pergunta quantitativa (0–10) + 1 aberta","Agir em até 24h em respostas 0–6 (detratores)"],
+    template:"Olá [Nome]! Em uma escala de 0 a 10, o quanto você indicaria o Atlas para um colega?\n👉 [Link do formulário — Google Forms ou Typeform]\nSua resposta leva 30 segundos e nos ajuda muito. Obrigado!"
+  }
+];
+
+const rituaisEl = document.getElementById('rituais-container');
+rituais.forEach((r,i)=>{
+  const div = document.createElement('div');
+  div.className = 'ritual-card';
+  div.innerHTML = `
+    <div class="ritual-header">
+      <span class="ritual-freq" style="background:${r.freqBg};color:${r.freqColor}">${r.freq}</span>
+      <div><div class="ritual-title">${r.title}</div><div class="ritual-who">${r.who}</div></div>
+      <span class="chevron" id="chev-r-${i}">▼</span>
+    </div>
+    <div class="ritual-detail" id="rd-${i}">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px">Pauta</div>
+      <ul class="ritual-agenda">${r.agenda.map(a=>`<li>${a}</li>`).join('')}</ul>
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin:10px 0 6px">Template de mensagem</div>
+      <div class="template-box" style="white-space:pre-line">${r.template}</div>
+    </div>
+  `;
+  div.addEventListener('click',()=>{
+    const d=document.getElementById('rd-'+i);
+    const c=document.getElementById('chev-r-'+i);
+    const o=d.classList.toggle('open');
+    c.classList.toggle('open',o);
+  });
+  rituaisEl.appendChild(div);
+});
+
+const saude = [
+  { dot:'dot-green', label:'Cliente saudável', bg:'#EAF3DE', color:'#27500A',
+    sinais:["Bot executa sem erros há +7 dias","Cliente responde mensagens em até 24h","Participou do último check-in","Abriu relatório de performance","Mencionou o bot positivamente para alguém"],
+    acao:"Momento ideal para pedir indicação ou apresentar proposta de expansão."
+  },
+  { dot:'dot-amber', label:'Cliente em atenção', bg:'#FAEEDA', color:'#633806',
+    sinais:["Bot teve 2+ erros na semana sem resolução rápida","Cliente não respondeu mensagem em +48h","Faltou ao último check-in","Não abriu relatório enviado","Tom das mensagens mudou — mais frio ou formal"],
+    acao:"Agir imediatamente: ligar (não enviar mensagem), entender o que mudou, oferecer reunião de alinhamento em até 24h."
+  },
+  { dot:'dot-red', label:'Cliente em risco de churn', bg:'#FCEBEB', color:'#A32D2D',
+    sinais:["Bot parado há +48h sem resolução","Cliente questionou o valor do serviço","Pediu para 'pausar' o contrato","Não responde há +1 semana","Mencionou que 'está avaliando outras opções'"],
+    acao:"Reunião de resgate com decisor (não o operacional). Trazer dados de ROI, escutar sem defender. Oferecer revisão de escopo ou condições antes de aceitar o cancelamento."
+  }
+];
+
+const saudeEl = document.getElementById('saude-container');
+saude.forEach(s=>{
+  saudeEl.innerHTML += `
+    <div class="signal-card">
+      <div class="signal-title">
+        <div class="${s.dot}"></div>
+        <span style="background:${s.bg};color:${s.color};padding:2px 10px;border-radius:20px;font-size:12px">${s.label}</span>
+      </div>
+      <div class="signal-list">
+        ${s.sinais.map(x=>`<div style="display:flex;gap:6px"><span style="color:var(--color-text-tertiary)">·</span><span>${x}</span></div>`).join('')}
+      </div>
+      <div class="signal-action"><strong>Ação:</strong> ${s.acao}</div>
+    </div>
+  `;
+});
+
+const expansao = [
+  { icon:"ti-plus", iconBg:"#EEEDFE", iconColor:"#534AB7",
+    title:"Novo processo para automatizar",
+    trigger:"Gatilho: check-in de 30 dias com ROI positivo confirmado",
+    script:"'[Nome], vendo os resultados do bot de [processo X], identifiquei que vocês também fazem [processo Y] manualmente. Se calcularmos o mesmo ganho, são mais X horas por mês economizadas. Posso te mandar uma análise rápida?'"
+  },
+  { icon:"ti-users", iconBg:"#E1F5EE", iconColor:"#0F6E56",
+    title:"Expansão para outro departamento",
+    trigger:"Gatilho: cliente menciona que outros times têm processos parecidos",
+    script:"'Que ótimo saber que o financeiro também tem esse problema. Seria fácil adaptar o que fizemos para vocês. Você consegue nos apresentar para o gestor desse time? Posso fazer uma demo de 20 minutos.'"
+  },
+  { icon:"ti-shield-check", iconBg:"#FAEEDA", iconColor:"#854F0B",
+    title:"Upgrade para plano managed (sustentação mensal)",
+    trigger:"Gatilho: cliente pergunta sobre garantia de longo prazo ou menciona dependência do bot",
+    script:"'Como o bot já é crítico para a operação de vocês, faz sentido falar sobre um contrato de sustentação. Por [valor], garantimos monitoramento diário, suporte prioritário com SLA de 4h e atualizações sempre que o sistema deles mudar. Quer que eu formalize?'"
+  },
+  { icon:"ti-star", iconBg:"#EAF3DE", iconColor:"#3B6D11",
+    title:"Indicação para parceiro ou fornecedor",
+    trigger:"Gatilho: cliente satisfeito, NPS ≥ 8, mencionou positivamente o serviço",
+    script:"'[Nome], muito feliz que os resultados estão sendo bons. Posso te pedir um favor? Se você conhece outro gestor com desafios parecidos, uma apresentação sua abre portas que levariam meses pelo caminho normal. Tem alguém que viria à mente?'"
+  }
+];
+
+const expansaoEl = document.getElementById('expansao-container');
+expansao.forEach(e=>{
+  expansaoEl.innerHTML += `
+    <div class="expand-card">
+      <div class="expand-title">
+        <div style="width:32px;height:32px;border-radius:var(--border-radius-md);background:${e.iconBg};color:${e.iconColor};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ${e.icon}" aria-hidden="true" style="font-size:16px"></i>
+        </div>
+        ${e.title}
+      </div>
+      <div class="expand-trigger">${e.trigger}</div>
+      <div class="expand-script">${e.script}</div>
+    </div>
+  `;
+});
+</script>
+
+        </div>
+        <div id="module_3" class="module-section ">
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:.15s;}
+  .tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent;}
+  .panel{display:none;}.panel.active{display:block;}
+
+  .channel-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:border-color .2s;}
+  .channel-card:hover,.channel-card.open{border-color:var(--color-border-secondary);}
+  .channel-header{display:flex;align-items:center;gap:12px;}
+  .channel-icon{width:40px;height:40px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .channel-title{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+  .channel-sub{font-size:12px;color:var(--color-text-secondary);}
+  .channel-meta{display:flex;gap:6px;margin-left:auto;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+  .pill{font-size:11px;padding:2px 8px;border-radius:20px;}
+  .chevron{font-size:11px;color:var(--color-text-tertiary);margin-left:6px;transition:transform .2s;}
+  .chevron.open{transform:rotate(180deg);}
+  .channel-detail{display:none;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--color-border-tertiary);}
+  .channel-detail.open{display:block;}
+  .detail-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+  .detail-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .detail-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .detail-item{font-size:12px;color:var(--color-text-primary);line-height:1.7;display:flex;gap:6px;}
+  .detail-item::before{content:"·";color:var(--color-text-tertiary);}
+  .tip-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:var(--color-text-secondary);margin-top:4px;}
+
+  /* CALENDÁRIO */
+  .week-label{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;margin-top:14px;}
+  .content-row{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 14px;margin-bottom:6px;display:grid;grid-template-columns:80px 1fr auto;gap:10px;align-items:center;}
+  .content-day{font-size:12px;font-weight:500;color:var(--color-text-secondary);}
+  .content-text{font-size:13px;color:var(--color-text-primary);}
+  .content-format{font-size:11px;padding:2px 8px;border-radius:20px;}
+
+  /* ICP */
+  .icp-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem 1.25rem;margin-bottom:10px;}
+  .icp-title{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+  .icp-pain{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;}
+  .icp-hooks{font-size:12px;color:var(--color-text-primary);line-height:1.8;}
+
+  /* MÉTRICAS */
+  .metric-table{width:100%;border-collapse:separate;border-spacing:0 6px;}
+  .metric-table th{font-size:11px;color:var(--color-text-secondary);text-align:left;padding:4px 10px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;}
+  .metric-table td{font-size:13px;color:var(--color-text-primary);padding:10px 12px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);}
+  .metric-table td:first-child{border-radius:var(--border-radius-md) 0 0 var(--border-radius-md);}
+  .metric-table td:last-child{border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;}
+
+  .priority-bar{height:8px;border-radius:4px;margin-top:4px;}
+  .metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+  .metric-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .metric-val{font-size:18px;font-weight:500;color:var(--color-text-primary);}
+  .metric-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+</style>
+
+<h2 class="sr-only">Estratégia de marketing B2B para o Atlas RPA</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Marketing B2B — Atlas RPA</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Canais, conteúdo, ICP e métricas para crescer com autoridade</div>
+
+  <div class="metric-grid">
+    <div class="metric-box"><div class="metric-val">LinkedIn</div><div class="metric-lbl">canal #1 para RPA B2B</div></div>
+    <div class="metric-box"><div class="metric-val">Cases</div><div class="metric-lbl">conteúdo que mais converte</div></div>
+    <div class="metric-box"><div class="metric-val">3–6 m</div><div class="metric-lbl">para ver resultados orgânicos</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab_3('canais',this)">Canais e prioridade</div>
+    <div class="tab" onclick="switchTab_3('conteudo',this)">Calendário de conteúdo</div>
+    <div class="tab" onclick="switchTab_3('icp',this)">Personas e ICP</div>
+    <div class="tab" onclick="switchTab_3('metricas',this)">Métricas e metas</div>
+  </div>
+
+  <div class="panel active" id="m3-panel-canais"><div id="canais-container"></div></div>
+  <div class="panel" id="m3-panel-conteudo">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:4px;">Plano de conteúdo para as primeiras 4 semanas. Foco total em LinkedIn + 1 conteúdo de autoridade por semana.</div>
+    <div id="conteudo-container"></div>
+  </div>
+  <div class="panel" id="m3-panel-icp">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">As 4 personas que mais compram RPA no Brasil — cada uma com dor específica e gancho de abordagem.</div>
+    <div id="icp-container"></div>
+  </div>
+  <div class="panel" id="m3-panel-metricas">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">O que medir em cada canal para saber se o marketing está funcionando.</div>
+    <div id="metricas-container"></div>
+  </div>
+</div>
+
+<script>
+function switchTab_3(id,el){
+  document.getElementById('module_3').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('module_3').querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('m3-panel-'+id).classList.add('active');
+}
+
+const canais = [
+  { icon:"ti-brand-linkedin", iconBg:"#E6F1FB", iconColor:"#185FA5",
+    title:"LinkedIn (orgânico)", sub:"Autoridade técnica + prospecção ativa",
+    prioridade:"Prioridade máxima", prioBg:"#FCEBEB", prioColor:"#A32D2D",
+    esforco:"Alto", custo:"Gratuito", retorno:"3–6 meses",
+    acoes:["Postar 3× por semana: você e sua sócia em perfis pessoais (empresa cresce com pessoas, não logos)","Formato que mais funciona: carrossel de 'processo manual X bot — antes e depois'","Comentar em posts de gestores financeiros, contábeis e de operações do seu nicho","Pedir conexão com decisores logo após o primeiro post viralizar"],
+    tip:"No LinkedIn B2B, o perfil pessoal do fundador performa 10× melhor que a página da empresa. Invista no seu perfil e no da sua sócia antes do perfil do Atlas."
+  },
+  { icon:"ti-users", iconBg:"#E1F5EE", iconColor:"#0F6E56",
+    title:"Indicações e network ativo", sub:"Seu canal de menor CAC e maior conversão",
+    prioridade:"Prioridade máxima", prioBg:"#FCEBEB", prioColor:"#A32D2D",
+    esforco:"Médio", custo:"Gratuito", retorno:"Imediato",
+    acoes:["Liste 50 contatos que conhecem empresas no seu nicho: ex-colegas, fornecedores, clientes antigos","Avise sua rede do lançamento do Atlas com mensagem personalizada (não broadcast)","A cada cliente fechado, peça formalmente 1 indicação no check-in de 30 dias","Crie um programa de indicação: 10% do primeiro contrato para quem indicar"],
+    tip:"Indicação é o canal com maior taxa de fechamento (60–80%). Não espere o cliente indicar espontaneamente — peça, com script, no momento certo."
+  },
+  { icon:"ti-video", iconBg:"#EEEDFE", iconColor:"#534AB7",
+    title:"Vídeo (YouTube + LinkedIn)", sub:"Demonstrações de bots em funcionamento",
+    prioridade:"Alta", prioBg:"#FAEEDA", prioColor:"#633806",
+    esforco:"Alto", custo:"Gratuito", retorno:"4–8 meses",
+    acoes:["Grave demos de 2–5 min mostrando bots reais (com permissão do cliente ou dados fictícios)","Formato: 'Automatizamos X processo em Y dias — veja como ficou'","Use Loom para demos rápidas no processo de vendas (envie no follow-up)","Reúse no YouTube, LinkedIn, WhatsApp e no site"],
+    tip:"Vídeo de bot funcionando é o maior redutor de resistência em vendas de RPA. O prospect que vê o bot antes da reunião já chega meio convencido."
+  },
+  { icon:"ti-calendar-event", iconBg:"#FAEEDA", iconColor:"#854F0B",
+    title:"Eventos e comunidades", sub:"Visibilidade presencial e palestras técnicas",
+    prioridade:"Média", prioBg:"#EAF3DE", prioColor:"#27500A",
+    esforco:"Médio", custo:"Baixo", retorno:"2–4 meses",
+    acoes:["Palestrar em eventos de contabilidade, financeiro e RH — não de tecnologia (onde estão os compradores, não os técnicos)","Participar de grupos do WhatsApp e Telegram de gestores do seu nicho","Propor workshops gratuitos de 1h sobre 'como identificar processos para automatizar'","Associar-se a associações do segmento-alvo (CRC, ABRH, etc.)"],
+    tip:"Palestre para o nicho do cliente, não para o nicho de TI. Um slot de 20 min numa reunião de contadores vale mais que um estande em feira de tecnologia."
+  },
+  { icon:"ti-writing", iconBg:"#EAF3DE", iconColor:"#3B6D11",
+    title:"Conteúdo escrito (blog + newsletter)", sub:"SEO e nutrição de leads de longo prazo",
+    prioridade:"Média", prioBg:"#EAF3DE", prioColor:"#27500A",
+    esforco:"Médio", custo:"Gratuito", retorno:"6–12 meses",
+    acoes:["2 artigos por mês: 'Como automatizar [processo X] no [segmento Y]'","Newsletter mensal para leads: cases, novidades e dicas de automação","Otimizar para palavras-chave longas: 'automatizar conciliação financeira', 'RPA para contabilidade'","Republique artigos no LinkedIn como carrossel para maximizar alcance"],
+    tip:"Blog leva tempo mas gera leads 24h por dia sem custo. Comece agora para colher em 6 meses. Foque em artigos específicos por segmento — não artigos genéricos sobre RPA."
+  },
+  { icon:"ti-ad-2", iconBg:"#FCEBEB", iconColor:"#A32D2D",
+    title:"Tráfego pago (LinkedIn Ads / Google)", sub:"Aceleração de leads — só após validação orgânica",
+    prioridade:"Baixa agora", prioBg:"#E6F1FB", prioColor:"#0C447C",
+    esforco:"Médio", custo:"Alto (R$3–15k/mês)", retorno:"Imediato mas caro",
+    acoes:["LinkedIn Ads: segmentação por cargo (gerente financeiro, controller) + setor","Google Ads: palavras de intenção alta ('empresa de RPA', 'automação de processos SP')","Só ative após ter ao menos 3 cases documentados para usar nos criativos","Comece com R$1.500/mês para testar — não escale sem medir CPL"],
+    tip:"Não invista em tráfego pago antes de ter cases, site e processo comercial rodando. Dinheiro em anúncio sem esses elementos é desperdício."
+  }
+];
+
+const canaisEl = document.getElementById('canais-container');
+canais.forEach((c,i)=>{
+  const div=document.createElement('div');
+  div.className='channel-card';
+  div.innerHTML=`
+    <div class="channel-header">
+      <div class="channel-icon" style="background:${c.iconBg};color:${c.iconColor}"><i class="ti ${c.icon}" aria-hidden="true"></i></div>
+      <div style="flex:1"><div class="channel-title">${c.title}</div><div class="channel-sub">${c.sub}</div></div>
+      <div class="channel-meta">
+        <span class="pill" style="background:${c.prioBg};color:${c.prioColor}">${c.prioridade}</span>
+        <span class="chevron" id="chev-c-${i}">▼</span>
+      </div>
+    </div>
+    <div class="channel-detail" id="cd-${i}">
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <span class="pill" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">Esforço: ${c.esforco}</span>
+        <span class="pill" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">Custo: ${c.custo}</span>
+        <span class="pill" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">Retorno: ${c.retorno}</span>
+      </div>
+      <div class="detail-cols">
+        <div class="detail-box">
+          <div class="detail-title">Como executar</div>
+          ${c.acoes.map(a=>`<div class="detail-item">${a}</div>`).join('')}
+        </div>
+        <div class="detail-box" style="display:flex;align-items:flex-start">
+          <div>
+            <div class="detail-title">Insight estratégico</div>
+            <div style="font-size:12px;color:var(--color-text-primary);line-height:1.7">${c.tip}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  div.addEventListener('click',()=>{
+    const d=document.getElementById('cd-'+i),ch=document.getElementById('chev-c-'+i);
+    const o=d.classList.toggle('open');
+    div.classList.toggle('open',o);
+    ch.classList.toggle('open',o);
+  });
+  canaisEl.appendChild(div);
+});
+
+const semanas = [
+  { label:"Semana 1 — Fundação", items:[
+    {day:"Seg",text:"Post de lançamento do Atlas: 'Estamos no ar — o que fazemos e por que'",fmt:"Texto",fBg:"#E6F1FB",fC:"#0C447C"},
+    {day:"Qua",text:"Carrossel: '3 processos que toda empresa ainda faz manualmente (e não deveria)'",fmt:"Carrossel",fBg:"#EEEDFE",fC:"#3C3489"},
+    {day:"Sex",text:"Demo em vídeo curto (Loom): bot executando uma automação simples",fmt:"Vídeo",fBg:"#E1F5EE",fC:"#085041"}
+  ]},
+  { label:"Semana 2 — Educação", items:[
+    {day:"Seg",text:"Post: 'Como calculamos o ROI de uma automação em 10 minutos' — com print da planilha",fmt:"Texto",fBg:"#E6F1FB",fC:"#0C447C"},
+    {day:"Qua",text:"Carrossel: 'RPA vs macro de Excel vs Power Automate — qual usar em cada caso'",fmt:"Carrossel",fBg:"#EEEDFE",fC:"#3C3489"},
+    {day:"Sex",text:"Post da sócia: 'O que aprendi nas primeiras reuniões de prospecção do Atlas'",fmt:"Texto",fBg:"#FAEEDA",fC:"#633806"}
+  ]},
+  { label:"Semana 3 — Case e prova social", items:[
+    {day:"Seg",text:"Case anônimo: 'Como automatizamos X horas de trabalho manual em [segmento]'",fmt:"Carrossel",fBg:"#EEEDFE",fC:"#3C3489"},
+    {day:"Qua",text:"Post técnico: 'Os 5 erros mais comuns ao implementar RPA (e como evitar)'",fmt:"Artigo",fBg:"#EAF3DE",fC:"#27500A"},
+    {day:"Sex",text:"Vídeo: bastidores do desenvolvimento de um bot — processo real",fmt:"Vídeo",fBg:"#E1F5EE",fC:"#085041"}
+  ]},
+  { label:"Semana 4 — Conversão", items:[
+    {day:"Seg",text:"Post: 'Quanto custa NÃO automatizar? O cálculo que ninguém faz'",fmt:"Texto",fBg:"#E6F1FB",fC:"#0C447C"},
+    {day:"Qua",text:"Carrossel: 'Antes e depois: como ficou o processo de [cliente] com RPA'",fmt:"Carrossel",fBg:"#EEEDFE",fC:"#3C3489"},
+    {day:"Sex",text:"CTA direto: 'Faço diagnóstico gratuito de 30 min — link na bio'",fmt:"Texto",fBg:"#FCEBEB",fC:"#A32D2D"}
+  ]}
+];
+
+const conteudoEl=document.getElementById('conteudo-container');
+semanas.forEach(s=>{
+  let html=`<div class="week-label">${s.label}</div>`;
+  s.items.forEach(it=>{
+    html+=`<div class="content-row">
+      <span class="content-day">${it.day}</span>
+      <span class="content-text">${it.text}</span>
+      <span class="content-format" style="background:${it.fBg};color:${it.fC}">${it.fmt}</span>
+    </div>`;
+  });
+  conteudoEl.innerHTML+=html;
+});
+
+const icps=[
+  { icon:"ti-calculator", iconBg:"#E6F1FB", iconColor:"#185FA5",
+    title:"Gerente / Diretor Financeiro", tag:"Decisor de budget",
+    pain:"Fechamento contábil manual, conciliação bancária, DRE feito no Excel, retrabalho em relatórios gerenciais",
+    hooks:["'Quanto tempo seu time leva para fechar o mês?'","'Já calculou o custo de um erro de conciliação?'","'E se o relatório estivesse pronto automaticamente toda segunda-feira?'"]
+  },
+  { icon:"ti-report-analytics", iconBg:"#EAF3DE", iconColor:"#3B6D11",
+    title:"Controller / Coordenador Contábil", tag:"Influenciador técnico",
+    pain:"Lançamentos manuais no ERP, geração de SPED, conferência de notas fiscais, backup de arquivos XML",
+    hooks:["'Quantas horas seu time passa gerando o SPED por mês?'","'Já tentou automatizar o processo de entrada de NF?'","'Mostra como é o processo hoje — aposto que consigo te salvar 20h por mês'"]
+  },
+  { icon:"ti-users-group", iconBg:"#FAEEDA", iconColor:"#633806",
+    title:"Gerente de RH / Pessoas", tag:"Comprador em expansão",
+    pain:"Folha de ponto manual, integração de benefícios, geração de holerites, onboarding de novos colaboradores",
+    hooks:["'Qual parte do processo de admissão mais toma tempo do seu time?'","'E no fechamento de folha — ainda é tudo manual?'","'Automatizamos o onboarding de uma empresa com 80 pessoas — quer ver como ficou?'"]
+  },
+  { icon:"ti-truck-delivery", iconBg:"#EEEDFE", iconColor:"#534AB7",
+    title:"Gerente de Operações / Supply", tag:"Perfil emergente",
+    pain:"Pedidos de compra manuais, rastreamento de entregas, atualizações de estoque no ERP, comunicação com fornecedores",
+    hooks:["'Seu time ainda faz pedido de compra digitando no sistema?'","'Quantos fornecedores você tem? E todos os e-mails são respondidos manualmente?'","'Já perdeu pedido por falta de atualização de estoque em tempo real?'"]
+  }
+];
+
+const icpEl=document.getElementById('icp-container');
+icps.forEach(p=>{
+  icpEl.innerHTML+=`
+    <div class="icp-card">
+      <div class="icp-title">
+        <div style="width:32px;height:32px;border-radius:var(--border-radius-md);background:${p.iconBg};color:${p.iconColor};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ${p.icon}" aria-hidden="true" style="font-size:16px"></i>
+        </div>
+        ${p.title}
+        <span class="pill" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">${p.tag}</span>
+      </div>
+      <div class="icp-pain"><strong>Dor principal:</strong> ${p.pain}</div>
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:4px">Ganchos de abordagem</div>
+      <div class="icp-hooks">${p.hooks.map(h=>`<div style="display:flex;gap:6px"><span style="color:var(--color-text-tertiary)">»</span><span>${h}</span></div>`).join('')}</div>
+    </div>
+  `;
+});
+
+const metricas=[
+  ["LinkedIn (perfil pessoal)","Alcance semanal","Impressões + conexões novas","Meta: 5.000 imp/semana em 60 dias"],
+  ["LinkedIn","Taxa de engajamento","Curtidas + comentários / alcance","Meta: ≥ 3% por post"],
+  ["Prospecção ativa","Taxa de resposta","Respostas / mensagens enviadas","Meta: ≥ 20% de resposta"],
+  ["Funil comercial","Taxa de reunião","Leads abordados → reunião agendada","Meta: 1 reunião a cada 5 contatos"],
+  ["Site","Leads gerados","Formulários preenchidos / mês","Meta: 5 leads inbound no mês 3"],
+  ["Indicações","Referrals ativos","Indicações recebidas / mês","Meta: 2 indicações/mês após 3 clientes"],
+  ["Conteúdo","Conteúdo que converte","Posts que geraram reunião ou contato","Replicar formato dos top 3 posts"]
+];
+
+const metEl=document.getElementById('metricas-container');
+let tbl=`<table class="metric-table"><thead><tr>
+  <th>Canal</th><th>Métrica</th><th>Como medir</th><th>Meta inicial</th>
+</tr></thead><tbody>`;
+metricas.forEach(r=>{
+  tbl+=`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`;
+});
+tbl+=`</tbody></table>
+<div style="margin-top:14px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;font-size:12px;color:var(--color-text-secondary)">
+  <strong style="color:var(--color-text-primary)">Regra prática:</strong> nos primeiros 3 meses, meça apenas 2 coisas — reuniões agendadas por semana e origem de cada lead. Tudo que não gera reunião agora pode ser otimizado depois.
+</div>`;
+metEl.innerHTML=tbl;
+</script>
+
+        </div>
+        <div id="module_4" class="module-section ">
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:.15s;}
+  .tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent;}
+  .panel{display:none;}.panel.active{display:block;}
+
+  /* MODELOS */
+  .model-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem 1.25rem;margin-bottom:10px;}
+  .model-card.featured{border:2px solid var(--color-border-info);}
+  .model-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .model-icon{width:40px;height:40px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .model-title{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+  .model-range{font-size:13px;font-weight:500;}
+  .badge-rec{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--color-background-info);color:var(--color-text-info);margin-left:auto;}
+  .pro-con{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+  .pro-box{background:#EAF3DE;border-radius:var(--border-radius-md);padding:8px 10px;}
+  .con-box{background:#FCEBEB;border-radius:var(--border-radius-md);padding:8px 10px;}
+  .pc-title{font-size:11px;font-weight:500;margin-bottom:4px;}
+  .pc-item{font-size:12px;line-height:1.6;display:flex;gap:5px;}
+  .when-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:var(--color-text-secondary);}
+
+  /* CALCULADORA */
+  .calc-section{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:12px;}
+  .calc-title{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:14px;}
+  .calc-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .calc-label{font-size:13px;color:var(--color-text-secondary);min-width:170px;}
+  .calc-val{font-size:13px;font-weight:500;color:var(--color-text-primary);min-width:60px;text-align:right;}
+  .result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px;}
+  .result-box{border-radius:var(--border-radius-md);padding:12px;}
+  .result-label{font-size:11px;margin-bottom:4px;}
+  .result-val{font-size:18px;font-weight:500;}
+  .divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:14px 0;}
+
+  /* TABELA */
+  .tier-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem 1.25rem;margin-bottom:10px;}
+  .tier-card.highlight{border:2px solid var(--color-border-info);}
+  .tier-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+  .tier-name{font-size:15px;font-weight:500;color:var(--color-text-primary);}
+  .tier-price{font-size:20px;font-weight:500;text-align:right;}
+  .tier-freq{font-size:11px;color:var(--color-text-secondary);}
+  .tier-desc{font-size:12px;color:var(--color-text-secondary);margin-bottom:10px;}
+  .tier-item{font-size:12px;color:var(--color-text-primary);padding:4px 0;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;gap:8px;align-items:flex-start;}
+  .tier-item:last-child{border-bottom:none;}
+  .tier-item i{font-size:14px;flex-shrink:0;margin-top:1px;}
+
+  /* ROI */
+  .roi-input{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .roi-field{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .roi-field label{font-size:11px;color:var(--color-text-secondary);display:block;margin-bottom:6px;}
+  .roi-result{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;}
+  .roi-big{font-size:28px;font-weight:500;color:var(--color-text-primary);}
+  .roi-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;}
+  .roi-row:last-child{border-bottom:none;}
+</style>
+
+<h2 class="sr-only">Modelos de precificação de serviços de RPA para o Atlas</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Precificação — Atlas RPA</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Modelos de cobrança, calculadora de projeto e tabela de serviços</div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab_4('modelos',this)">Modelos de cobrança</div>
+    <div class="tab" onclick="switchTab_4('calculadora',this)">Calculadora de projeto</div>
+    <div class="tab" onclick="switchTab_4('tabela',this)">Tabela de serviços</div>
+    <div class="tab" onclick="switchTab_4('roi',this)">Calculadora de ROI</div>
+  </div>
+
+  <div class="panel active" id="m4-panel-modelos">
+    <div id="modelos-container"></div>
+  </div>
+  <div class="panel" id="m4-panel-calculadora">
+    <div class="calc-section">
+      <div class="calc-title">Calculadora de precificação por projeto</div>
+      <div class="calc-row">
+        <span class="calc-label">Horas estimadas de desenvolvimento</span>
+        <input type="range" min="8" max="200" value="40" step="4" id="horas" oninput="calcProject()" style="flex:1">
+        <span class="calc-val" id="v-horas">40h</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">Sua hora técnica (custo interno)</span>
+        <input type="range" min="50" max="300" value="120" step="10" id="custo-hora" oninput="calcProject()" style="flex:1">
+        <span class="calc-val" id="v-custo">R$120</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">Complexidade do projeto</span>
+        <input type="range" min="1" max="3" value="2" step="1" id="complex" oninput="calcProject()" style="flex:1">
+        <span class="calc-val" id="v-complex">Média</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">Margem desejada</span>
+        <input type="range" min="40" max="150" value="80" step="5" id="margem" oninput="calcProject()" style="flex:1">
+        <span class="calc-val" id="v-margem">80%</span>
+      </div>
+      <hr class="divider">
+      <div class="result-grid">
+        <div class="result-box" style="background:#EEEDFE">
+          <div class="result-label" style="color:#3C3489">Custo do projeto</div>
+          <div class="result-val" style="color:#534AB7" id="r-custo">R$4.800</div>
+        </div>
+        <div class="result-box" style="background:#E1F5EE">
+          <div class="result-label" style="color:#085041">Preço sugerido</div>
+          <div class="result-val" style="color:#0F6E56" id="r-preco">R$8.640</div>
+        </div>
+        <div class="result-box" style="background:#FAEEDA">
+          <div class="result-label" style="color:#633806">Margem bruta</div>
+          <div class="result-val" style="color:#854F0B" id="r-margem">R$3.840</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-top:10px;padding:8px 12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)" id="r-obs"></div>
+    </div>
+    <div class="calc-section">
+      <div class="calc-title">Calculadora de mensalidade (Managed Service)</div>
+      <div class="calc-row">
+        <span class="calc-label">Nº de bots em produção</span>
+        <input type="range" min="1" max="10" value="2" step="1" id="bots" oninput="calcManaged()" style="flex:1">
+        <span class="calc-val" id="v-bots">2</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">Complexidade operacional</span>
+        <input type="range" min="1" max="3" value="2" step="1" id="op-complex" oninput="calcManaged()" style="flex:1">
+        <span class="calc-val" id="v-op-complex">Média</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">SLA de suporte</span>
+        <input type="range" min="1" max="3" value="2" step="1" id="sla" oninput="calcManaged()" style="flex:1">
+        <span class="calc-val" id="v-sla">8h</span>
+      </div>
+      <hr class="divider">
+      <div class="result-grid">
+        <div class="result-box" style="background:#EEEDFE">
+          <div class="result-label" style="color:#3C3489">Mensalidade mínima</div>
+          <div class="result-val" style="color:#534AB7" id="m-min">R$1.200</div>
+        </div>
+        <div class="result-box" style="background:#E1F5EE">
+          <div class="result-label" style="color:#085041">Mensalidade sugerida</div>
+          <div class="result-val" style="color:#0F6E56" id="m-sug">R$1.800</div>
+        </div>
+        <div class="result-box" style="background:#FAEEDA">
+          <div class="result-label" style="color:#633806">MRR com 5 clientes</div>
+          <div class="result-val" style="color:#854F0B" id="m-mrr">R$9.000</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="m4-panel-tabela">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">Tabela de referência para o Atlas. Ajuste conforme seu mercado e posicionamento.</div>
+    <div id="tabela-container"></div>
+  </div>
+
+  <div class="panel" id="m4-panel-roi">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">Use no discovery com o cliente — calcule ao vivo o retorno do investimento em RPA.</div>
+    <div class="roi-input">
+      <div class="roi-field">
+        <label>Pessoas que fazem o processo</label>
+        <input type="number" id="roi-pessoas" value="2" min="1" oninput="calcRoi()" style="width:100%;box-sizing:border-box">
+      </div>
+      <div class="roi-field">
+        <label>Horas/mês por pessoa nessa tarefa</label>
+        <input type="number" id="roi-horas" value="20" min="1" oninput="calcRoi()" style="width:100%;box-sizing:border-box">
+      </div>
+      <div class="roi-field">
+        <label>Custo hora do funcionário (R$)</label>
+        <input type="number" id="roi-custo-hora" value="35" min="1" oninput="calcRoi()" style="width:100%;box-sizing:border-box">
+      </div>
+      <div class="roi-field">
+        <label>Valor do projeto Atlas (R$)</label>
+        <input type="number" id="roi-projeto" value="8000" min="1" oninput="calcRoi()" style="width:100%;box-sizing:border-box">
+      </div>
+    </div>
+    <div class="roi-result">
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">Economia mensal gerada pela automação</div>
+      <div class="roi-big" id="roi-economia">R$1.400</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin:10px 0 6px">Detalhamento do retorno</div>
+      <div class="roi-row"><span style="color:var(--color-text-secondary)">Custo mensal atual do processo</span><span id="roi-custo-atual" style="font-weight:500">R$1.400</span></div>
+      <div class="roi-row"><span style="color:var(--color-text-secondary)">Economia anual</span><span id="roi-anual" style="font-weight:500">R$16.800</span></div>
+      <div class="roi-row"><span style="color:var(--color-text-secondary)">Payback do investimento</span><span id="roi-payback" style="font-weight:500">5,7 meses</span></div>
+      <div class="roi-row"><span style="color:var(--color-text-secondary)">ROI no 1º ano</span><span id="roi-pct" style="font-weight:500;color:#3B6D11">110%</span></div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-top:10px;padding:8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)" id="roi-frase"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab_4(id,el){
+  document.getElementById('module_4').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('module_4').querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('m4-panel-'+id).classList.add('active');
+}
+
+const modelos = [
+  { icon:"ti-file-invoice", iconBg:"#EEEDFE", iconColor:"#534AB7",
+    title:"Projeto fechado (escopo fixo)", range:"R$3.000 – R$35.000 por projeto",
+    rangeColor:"#534AB7", featured:false,
+    pros:["Fácil de vender — o cliente sabe exatamente quanto vai pagar","Ótimo para primeiros clientes e para processos bem definidos","Entrada de caixa concentrada"],
+    cons:["Sem receita recorrente — você precisa vender sempre","Escopo-creep corrói a margem se o PDD não for sólido","Previsibilidade financeira baixa"],
+    when:"Use para: primeiros clientes, processos simples e bem mapeados, clientes que resistem a mensalidade."
+  },
+  { icon:"ti-refresh", iconBg:"#E1F5EE", iconColor:"#0F6E56",
+    title:"Managed service (mensalidade)", range:"R$800 – R$5.000/mês por cliente",
+    rangeColor:"#0F6E56", featured:true,
+    pros:["MRR previsível — o melhor modelo para escalar","Cria dependência positiva (saudável) — cliente não quer perder o serviço","Inclui suporte, monitoramento e manutenção — cliente dorme tranquilo"],
+    cons:["Mais difícil de vender no início — requer confiança","Você precisa entregar valor continuamente todo mês","Margem por cliente menor, mas multiplica com volume"],
+    when:"Use para: clientes após o primeiro projeto, processos críticos para a operação, empresas que não têm TI interna."
+  },
+  { icon:"ti-building", iconBg:"#FAEEDA", iconColor:"#854F0B",
+    title:"Banco de horas mensal", range:"R$150 – R$350/hora · pacotes de 10–40h",
+    rangeColor:"#854F0B", featured:false,
+    pros:["Flexível — cliente usa conforme a demanda","Bom para clientes com múltiplos processos em evolução","Gera MRR se o pacote for contratado mensalmente"],
+    cons:["Difícil de prever sua carga de trabalho real","Cliente pode questionar o que foi feito com as horas","Requer controle rigoroso de timesheet"],
+    when:"Use para: clientes que já automatizaram e querem evoluir continuamente, projetos de melhoria contínua."
+  },
+  { icon:"ti-chart-dots", iconBg:"#E6F1FB", iconColor:"#185FA5",
+    title:"Por resultado / success fee", range:"% da economia gerada ou por transação processada",
+    rangeColor:"#185FA5", featured:false,
+    pros:["Alinha incentivos — você só ganha se o cliente ganhar","Argumento de venda poderoso para resistência a preço","Potencial de ganho alto em processos de alto volume"],
+    cons:["Difícil de medir e auditar com precisão","Depende de dados que o cliente precisa fornecer","Risco de não receber se a medição não for acordada no contrato"],
+    when:"Use para: clientes céticos, processos de alto volume com ROI mensurável claro (ex: conciliação financeira)."
+  }
+];
+
+const modelosEl = document.getElementById('modelos-container');
+modelos.forEach(m=>{
+  modelosEl.innerHTML += `
+    <div class="model-card ${m.featured?'featured':''}">
+      <div class="model-header">
+        <div class="model-icon" style="background:${m.iconBg};color:${m.iconColor}"><i class="ti ${m.icon}" aria-hidden="true"></i></div>
+        <div style="flex:1">
+          <div class="model-title">${m.title}</div>
+          <div class="model-range" style="color:${m.rangeColor}">${m.range}</div>
+        </div>
+        ${m.featured?'<span class="badge-rec">Recomendado para o Atlas</span>':''}
+      </div>
+      <div class="pro-con">
+        <div class="pro-box">
+          <div class="pc-title" style="color:#27500A">Vantagens</div>
+          ${m.pros.map(p=>`<div class="pc-item"><span style="color:#3B6D11">+</span><span style="color:#27500A">${p}</span></div>`).join('')}
+        </div>
+        <div class="con-box">
+          <div class="pc-title" style="color:#A32D2D">Atenção</div>
+          ${m.cons.map(c=>`<div class="pc-item"><span style="color:#E24B4A">−</span><span style="color:#A32D2D">${c}</span></div>`).join('')}
+        </div>
+      </div>
+      <div class="when-box"><strong>Quando usar:</strong> ${m.when}</div>
+    </div>
+  `;
+});
+
+function fmt(n){ return 'R$'+Math.round(n).toLocaleString('pt-BR'); }
+
+function calcProject(){
+  const h=+document.getElementById('horas').value;
+  const ch=+document.getElementById('custo-hora').value;
+  const cx=+document.getElementById('complex').value;
+  const mg=+document.getElementById('margem').value/100;
+  const cxLabels=['','Baixa','Média','Alta'];
+  const cxMult=[1,1,1.2,1.5];
+  document.getElementById('v-horas').textContent=h+'h';
+  document.getElementById('v-custo').textContent='R$'+ch;
+  document.getElementById('v-complex').textContent=cxLabels[cx];
+  document.getElementById('v-margem').textContent=Math.round(mg*100)+'%';
+  const custo=h*ch*cxMult[cx];
+  const preco=custo*(1+mg);
+  const margem=preco-custo;
+  document.getElementById('r-custo').textContent=fmt(custo);
+  document.getElementById('r-preco').textContent=fmt(preco);
+  document.getElementById('r-margem').textContent=fmt(margem);
+  const obs = cx===3 ? 'Projeto complexo: inclua 25% de buffer de horas no contrato e defina claramente os critérios de aceite.' :
+              cx===1 ? 'Projeto simples: considere oferecer como piloto para novos clientes e migrar para mensalidade após o go-live.' :
+              'Projeto padrão: proponha migração para managed service (mensalidade) após a entrega — cliente já confia em você.';
+  document.getElementById('r-obs').textContent=obs;
+}
+
+function calcManaged(){
+  const b=+document.getElementById('bots').value;
+  const cx=+document.getElementById('op-complex').value;
+  const sla=+document.getElementById('sla').value;
+  const cxLabels=['','Baixa','Média','Alta'];
+  const slaLabels=['','24h','8h','4h'];
+  const basePorBot=[0,600,900,1400];
+  const slaAdd=[0,0,200,500];
+  document.getElementById('v-bots').textContent=b;
+  document.getElementById('v-op-complex').textContent=cxLabels[cx];
+  document.getElementById('v-sla').textContent=slaLabels[sla];
+  const min=b*basePorBot[cx];
+  const sug=min+slaAdd[sla];
+  document.getElementById('m-min').textContent=fmt(min);
+  document.getElementById('m-sug').textContent=fmt(sug);
+  document.getElementById('m-mrr').textContent=fmt(sug*5);
+}
+
+function calcRoi(){
+  const p=+document.getElementById('roi-pessoas').value||1;
+  const h=+document.getElementById('roi-horas').value||1;
+  const c=+document.getElementById('roi-custo-hora').value||1;
+  const proj=+document.getElementById('roi-projeto').value||1;
+  const mensal=p*h*c;
+  const anual=mensal*12;
+  const payback=proj/mensal;
+  const roi=((anual-proj)/proj)*100;
+  document.getElementById('roi-economia').textContent=fmt(mensal);
+  document.getElementById('roi-custo-atual').textContent=fmt(mensal);
+  document.getElementById('roi-anual').textContent=fmt(anual);
+  document.getElementById('roi-payback').textContent=payback.toFixed(1)+' meses';
+  document.getElementById('roi-pct').textContent=Math.round(roi)+'%';
+  document.getElementById('roi-pct').style.color=roi>50?'#3B6D11':roi>0?'#854F0B':'#A32D2D';
+  const frase = payback<=3 ? `Payback em ${payback.toFixed(1)} meses — ROI excepcional. Apresente esse número no início da reunião.` :
+                payback<=6 ? `Payback em ${payback.toFixed(1)} meses — retorno sólido. Reforce que a partir do mês ${Math.ceil(payback)+1} é lucro puro.` :
+                `Payback em ${payback.toFixed(1)} meses — ajuste o escopo ou o preço do projeto para melhorar o argumento de venda.`;
+  document.getElementById('roi-frase').textContent=frase;
+}
+
+const tabela = [
+  { name:"Automação simples", highlight:false, priceProj:"R$3.000 – R$6.000", priceManaged:"R$800 – R$1.200/mês",
+    desc:"1 sistema, fluxo linear, baixo volume de exceções. Ex: envio automático de relatórios por e-mail, download e organização de arquivos.",
+    items:[{icon:"ti-check",color:"#27500A",text:"1 bot, 1 sistema"},{icon:"ti-check",color:"#27500A",text:"Prazo: 1–2 semanas"},{icon:"ti-check",color:"#27500A",text:"Ideal para projeto piloto"}]
+  },
+  { name:"Automação intermediária", highlight:true, priceProj:"R$7.000 – R$18.000", priceManaged:"R$1.500 – R$2.800/mês",
+    desc:"2–3 sistemas integrados, regras de negócio moderadas. Ex: conciliação financeira, processamento de NF-e, onboarding de clientes.",
+    items:[{icon:"ti-check",color:"#27500A",text:"1–2 bots, múltiplos sistemas"},{icon:"ti-check",color:"#27500A",text:"Prazo: 3–5 semanas"},{icon:"ti-check",color:"#27500A",text:"Perfil mais comum de projeto"}]
+  },
+  { name:"Automação complexa", highlight:false, priceProj:"R$20.000 – R$45.000", priceManaged:"R$3.000 – R$5.000/mês",
+    desc:"Múltiplos sistemas críticos, alto volume, exceções complexas ou IA embarcada. Ex: automação de folha de pagamento, RPA + OCR + ERP.",
+    items:[{icon:"ti-check",color:"#27500A",text:"3+ bots integrados"},{icon:"ti-check",color:"#27500A",text:"Prazo: 6–10 semanas"},{icon:"ti-check",color:"#27500A",text:"Exige discovery aprofundado"}]
+  },
+  { name:"Discovery / consultoria", highlight:false, priceProj:"R$1.500 – R$4.000", priceManaged:"—",
+    desc:"Mapeamento de processos, cálculo de ROI e roadmap de automação. Entregável: relatório de viabilidade. Pode ser abatido no projeto se fechar.",
+    items:[{icon:"ti-check",color:"#27500A",text:"Entregável: relatório + roadmap"},{icon:"ti-check",color:"#27500A",text:"Prazo: 1 semana"},{icon:"ti-info-circle",color:"#185FA5",text:"Abata no projeto se fechar contrato"}]
+  }
+];
+
+const tabelaEl = document.getElementById('tabela-container');
+tabela.forEach(t=>{
+  tabelaEl.innerHTML += `
+    <div class="tier-card ${t.highlight?'highlight':''}">
+      ${t.highlight?'<div style="font-size:11px;background:var(--color-background-info);color:var(--color-text-info);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px">Mais contratado</div>':''}
+      <div class="tier-header">
+        <div><div class="tier-name">${t.name}</div></div>
+        <div style="text-align:right">
+          <div class="tier-price" style="color:var(--color-text-primary)">${t.priceProj}</div>
+          <div class="tier-freq">${t.priceManaged}</div>
+        </div>
+      </div>
+      <div class="tier-desc">${t.desc}</div>
+      ${t.items.map(it=>`<div class="tier-item"><i class="ti ${it.icon}" aria-hidden="true" style="color:${it.color}"></i><span>${it.text}</span></div>`).join('')}
+    </div>
+  `;
+});
+
+calcProject();
+calcManaged();
+calcRoi();
+</script>
+
+        </div>
+        <div id="module_5" class="module-section ">
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:.15s;}
+  .tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent;}
+  .panel{display:none;}.panel.active{display:block;}
+
+  .phase-block{border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);padding:1.1rem 1.25rem;margin-bottom:12px;}
+  .phase-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .phase-badge{padding:4px 14px;border-radius:20px;font-size:12px;font-weight:500;flex-shrink:0;}
+  .phase-title{font-size:15px;font-weight:500;color:var(--color-text-primary);}
+  .phase-sub{font-size:12px;color:var(--color-text-secondary);}
+  .phase-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .phase-col{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .col-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .col-item{font-size:12px;color:var(--color-text-primary);line-height:1.7;display:flex;gap:6px;}
+  .col-item::before{content:"·";color:var(--color-text-tertiary);}
+  .kpi-row{display:flex;gap:8px;margin-top:10px;}
+  .kpi-box{flex:1;border-radius:var(--border-radius-md);padding:8px 10px;text-align:center;}
+  .kpi-val{font-size:16px;font-weight:500;}
+  .kpi-lbl{font-size:11px;margin-top:2px;}
+
+  .mrr-chart{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:12px;}
+  .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .bar-month{font-size:12px;color:var(--color-text-secondary);min-width:30px;}
+  .bar-wrap{flex:1;background:var(--color-border-tertiary);border-radius:3px;height:22px;position:relative;}
+  .bar-fill{height:22px;border-radius:3px;display:flex;align-items:center;padding-left:8px;transition:width .4s;}
+  .bar-label{font-size:11px;font-weight:500;}
+  .bar-val{font-size:12px;color:var(--color-text-secondary);min-width:70px;text-align:right;}
+
+  .okr-block{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem 1.25rem;margin-bottom:10px;}
+  .okr-obj{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .kr-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary);}
+  .kr-row:last-child{border-bottom:none;}
+  .kr-text{font-size:13px;color:var(--color-text-primary);flex:1;}
+  .kr-quarter{font-size:11px;padding:2px 8px;border-radius:20px;flex-shrink:0;}
+  .kr-prog{width:80px;height:6px;background:var(--color-border-tertiary);border-radius:3px;flex-shrink:0;}
+  .kr-fill{height:6px;border-radius:3px;}
+
+  .decision-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:border-color .2s;}
+  .decision-card:hover{border-color:var(--color-border-secondary);}
+  .decision-header{display:flex;align-items:center;gap:12px;}
+  .decision-icon{width:36px;height:36px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .decision-title{font-size:14px;font-weight:500;color:var(--color-text-primary);flex:1;}
+  .decision-when{font-size:12px;color:var(--color-text-secondary);}
+  .chevron{font-size:11px;color:var(--color-text-tertiary);transition:transform .2s;}
+  .chevron.open{transform:rotate(180deg);}
+  .decision-detail{display:none;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--color-border-tertiary);}
+  .decision-detail.open{display:block;}
+  .decision-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .decision-opt{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .opt-title{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;}
+  .opt-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.6;}
+  .rec-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:var(--color-text-primary);margin-top:8px;border-left:3px solid var(--color-border-info);}
+
+  .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+  .metric-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .metric-val{font-size:18px;font-weight:500;color:var(--color-text-primary);}
+  .metric-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+</style>
+
+<h2 class="sr-only">Plano de crescimento do Atlas RPA para os próximos 12 meses</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Plano de crescimento — 12 meses</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Atlas RPA: da operação zero ao negócio escalável</div>
+
+  <div class="metric-grid">
+    <div class="metric-box"><div class="metric-val">3 fases</div><div class="metric-lbl">de crescimento distintas</div></div>
+    <div class="metric-box"><div class="metric-val">R$30k</div><div class="metric-lbl">MRR meta no mês 12</div></div>
+    <div class="metric-box"><div class="metric-val">10–15</div><div class="metric-lbl">clientes ativos no ano 1</div></div>
+    <div class="metric-box"><div class="metric-val">Mês 6</div><div class="metric-lbl">ponto de equilíbrio</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab_5('fases',this)">Fases de crescimento</div>
+    <div class="tab" onclick="switchTab_5('mrr',this)">Projeção de MRR</div>
+    <div class="tab" onclick="switchTab_5('okrs',this)">OKRs por trimestre</div>
+    <div class="tab" onclick="switchTab_5('decisoes',this)">Decisões críticas</div>
+  </div>
+
+  <div class="panel active" id="m5-panel-fases"><div id="fases-container"></div></div>
+  <div class="panel" id="m5-panel-mrr"><div id="mrr-container"></div></div>
+  <div class="panel" id="m5-panel-okrs"><div id="okrs-container"></div></div>
+  <div class="panel" id="m5-panel-decisoes">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">As decisões que vão definir o tipo de empresa que o Atlas será — e quando tomá-las.</div>
+    <div id="decisoes-container"></div>
+  </div>
+</div>
+
+<script>
+function switchTab_5(id,el){
+  document.getElementById('module_5').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('module_5').querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('m5-panel-'+id).classList.add('active');
+}
+
+const fases=[
+  { months:"Meses 1–3", label:"Fase 1", title:"Fundação e primeiros clientes",
+    badgeBg:"#EEEDFE", badgeColor:"#3C3489",
+    sub:"Validar o modelo, fechar os primeiros 2–3 clientes e estruturar a operação",
+    foco:["Fechar os 2 primeiros clientes — qualquer nicho, foco em aprender","Entregar com excelência: esses cases são seu portfólio para os próximos 6 meses","Documentar tudo: PDD, processo de entrega, templates de contrato","Definir o nicho-alvo com base nos primeiros feedbacks reais","Construir presença no LinkedIn com consistência (3× semana)"],
+    evitar:["Não tente escalar antes de ter 1 entrega concluída com sucesso","Não diversifique nichos agora — foco total no segmento inicial","Não contrate ninguém antes do mês 3"],
+    kpis:["2–3 clientes","R$0–8k MRR","1 case documentado"],
+    kpiBgs:["#EEEDFE","#E1F5EE","#FAEEDA"],
+    kpiCs:["#3C3489","#085041","#633806"]
+  },
+  { months:"Meses 4–6", label:"Fase 2", title:"Tração e receita recorrente",
+    badgeBg:"#E1F5EE", badgeColor:"#085041",
+    sub:"Transformar projeto em mensalidade e construir o funil comercial sistemático",
+    foco:["Migrar clientes do projeto fechado para managed service (mensalidade)","Ativar cadência de prospecção semanal com meta de 2 reuniões/semana","Publicar 2 cases reais — com números — no LinkedIn","Estruturar processo de CS formal: check-ins, NPS, relatório mensal","Avaliar se precisa de suporte operacional (freelancer ou sócio técnico)"],
+    evitar:["Não aceite projeto fora do nicho por dinheiro fácil — confunde o posicionamento","Não negligencie clientes ativos para perseguir novos","Não expanda portfólio antes de dominar o serviço principal"],
+    kpis:["5–7 clientes","R$8–18k MRR","Breakeven"],
+    kpiBgs:["#EEEDFE","#E1F5EE","#FAEEDA"],
+    kpiCs:["#3C3489","#085041","#633806"]
+  },
+  { months:"Meses 7–12", label:"Fase 3", title:"Escala e especialização",
+    badgeBg:"#FAEEDA", badgeColor:"#633806",
+    sub:"Construir a máquina de crescimento: time, parcerias e novos produtos",
+    foco:["Contratar o primeiro colaborador técnico (dev RPA ou estagiário)","Desenvolver produto próprio: acelerador setorial ou template reutilizável","Fechar 1–2 parcerias com consultorias contábeis ou ERPs regionais","Lançar serviço de IA + RPA para clientes prontos para o próximo nível","Planejar metas do ano 2: novo nicho, nova cidade ou novo produto"],
+    evitar:["Não contrate mais rápido do que a receita permite sustentar","Não abandone o CS dos clientes antigos ao focar em crescimento","Não ignore sinais de churn — 1 cancelamento na fase 3 dói mais que na fase 1"],
+    kpis:["10–15 clientes","R$20–30k MRR","1 colaborador"],
+    kpiBgs:["#EEEDFE","#E1F5EE","#FAEEDA"],
+    kpiCs:["#3C3489","#085041","#633806"]
+  }
+];
+
+const fasesEl=document.getElementById('fases-container');
+fases.forEach(f=>{
+  fasesEl.innerHTML+=`
+    <div class="phase-block">
+      <div class="phase-header">
+        <span class="phase-badge" style="background:${f.badgeBg};color:${f.badgeColor}">${f.months}</span>
+        <div><div class="phase-title">${f.label} — ${f.title}</div><div class="phase-sub">${f.sub}</div></div>
+      </div>
+      <div class="phase-cols">
+        <div class="phase-col">
+          <div class="col-title">Foco principal</div>
+          ${f.foco.map(i=>`<div class="col-item">${i}</div>`).join('')}
+        </div>
+        <div class="phase-col">
+          <div class="col-title">O que evitar</div>
+          ${f.evitar.map(i=>`<div class="col-item" style="color:var(--color-text-secondary)">${i}</div>`).join('')}
+        </div>
+        <div class="phase-col">
+          <div class="col-title">KPIs desta fase</div>
+          ${f.kpis.map((k,i)=>`<div style="background:${f.kpiBgs[i]};border-radius:var(--border-radius-md);padding:6px 10px;margin-bottom:6px;font-size:13px;font-weight:500;color:${f.kpiCs[i]}">${k}</div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+});
+
+const meses=[
+  {m:"Jan",v:0,phase:1},{m:"Fev",v:2500,phase:1},{m:"Mar",v:5000,phase:1},
+  {m:"Abr",v:8000,phase:2},{m:"Mai",v:11000,phase:2},{m:"Jun",v:15000,phase:2},
+  {m:"Jul",v:18000,phase:3},{m:"Ago",v:21000,phase:3},{m:"Set",v:23000,phase:3},
+  {m:"Out",v:25000,phase:3},{m:"Nov",v:27500,phase:3},{m:"Dez",v:30000,phase:3}
+];
+const maxV=30000;
+const phaseColors={1:"#7F77DD",2:"#1D9E75",3:"#D85A30"};
+const phaseLabels={1:"Fundação",2:"Tração",3:"Escala"};
+
+const mrrEl=document.getElementById('mrr-container');
+let mrrHtml=`<div class="mrr-chart">
+  <div style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px">Projeção de MRR mensal</div>
+  <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+    ${[1,2,3].map(p=>`<span style="font-size:12px;display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:${phaseColors[p]};display:inline-block"></span>${phaseLabels[p]}</span>`).join('')}
+  </div>`;
+meses.forEach(m=>{
+  const w=m.v===0?2:Math.round((m.v/maxV)*100);
+  const fmt=m.v===0?'—':'R$'+m.v.toLocaleString('pt-BR');
+  mrrHtml+=`<div class="bar-row">
+    <span class="bar-month">${m.m}</span>
+    <div class="bar-wrap">
+      <div class="bar-fill" style="width:${w}%;background:${phaseColors[m.phase]}">
+        ${m.v>5000?`<span class="bar-label" style="color:#fff;font-size:11px">${fmt}</span>`:''}
+      </div>
+    </div>
+    <span class="bar-val">${fmt}</span>
+  </div>`;
+});
+mrrHtml+=`<div style="margin-top:12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;font-size:12px;color:var(--color-text-secondary)">
+  Premissas: ticket médio projeto R$8k, mensalidade média R$2k, 1–2 novos clientes/mês a partir do mês 3. Projeção conservadora — ajuste conforme seu mercado e ciclo de venda.
+</div></div>`;
+mrrEl.innerHTML=mrrHtml;
+
+const okrs=[
+  { q:"Q1 — Meses 1 a 3", qBg:"#EEEDFE", qColor:"#3C3489",
+    obj:"Validar o modelo e fechar os primeiros clientes pagantes",
+    krs:[
+      {text:"Fechar 2 contratos pagantes (projeto ou mensalidade)",q:"Mar",prog:0,pBg:"#7F77DD"},
+      {text:"Entregar 1 projeto com aceite formal documentado",q:"Mar",prog:0,pBg:"#7F77DD"},
+      {text:"Publicar 3 posts por semana no LinkedIn por 12 semanas consecutivas",q:"Mar",prog:0,pBg:"#7F77DD"},
+      {text:"Ter contrato padrão, NDA e PDD revisados por advogado",q:"Fev",prog:0,pBg:"#7F77DD"}
+    ]
+  },
+  { q:"Q2 — Meses 4 a 6", qBg:"#E1F5EE", qColor:"#085041",
+    obj:"Construir receita recorrente e funil comercial sistemático",
+    krs:[
+      {text:"Atingir R$12k de MRR até o final do trimestre",q:"Jun",prog:0,pBg:"#1D9E75"},
+      {text:"Ter ao menos 2 clientes em managed service (mensalidade)",q:"Mai",prog:0,pBg:"#1D9E75"},
+      {text:"Publicar 1 case de sucesso com ROI documentado",q:"Mai",prog:0,pBg:"#1D9E75"},
+      {text:"Realizar 8 reuniões de discovery por mês (meta semanal de 2)",q:"Jun",prog:0,pBg:"#1D9E75"}
+    ]
+  },
+  { q:"Q3 — Meses 7 a 9", qBg:"#FAEEDA", qColor:"#633806",
+    obj:"Escalar a capacidade de entrega sem perder qualidade",
+    krs:[
+      {text:"Contratar 1 profissional técnico (CLT ou PJ) ou parceiro de entrega",q:"Ago",prog:0,pBg:"#D85A30"},
+      {text:"Atingir R$22k de MRR com churn menor que 5%",q:"Set",prog:0,pBg:"#D85A30"},
+      {text:"Ter NPS médio ≥ 50 com ao menos 5 respostas coletadas",q:"Set",prog:0,pBg:"#D85A30"},
+      {text:"Fechar 1 parceria formal com consultoria ou ERP regional",q:"Set",prog:0,pBg:"#D85A30"}
+    ]
+  },
+  { q:"Q4 — Meses 10 a 12", qBg:"#EAF3DE", qColor:"#27500A",
+    obj:"Consolidar o Atlas como referência no nicho e planejar o ano 2",
+    krs:[
+      {text:"Atingir R$30k de MRR com 10–15 clientes ativos",q:"Dez",prog:0,pBg:"#639922"},
+      {text:"Lançar 1 novo serviço ou produto (IA+RPA, acelerador setorial)",q:"Nov",prog:0,pBg:"#639922"},
+      {text:"Ter 3 cases publicados e ao menos 5 indicações recebidas no ano",q:"Dez",prog:0,pBg:"#639922"},
+      {text:"Definir OKRs do ano 2 com metas de expansão documentadas",q:"Dez",prog:0,pBg:"#639922"}
+    ]
+  }
+];
+
+const okrsEl=document.getElementById('okrs-container');
+okrs.forEach(o=>{
+  okrsEl.innerHTML+=`
+    <div class="okr-block">
+      <div style="margin-bottom:8px"><span style="font-size:12px;padding:3px 10px;border-radius:20px;background:${o.qBg};color:${o.qColor}">${o.q}</span></div>
+      <div class="okr-obj"><i class="ti ti-target" aria-hidden="true" style="font-size:16px;color:var(--color-text-secondary)"></i>${o.obj}</div>
+      ${o.krs.map(k=>`
+        <div class="kr-row">
+          <span class="kr-text">${k.text}</span>
+          <span class="kr-quarter" style="background:${o.qBg};color:${o.qColor}">${k.q}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+});
+
+const decisoes=[
+  { icon:"ti-users-group", iconBg:"#EEEDFE", iconColor:"#534AB7",
+    title:"Quando contratar o primeiro colaborador?", when:"Decisão: mês 5–7",
+    opts:[
+      {title:"Freelancer / PJ por projeto",desc:"Menor risco, sem vínculo. Ideal para testar demanda antes de contratar fixo. Use até ter R$15k de MRR estável."},
+      {title:"CLT tempo integral",desc:"Maior comprometimento e capacidade de formação. Só viável com MRR ≥ R$20k e pipeline previsível."}
+    ],
+    rec:"Recomendação Atlas: comece com 1 freelancer técnico no mês 5 para validar a demanda. Converta para CLT se a demanda se mantiver por 2 meses consecutivos."
+  },
+  { icon:"ti-building-store", iconBg:"#E1F5EE", iconColor:"#0F6E56",
+    title:"Nicho único ou múltiplos segmentos?", when:"Decisão: mês 4",
+    opts:[
+      {title:"Nicho único (ex: só contabilidade)",desc:"Autoridade máxima, marketing mais fácil, cases comparáveis. Risco: dependência de um setor."},
+      {title:"Multi-nicho controlado",desc:"Menos concentração de risco. Exige mais esforço de marketing e personalização de abordagem por segmento."}
+    ],
+    rec:"Recomendação Atlas: domine 1 nicho até ter 5 clientes nele. Só depois abra o segundo. Empresas de RPA que crescem mais rápido são reconhecidas como especialistas em um setor."
+  },
+  { icon:"ti-device-laptop", iconBg:"#FAEEDA", iconColor:"#854F0B",
+    title:"Produto próprio ou só serviço?", when:"Decisão: mês 8–10",
+    opts:[
+      {title:"Só serviço (projetos + managed)",desc:"Menor complexidade, cashflow imediato. Escala linear com time. Margem limitada no longo prazo."},
+      {title:"Produto próprio (acelerador/template)",desc:"Alavanca a entrega, melhora margem, diferencia do mercado. Exige investimento inicial de desenvolvimento."}
+    ],
+    rec:"Recomendação Atlas: a partir do mês 8, identifique qual processo você mais automatizou e crie um template reutilizável. Isso reduz 40% do tempo de entrega e aumenta margem por projeto."
+  },
+  { icon:"ti-world", iconBg:"#EAF3DE", iconColor:"#3B6D11",
+    title:"Crescer local ou expandir geograficamente?", when:"Decisão: mês 10–12",
+    opts:[
+      {title:"Aprofundar no mercado local",desc:"Menor custo de aquisição, relacionamento presencial, indicações mais fáceis. Teto de mercado menor."},
+      {title:"Expansão para outras cidades/estados",desc:"Mercado maior, mas exige operação remota estruturada, marketing digital mais robusto e equipe distribuída."}
+    ],
+    rec:"Recomendação Atlas: para serviços de RPA, expansão geográfica via digital é viável desde o início — os projetos são entregues remotamente. Mas só invista nisso com o mercado local saturando."
+  },
+  { icon:"ti-robot", iconBg:"#E6F1FB", iconColor:"#185FA5",
+    title:"Quando incorporar IA ao portfólio?", when:"Decisão: mês 6–9",
+    opts:[
+      {title:"Manter RPA puro",desc:"Simples de vender e entregar. Sem dependência de LLMs ou APIs de IA. Risco de commoditização com o avanço da IA agêntica."},
+      {title:"RPA + IA (agentes, OCR, LLMs)",desc:"Diferencial competitivo crescente. Permite automatizar processos não-estruturados. Curva de aprendizado técnica."}
+    ],
+    rec:"Recomendação Atlas: estude IA agêntica a partir do mês 4, mesmo sem aplicar em cliente. No mês 8, ofereça para 1 cliente como piloto gratuito. Quem dominar RPA + IA em 2025–2026 tem vantagem de 2–3 anos sobre o mercado."
+  }
+];
+
+const decisoesEl=document.getElementById('decisoes-container');
+decisoes.forEach((d,i)=>{
+  const div=document.createElement('div');
+  div.className='decision-card';
+  div.innerHTML=`
+    <div class="decision-header">
+      <div class="decision-icon" style="background:${d.iconBg};color:${d.iconColor}"><i class="ti ${d.icon}" aria-hidden="true"></i></div>
+      <div style="flex:1"><div class="decision-title">${d.title}</div><div class="decision-when">${d.when}</div></div>
+      <span class="chevron" id="chev-d-${i}">▼</span>
+    </div>
+    <div class="decision-detail" id="dd-${i}">
+      <div class="decision-options">
+        ${d.opts.map(o=>`<div class="decision-opt"><div class="opt-title">${o.title}</div><div class="opt-desc">${o.desc}</div></div>`).join('')}
+      </div>
+      <div class="rec-box"><strong>Recomendação:</strong> ${d.rec}</div>
+    </div>
+  `;
+  div.addEventListener('click',()=>{
+    const det=document.getElementById('dd-'+i),ch=document.getElementById('chev-d-'+i);
+    const o=det.classList.toggle('open');
+    ch.classList.toggle('open',o);
+  });
+  decisoesEl.appendChild(div);
+});
+</script>
+
+        </div>
+        <div id="module_6" class="module-section ">
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:.15s;}
+  .tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent;}
+  .panel{display:none;}.panel.active{display:block;}
+
+  .clause-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:border-color .2s;}
+  .clause-card:hover,.clause-card.open{border-color:var(--color-border-secondary);}
+  .clause-card.critical{border-left:3px solid #E24B4A;}
+  .clause-header{display:flex;align-items:center;gap:12px;}
+  .clause-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;}
+  .clause-title{font-size:14px;font-weight:500;color:var(--color-text-primary);flex:1;}
+  .clause-tag{font-size:11px;padding:2px 8px;border-radius:20px;}
+  .chevron{font-size:11px;color:var(--color-text-tertiary);margin-left:6px;transition:transform .2s;}
+  .chevron.open{transform:rotate(180deg);}
+  .clause-detail{display:none;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--color-border-tertiary);}
+  .clause-detail.open{display:block;}
+  .clause-why{font-size:13px;color:var(--color-text-secondary);line-height:1.65;margin-bottom:10px;}
+  .clause-text{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;font-size:12px;color:var(--color-text-primary);line-height:1.8;border-left:3px solid var(--color-border-secondary);font-style:italic;}
+  .clause-risk{background:#FCEBEB;border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:#712B13;margin-top:8px;display:flex;gap:8px;align-items:flex-start;}
+
+  .checklist-section{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem 1.25rem;margin-bottom:10px;}
+  .check-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary);}
+  .check-row:last-child{border-bottom:none;}
+  .check-box{width:18px;height:18px;border-radius:4px;border:0.5px solid var(--color-border-secondary);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.1s;}
+  .check-box.checked{background:var(--color-text-primary);border-color:transparent;}
+  .check-box.checked::after{content:"✓";font-size:11px;color:var(--color-background-primary);}
+  .check-label{font-size:13px;color:var(--color-text-primary);line-height:1.5;}
+  .check-label.done{opacity:.4;text-decoration:line-through;}
+  .check-section-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin:14px 0 6px;}
+
+  .error-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
+  .error-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .error-what{font-size:12px;color:var(--color-text-secondary);margin-bottom:6px;}
+  .error-how{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:var(--color-text-primary);line-height:1.6;}
+
+  .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+  .metric-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .metric-val{font-size:16px;font-weight:500;color:var(--color-text-primary);}
+  .metric-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+  .progress-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;color:var(--color-text-secondary);}
+  .progress-bar{flex:1;height:4px;background:var(--color-border-tertiary);border-radius:2px;}
+  .progress-fill{height:4px;border-radius:2px;}
+</style>
+
+<h2 class="sr-only">Cláusulas essenciais de um contrato de RPA para o Atlas</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Contrato de RPA — Atlas</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Cláusulas essenciais, modelos de texto e erros a evitar</div>
+
+  <div class="metric-grid">
+    <div class="metric-box"><div class="metric-val">12</div><div class="metric-lbl">cláusulas essenciais</div></div>
+    <div class="metric-box"><div class="metric-val">4</div><div class="metric-lbl">críticas para o Atlas</div></div>
+    <div class="metric-box"><div class="metric-val">NDA</div><div class="metric-lbl">assinar antes do início</div></div>
+    <div class="metric-box"><div class="metric-val">LGPD</div><div class="metric-lbl">obrigatório desde 2020</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab_6('clausulas',this)">Cláusulas essenciais</div>
+    <div class="tab" onclick="switchTab_6('checklist',this)">Checklist de revisão</div>
+    <div class="tab" onclick="switchTab_6('erros',this)">Erros mais comuns</div>
+  </div>
+
+  <div class="panel active" id="m6-panel-clausulas"><div id="clausulas-container"></div></div>
+  <div class="panel" id="m6-panel-checklist">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">Use antes de enviar qualquer contrato ao cliente. Marque cada item conforme revisar.</div>
+    <div id="checklist-container"></div>
+    <div style="margin-top:10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;" id="progress-section">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px">Progresso da revisão</div>
+      <div id="progress-bars"></div>
+    </div>
+  </div>
+  <div class="panel" id="m6-panel-erros">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">Os erros que mais geram conflito com clientes — e como evitar cada um.</div>
+    <div id="erros-container"></div>
+  </div>
+</div>
+
+<script>
+function switchTab_6(id,el){
+  document.getElementById('module_6').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('module_6').querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('m6-panel-'+id).classList.add('active');
+}
+
+const clausulas = [
+  { num:"01", critical:true, numBg:"#FCEBEB", numColor:"#A32D2D",
+    title:"Definição de escopo e objeto do contrato",
+    tag:"Crítica", tagBg:"#FCEBEB", tagColor:"#A32D2D",
+    why:"A cláusula mais importante do contrato. Define exatamente o que será entregue — sistemas, processos, volume e limitações. Tudo que não está aqui é escopo extra, com custo adicional.",
+    modelo:`A CONTRATADA compromete-se a desenvolver solução de automação robótica de processos (RPA) para o processo de [NOME DO PROCESSO], conforme mapeamento descrito no Documento de Design de Processo (PDD) anexo a este instrumento, parte integrante e indissociável do contrato. Quaisquer alterações de escopo deverão ser formalizadas por aditivo contratual.`,
+    risco:"Sem escopo definido, o cliente sempre achará que 'mais uma coisa' está incluída. Você trabalhará de graça infinitamente."
+  },
+  { num:"02", critical:true, numBg:"#FCEBEB", numColor:"#A32D2D",
+    title:"Propriedade intelectual do bot desenvolvido",
+    tag:"Crítica", tagBg:"#FCEBEB", tagColor:"#A32D2D",
+    why:"Define quem é o dono do código do bot após a entrega. Há três variações possíveis: código pertence ao cliente, pertence ao Atlas, ou uso licenciado. Defina isso antes de começar.",
+    modelo:`O código-fonte e todos os ativos desenvolvidos pela CONTRATADA no âmbito deste contrato serão [OPÇÃO A: transferidos ao CONTRATANTE mediante pagamento integral / OPÇÃO B: licenciados ao CONTRATANTE para uso exclusivo não-comercial / OPÇÃO C: mantidos sob propriedade da CONTRATADA, com licença de uso concedida ao CONTRATANTE pelo período de vigência deste contrato].`,
+    risco:"Se não definir, o cliente pode reivindicar o código como dele. Ou você pode perder o direito de reutilizar componentes em outros projetos."
+  },
+  { num:"03", critical:true, numBg:"#FCEBEB", numColor:"#A32D2D",
+    title:"SLA de suporte e manutenção pós-entrega",
+    tag:"Crítica", tagBg:"#FCEBEB", tagColor:"#A32D2D",
+    why:"Define o que acontece quando o bot falha depois do go-live. Sem isso, o cliente espera suporte 24/7 gratuito e você fica refém de qualquer incidente.",
+    modelo:`A CONTRATADA oferecerá suporte técnico pós-entrega pelo prazo de [30/60/90] dias, cobrindo falhas originadas no código desenvolvido. O tempo de resposta para falhas críticas (bot parado) será de até [4/8/24] horas úteis. Falhas decorrentes de alterações nos sistemas do CONTRATANTE, mudanças de acesso ou atualizações de terceiros não estão cobertas por este SLA, sendo cotadas separadamente.`,
+    risco:"Sem SLA, o cliente considera que suporte é ilimitado e gratuito para sempre. Defina claramente o que é 'bug do seu código' vs 'mudança no sistema do cliente'."
+  },
+  { num:"04", critical:true, numBg:"#FCEBEB", numColor:"#A32D2D",
+    title:"Limitação de responsabilidade",
+    tag:"Crítica", tagBg:"#FCEBEB", tagColor:"#A32D2D",
+    why:"Protege o Atlas de ser responsabilizado por danos indiretos causados por falha do bot — como perda de receita, multas fiscais ou dados incorretos gerados pela automação.",
+    modelo:`A responsabilidade total da CONTRATADA, por quaisquer danos decorrentes da execução deste contrato, limita-se ao valor total pago pelo CONTRATANTE nos últimos [3/6] meses. A CONTRATADA não se responsabiliza por danos indiretos, lucros cessantes, perda de dados ou penalidades de terceiros resultantes de falhas na automação, salvo nos casos de dolo ou culpa grave comprovados.`,
+    risco:"Um bot que processa 500 pagamentos com erro pode gerar prejuízo de milhões. Sem limitação de responsabilidade, o Atlas pode ser acionado pelo valor total do dano."
+  },
+  { num:"05", critical:false, numBg:"#EEEDFE", numColor:"#3C3489",
+    title:"Condições de pagamento e reajuste",
+    tag:"Financeiro", tagBg:"#EEEDFE", tagColor:"#3C3489",
+    why:"Define o cronograma de pagamento, condições de atraso e reajuste anual do contrato de mensalidade. Evita discussões sobre quando e quanto pagar.",
+    modelo:`O pagamento será realizado conforme o seguinte cronograma: [50% na assinatura do contrato / 50% na entrega e aceite]. Para contratos de mensalidade, o pagamento ocorre até o dia [5] de cada mês. Em caso de atraso, incidirão multa de 2% e juros de 1% ao mês. Os valores serão reajustados anualmente pelo IGP-M ou IPCA, o que for maior.`,
+    risco:"Sem cronograma claro, clientes postergam pagamentos indefinidamente. Defina também o que acontece se o pagamento não ocorrer: suspensão do serviço."
+  },
+  { num:"06", critical:false, numBg:"#EEEDFE", numColor:"#3C3489",
+    title:"Prazo de entrega e cronograma",
+    tag:"Entrega", tagBg:"#EEEDFE", tagColor:"#3C3489",
+    why:"Estabelece o prazo de desenvolvimento e as condições em que o prazo pode ser estendido — como atraso do cliente em fornecer acessos ou aprovar o PDD.",
+    modelo:`O prazo de entrega é de [X] dias úteis, contados a partir da assinatura deste contrato e do recebimento de todos os acessos necessários listados no Anexo I. O prazo será automaticamente suspenso durante: (i) aguardo de aprovação do PDD pelo CONTRATANTE por mais de 3 dias úteis; (ii) indisponibilidade de sistemas do CONTRATANTE; (iii) solicitações de alteração de escopo.`,
+    risco:"Clientes atrasam fornecimento de acessos e depois cobram o prazo original. Inclua suspensão de prazo para proteger sua entrega."
+  },
+  { num:"07", critical:false, numBg:"#E1F5EE", numColor:"#085041",
+    title:"Confidencialidade e NDA",
+    tag:"Segurança", tagBg:"#E1F5EE", tagColor:"#085041",
+    why:"Proíbe ambas as partes de divulgar informações sensíveis obtidas durante o projeto — dados do cliente, processos internos, credenciais, segredos comerciais do Atlas.",
+    modelo:`As partes comprometem-se a manter em sigilo absoluto todas as informações confidenciais obtidas em razão deste contrato, incluindo dados, processos, credenciais e metodologias, pelo prazo de [2/3/5] anos após o término do contrato. A divulgação autorizada depende de consentimento expresso por escrito da parte detentora da informação.`,
+    risco:"Sem NDA, um ex-cliente pode compartilhar sua metodologia com concorrentes, ou você pode inadvertidamente expor dados sensíveis do cliente."
+  },
+  { num:"08", critical:false, numBg:"#E1F5EE", numColor:"#085041",
+    title:"LGPD e tratamento de dados pessoais",
+    tag:"Segurança", tagBg:"#E1F5EE", tagColor:"#085041",
+    why:"Obrigatório desde 2020. Define como o Atlas trata os dados pessoais eventualmente acessados durante o desenvolvimento e operação do bot — quem é controlador, quem é operador.",
+    modelo:`Para fins da Lei nº 13.709/2018 (LGPD), o CONTRATANTE é o Controlador dos dados pessoais tratados no âmbito deste contrato, e a CONTRATADA atua como Operadora, tratando os dados exclusivamente para execução das atividades contratadas, sem compartilhamento com terceiros. A CONTRATADA adota medidas técnicas e organizacionais adequadas para proteger os dados tratados.`,
+    risco:"O Atlas que acessa sistemas com dados de funcionários ou clientes finais é operador de dados. Sem essa cláusula, assume responsabilidades de controlador — muito mais severas."
+  },
+  { num:"09", critical:false, numBg:"#FAEEDA", numColor:"#633806",
+    title:"Rescisão e multas contratuais",
+    tag:"Proteção", tagBg:"#FAEEDA", tagColor:"#633806",
+    why:"Define como qualquer uma das partes pode encerrar o contrato, o prazo de aviso prévio e as penalidades por rescisão antecipada.",
+    modelo:`Qualquer das partes poderá rescindir este contrato mediante aviso prévio de [30/60] dias. A rescisão imotivada pelo CONTRATANTE após o início do desenvolvimento implicará multa de [20/30]% do valor total contratado. A rescisão motivada por inadimplência do CONTRATANTE não exime o pagamento pelos serviços já prestados até a data da rescisão.`,
+    risco:"Sem multa por rescisão, clientes cancelam projetos pela metade sem pagar nada. Você investiu horas de desenvolvimento sem retorno."
+  },
+  { num:"10", critical:false, numBg:"#FAEEDA", numColor:"#633806",
+    title:"Critérios de aceite e homologação",
+    tag:"Entrega", tagBg:"#FAEEDA", tagColor:"#633806",
+    why:"Define objetivamente quando o projeto está 'concluído' e quem aprova. Evita a situação em que o cliente nunca formalmente aceita a entrega e continua pedindo ajustes indefinidamente.",
+    modelo:`O projeto será considerado concluído após aprovação formal pelo CONTRATANTE em sessão de homologação (UAT), conforme critérios de aceite definidos no PDD. Caso o CONTRATANTE não manifeste reprovação fundamentada em até [5] dias úteis após a sessão de UAT, o projeto será considerado tacitamente aceito e o saldo final será exigível.`,
+    risco:"Sem aceite formal, o projeto nunca termina. O cliente sempre tem 'mais um ajuste' e você não consegue faturar o saldo."
+  },
+  { num:"11", critical:false, numBg:"#EAF3DE", numColor:"#27500A",
+    title:"Acesso a sistemas e responsabilidade do cliente",
+    tag:"Operacional", tagBg:"#EAF3DE", tagColor:"#27500A",
+    why:"O bot precisa de credenciais para funcionar. Esta cláusula define que é responsabilidade do cliente fornecer e manter esses acessos válidos — e que falhas por credenciais inválidas não são bug do Atlas.",
+    modelo:`O CONTRATANTE é responsável por fornecer e manter válidos todos os acessos, credenciais e permissões necessários ao funcionamento da automação, conforme listado no Anexo I deste contrato. Indisponibilidades, falhas ou restrições de acesso de responsabilidade do CONTRATANTE ou de sistemas de terceiros não configuram inadimplemento da CONTRATADA e não estão cobertas pelo SLA contratado.`,
+    risco:"Sistemas de ERP pedem senha periodicamente. Se não houver essa cláusula, cada vez que o bot parar por senha expirada será um 'problema seu'."
+  },
+  { num:"12", critical:false, numBg:"#EAF3DE", numColor:"#27500A",
+    title:"Não-aliciamento de colaboradores",
+    tag:"Proteção", tagBg:"#EAF3DE", tagColor:"#27500A",
+    why:"Impede que o cliente contrate diretamente os profissionais do Atlas que trabalharam no projeto — o que esvaziaria seu time e transferiria o conhecimento gratuitamente.",
+    modelo:`Durante a vigência deste contrato e por [12/24] meses após seu término, o CONTRATANTE compromete-se a não contratar, direta ou indiretamente, os profissionais da CONTRATADA que tenham atuado no projeto, sob pena de multa equivalente a [6/12] remunerações mensais do profissional em questão.`,
+    risco:"Sem essa cláusula, o cliente pode contratar seu desenvolvedor diretamente após o projeto, levando todo o conhecimento técnico e relacionamento."
+  }
+];
+
+const clausulasEl=document.getElementById('clausulas-container');
+clausulas.forEach((c,i)=>{
+  const div=document.createElement('div');
+  div.className=`clause-card${c.critical?' critical':''}`;
+  div.innerHTML=`
+    <div class="clause-header">
+      <div class="clause-num" style="background:${c.numBg};color:${c.numColor}">${c.num}</div>
+      <div class="clause-title">${c.title}</div>
+      <span class="clause-tag" style="background:${c.tagBg};color:${c.tagColor}">${c.tag}</span>
+      <span class="chevron" id="chev-cl-${i}">▼</span>
+    </div>
+    <div class="clause-detail" id="cld-${i}">
+      <div class="clause-why">${c.why}</div>
+      <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Modelo de redação</div>
+      <div class="clause-text">${c.modelo}</div>
+      <div class="clause-risk"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:15px;flex-shrink:0;margin-top:1px"></i><span><strong>Risco sem esta cláusula:</strong> ${c.risco}</span></div>
+    </div>
+  `;
+  div.addEventListener('click',()=>{
+    const d=document.getElementById('cld-'+i),ch=document.getElementById('chev-cl-'+i);
+    const o=d.classList.toggle('open');
+    div.classList.toggle('open',o);
+    ch.classList.toggle('open',o);
+  });
+  clausulasEl.appendChild(div);
+});
+
+const checks={
+  "Antes de redigir":[
+    "PDD aprovado e assinado pelo cliente antes de incluir como anexo",
+    "Lista de sistemas e acessos necessários documentada (Anexo I)",
+    "Modelo de cobrança definido: projeto fixo ou mensalidade",
+    "Prazo de entrega validado com buffer de contingência"
+  ],
+  "No corpo do contrato":[
+    "Escopo descrito com limitações explícitas ('o bot não faz X')",
+    "Propriedade intelectual do código definida claramente",
+    "SLA com tempo de resposta e cobertura especificados",
+    "Limitação de responsabilidade com teto em valor",
+    "Cronograma de pagamento com condições de atraso",
+    "Prazo com condições de suspensão por atraso do cliente",
+    "Critérios de aceite objetivos e prazo de aceite tácito",
+    "Cláusula LGPD definindo Atlas como Operador"
+  ],
+  "Documentos anexos":[
+    "PDD assinado — Anexo obrigatório",
+    "Lista de acessos e sistemas — Anexo I",
+    "NDA assinado separadamente antes do início",
+    "Termo de aceite em branco para assinar no UAT"
+  ],
+  "Antes de enviar ao cliente":[
+    "Revisar com contador ou advogado ao menos uma vez",
+    "Versionar o contrato (v1, v2) para controle de alterações",
+    "Usar plataforma de assinatura digital (DocuSign, ClickSign)",
+    "Guardar cópia assinada em nuvem com acesso restrito"
+  ]
+};
+
+const checkState={};
+let checkIdx=0;
+const allChecks=[];
+let checklistEl=document.getElementById('checklist-container');
+Object.entries(checks).forEach(([section,items])=>{
+  const secDiv=document.createElement('div');
+  secDiv.className='checklist-section';
+  let html=`<div class="check-section-title">${section}</div>`;
+  items.forEach(item=>{
+    const id=checkIdx++;
+    allChecks.push({id,section});
+    checkState[id]=false;
+    html+=`<div class="check-row">
+      <div class="check-box" id="cb-${id}" onclick="toggleCheck(${id})"></div>
+      <span class="check-label" id="cl-${id}">${item}</span>
+    </div>`;
+  });
+  secDiv.innerHTML=html;
+  checklistEl.appendChild(secDiv);
+});
+
+function toggleCheck(id){
+  checkState[id]=!checkState[id];
+  const box=document.getElementById('cb-'+id);
+  const lbl=document.getElementById('cl-'+id);
+  box.classList.toggle('checked',checkState[id]);
+  lbl.classList.toggle('done',checkState[id]);
+  updateProgress();
+}
+
+function updateProgress(){
+  const sections=Object.keys(checks);
+  const barEl=document.getElementById('progress-bars');
+  barEl.innerHTML='';
+  sections.forEach(sec=>{
+    const sItems=allChecks.filter(c=>c.section===sec);
+    const done=sItems.filter(c=>checkState[c.id]).length;
+    const total=sItems.length;
+    const pct=Math.round((done/total)*100);
+    const color=pct===100?'#639922':pct>50?'#EF9F27':'#534AB7';
+    barEl.innerHTML+=`<div class="progress-row">
+      <span style="min-width:140px">${sec}</span>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>
+      <span style="min-width:40px;text-align:right">${done}/${total}</span>
+    </div>`;
+  });
+}
+updateProgress();
+
+const erros=[
+  { icon:"ti-file-x", iconBg:"#FCEBEB", iconColor:"#A32D2D",
+    title:"Escopo descrito de forma vaga ou verbal",
+    what:"Contratos com 'automatizar o processo de faturamento' sem detalhar sistemas, volume, exceções e limitações. O cliente interpreta o máximo, você entregou o mínimo.",
+    how:"Sempre anexe o PDD assinado como parte integrante do contrato. O PDD é o escopo real — o contrato é o invólucro jurídico. Qualquer pedido fora do PDD = aditivo contratual."
+  },
+  { icon:"ti-coin-off", iconBg:"#FCEBEB", iconColor:"#A32D2D",
+    title:"Nenhuma cláusula de limitação de responsabilidade",
+    what:"Bot com falha processa 200 pagamentos duplicados. Sem limitação de responsabilidade, você pode ser responsabilizado pelo valor total dos danos — que pode ser muito maior que o contrato.",
+    how:"Limite sua responsabilidade ao valor pago nos últimos 3 a 6 meses. Exclua danos indiretos, lucros cessantes e penalidades de terceiros. Essa cláusula é padrão em todo contrato de tecnologia sério."
+  },
+  { icon:"ti-lock-open", iconBg:"#FAEEDA", iconColor:"#633806",
+    title:"Propriedade intelectual indefinida",
+    what:"Após a entrega, cliente assume que o código é 100% dele e pode redistribuir ou contratar outro fornecedor para modificar. Ou você usa componentes do projeto em outro cliente e o primeiro reclama.",
+    how:"Defina explicitamente: transferência de propriedade, licença de uso ou propriedade do Atlas. Para a maioria dos casos, licença de uso não-exclusiva protege o Atlas e satisfaz o cliente."
+  },
+  { icon:"ti-clock-off", iconBg:"#FAEEDA", iconColor:"#633806",
+    title:"Prazo sem condições de suspensão",
+    what:"Cliente leva 2 semanas para fornecer acesso ao ERP. Contrato diz 'entrega em 30 dias'. No dia 31, cliente cobra a entrega como se o atraso fosse seu.",
+    how:"Inclua cláusula de suspensão automática de prazo sempre que: (i) acessos não forem fornecidos, (ii) PDD não for aprovado em 3 dias, (iii) sistemas estiverem indisponíveis."
+  },
+  { icon:"ti-user-x", iconBg:"#EAF3DE", iconColor:"#27500A",
+    title:"Sem critério de aceite formal",
+    what:"Projeto entregue, bot funcionando, cliente usa há 2 semanas — mas nunca 'aceitou formalmente'. Fica pedindo ajustes infinitos, saldo nunca é exigível.",
+    how:"Defina UAT com data marcada, critérios objetivos do PDD e prazo de aceite tácito (5 dias sem manifestação = aceito). Envie o Termo de Aceite no kickoff para o cliente já saber o que vai assinar."
+  }
+];
+
+const errosEl=document.getElementById('erros-container');
+erros.forEach(e=>{
+  errosEl.innerHTML+=`
+    <div class="error-card">
+      <div class="error-title">
+        <div style="width:32px;height:32px;border-radius:var(--border-radius-md);background:${e.iconBg};color:${e.iconColor};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ${e.icon}" aria-hidden="true" style="font-size:16px"></i>
+        </div>
+        ${e.title}
+      </div>
+      <div class="error-what"><strong>O problema:</strong> ${e.what}</div>
+      <div class="error-how"><strong>Como evitar:</strong> ${e.how}</div>
+    </div>
+  `;
+});
+</script>
+
+        </div>
+    </main>
+</div>
+
+<script>
+    function openMasterModule(idx, el) {
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        el.classList.add('active');
+        
+        document.querySelectorAll('.module-section').forEach(mod => mod.classList.remove('active'));
+        document.getElementById('module_' + idx).classList.add('active');
+    }
+</script>
+
+<!-- DELIVERY DRAWER (outside modules for z-index visibility) -->
+<div class="dlv-overlay" id="dlv-overlay" onclick="dlv_closeDrawer()"></div>
+<div class="dlv-drawer" id="dlv-drawer">
+  <div class="dlv-drawer-header" id="dlv-drawer-header"></div>
+  <div class="dlv-drawer-body" id="dlv-drawer-body"></div>
+</div>
+
+</body>
+</html>

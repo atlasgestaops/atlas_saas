@@ -1,0 +1,248 @@
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;}
+  .tab{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:.15s;}
+  .tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent;}
+  .panel{display:none;} .panel.active{display:block;}
+
+  /* FUNIL */
+  .funnel-stage{display:flex;align-items:stretch;gap:10px;margin-bottom:8px;cursor:pointer;}
+  .funnel-bar-wrap{flex:1;display:flex;align-items:center;}
+  .funnel-bar{height:52px;border-radius:var(--border-radius-md);display:flex;align-items:center;padding:0 14px;transition:width .4s ease;position:relative;}
+  .funnel-label{display:flex;flex-direction:column;justify-content:center;min-width:130px;}
+  .funnel-count{min-width:50px;text-align:right;display:flex;flex-direction:column;justify-content:center;}
+  .funnel-detail{display:none;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;margin-bottom:4px;font-size:12px;color:var(--color-text-secondary);}
+  .funnel-detail.open{display:block;}
+  .conv-pill{font-size:11px;padding:2px 8px;border-radius:20px;margin-top:4px;display:inline-block;}
+
+  /* CADÊNCIA */
+  .cadence-row{display:grid;grid-template-columns:80px 1fr;gap:12px;align-items:start;margin-bottom:14px;}
+  .cadence-day{font-size:12px;font-weight:500;color:var(--color-text-secondary);padding-top:10px;}
+  .cadence-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 14px;}
+  .cadence-channel{font-size:11px;padding:2px 8px;border-radius:20px;margin-right:4px;display:inline-block;}
+  .cadence-action{font-size:13px;color:var(--color-text-primary);margin:4px 0 2px;}
+  .cadence-tip{font-size:12px;color:var(--color-text-secondary);}
+
+  /* ROTEIRO */
+  .script-phase{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
+  .script-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .script-time{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;}
+  .script-q{font-size:13px;color:var(--color-text-primary);line-height:1.6;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary);}
+  .script-q:last-child{border-bottom:none;}
+  .script-q::before{content:"» ";color:var(--color-text-tertiary);}
+
+  /* OBJEÇÕES */
+  .obj-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
+  .obj-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .obj-resp{font-size:13px;color:var(--color-text-secondary);line-height:1.65;padding:10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);}
+
+  .metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+  .metric-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .metric-val{font-size:20px;font-weight:500;color:var(--color-text-primary);}
+  .metric-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+</style>
+
+<h2 class="sr-only">Processo comercial e funil de vendas do Atlas RPA</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Funil comercial Atlas</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Estrutura completa de vendas para serviços de RPA B2B</div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('funil',this)">Funil de vendas</div>
+    <div class="tab" onclick="switchTab('cadencia',this)">Cadência de prospecção</div>
+    <div class="tab" onclick="switchTab('roteiro',this)">Roteiro de discovery</div>
+    <div class="tab" onclick="switchTab('objecoes',this)">Objeções comuns</div>
+  </div>
+
+  <!-- FUNIL -->
+  <div class="panel active" id="panel-funil">
+    <div class="metric-grid">
+      <div class="metric-box"><div class="metric-val" id="m-leads">40</div><div class="metric-lbl">leads/mês necessários</div></div>
+      <div class="metric-box"><div class="metric-val" id="m-reunioes">8</div><div class="metric-lbl">reuniões de discovery</div></div>
+      <div class="metric-box"><div class="metric-val" id="m-fechamentos">2</div><div class="metric-lbl">fechamentos esperados</div></div>
+    </div>
+    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;">Clique em cada etapa para ver atividades e critérios de avanço</div>
+    <div id="funnel-container"></div>
+  </div>
+
+  <!-- CADÊNCIA -->
+  <div class="panel" id="panel-cadencia">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:14px;">Sequência de 8 toques em 21 dias para prospects frios. Meta: 1 reunião a cada 5 empresas abordadas.</div>
+    <div id="cadence-container"></div>
+  </div>
+
+  <!-- ROTEIRO -->
+  <div class="panel" id="panel-roteiro">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:14px;">Roteiro estruturado para a reunião de discovery de 45 minutos. O objetivo não é vender — é diagnosticar e gerar confiança.</div>
+    <div id="roteiro-container"></div>
+  </div>
+
+  <!-- OBJEÇÕES -->
+  <div class="panel" id="panel-objecoes">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:14px;">As 5 objeções mais comuns em vendas de RPA e como responder com segurança.</div>
+    <div id="objecoes-container"></div>
+  </div>
+</div>
+
+<script>
+function switchTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+}
+
+const stages = [
+  { label:"Leads identificados", sub:"Empresas que se encaixam no ICP", n:40, pct:100, color:"#534AB7", bg:"#EEEDFE",
+    activities:["Pesquisa no LinkedIn Sales Navigator por segmento e porte","Indicações de clientes e parceiros","Eventos e feiras de automação","Conteúdo orgânico que atrai inbound"],
+    criteria:"Tem CNPJ ativo, +10 funcionários, opera com processos repetitivos em sistemas digitais", conv:"Próxima etapa: 20%" },
+  { label:"Contato iniciado", sub:"1º toque realizado (e-mail, LinkedIn, ligação)", n:40, pct:90, color:"#0F6E56", bg:"#E1F5EE",
+    activities:["Mensagem personalizada no LinkedIn (sem pitch, com curiosidade)","E-mail de prospecção com case relevante ao segmento","Cold call de 2 minutos com abertura de valor"],
+    criteria:"Prospect respondeu ou aceitou conexão — qualquer sinal de vida", conv:"Taxa de resposta esperada: 20–30%" },
+  { label:"Reunião agendada", sub:"Discovery confirmado na agenda", n:8, pct:55, color:"#854F0B", bg:"#FAEEDA",
+    activities:["Enviar confirmação com pauta e link de videoconferência","Pesquisar a empresa antes da reunião (site, LinkedIn, notícias)","Preparar 3 perguntas específicas para o segmento do prospect"],
+    criteria:"Data e hora confirmadas, decisor presente na reunião", conv:"Show-up rate esperado: 70–80%" },
+  { label:"Discovery realizado", sub:"Problema mapeado e ROI calculado", n:6, pct:38, color:"#185FA5", bg:"#E6F1FB",
+    activities:["Aplicar roteiro de discovery (aba ao lado)","Mapear 1–3 processos candidatos à automação","Calcular ROI estimado ao vivo com o cliente","Apresentar casos similares ao segmento do prospect"],
+    criteria:"Prospect identificou processo doloroso e reconheceu o valor da automação", conv:"Qualificação: 75% das reuniões" },
+  { label:"Proposta enviada", sub:"Escopo, prazo e valor formalizados", n:4, pct:25, color:"#3B6D11", bg:"#EAF3DE",
+    activities:["Enviar proposta em até 48h após a reunião","Personalizar proposta com dados levantados no discovery","Incluir ROI calculado e comparativo antes/depois","Agendar call de revisão da proposta (não deixar por e-mail)"],
+    criteria:"Prospect recebeu, leu e agendou call de revisão", conv:"Taxa de avanço: 50–60%" },
+  { label:"Negociação", sub:"Ajustes de escopo, prazo ou preço", n:3, pct:15, color:"#993C1D", bg:"#FAECE7",
+    activities:["Entender objeção real (preço, prazo, prioridade ou medo)","Ter flexibilidade em escopo — nunca só em preço","Oferecer projeto piloto para reduzir risco percebido","Definir prazo para decisão (urgência legítima)"],
+    criteria:"Prospect pediu ajuste específico — sinal de interesse real", conv:"Conversão: 60–70%" },
+  { label:"Contrato assinado", sub:"Cliente oficial do Atlas", n:2, pct:8, color:"#A32D2D", bg:"#FCEBEB",
+    activities:["Enviar contrato via DocuSign ou similar","Coletar assinatura do NDA junto com o contrato","Emitir NF da entrada (se houver) ou da mensalidade","Iniciar onboarding — agendar kickoff em até 3 dias úteis"],
+    criteria:"Contrato assinado, primeiro pagamento confirmado", conv:"Conversão geral do funil: 5%" }
+];
+
+const funnel = document.getElementById('funnel-container');
+stages.forEach((s,i)=>{
+  const wrap = document.createElement('div');
+  wrap.innerHTML = `
+    <div class="funnel-stage" onclick="toggleFunnelDetail(${i})">
+      <div class="funnel-label">
+        <span style="font-size:13px;font-weight:500;color:var(--color-text-primary)">${s.label}</span>
+        <span style="font-size:11px;color:var(--color-text-secondary)">${s.sub}</span>
+      </div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="width:${s.pct}%;background:${s.bg};border:0.5px solid ${s.color}40">
+          <span style="font-size:12px;color:${s.color};font-weight:500">${s.conv}</span>
+        </div>
+      </div>
+      <div class="funnel-count">
+        <span style="font-size:18px;font-weight:500;color:var(--color-text-primary)">${s.n}</span>
+        <span style="font-size:11px;color:var(--color-text-secondary)">leads</span>
+      </div>
+    </div>
+    <div class="funnel-detail" id="fd-${i}">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px">Atividades nesta etapa</div>
+      ${s.activities.map(a=>`<div style="padding:3px 0;display:flex;gap:6px"><span style="color:var(--color-text-tertiary)">·</span><span>${a}</span></div>`).join('')}
+      <div style="margin-top:8px;padding:8px;background:var(--color-background-primary);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary)">
+        <span style="font-size:11px;font-weight:500;color:var(--color-text-secondary)">Critério de avanço: </span>
+        <span style="font-size:12px;color:var(--color-text-primary)">${s.criteria}</span>
+      </div>
+    </div>
+  `;
+  funnel.appendChild(wrap);
+});
+
+function toggleFunnelDetail(i){
+  const d = document.getElementById('fd-'+i);
+  d.classList.toggle('open');
+}
+
+const cadence = [
+  {day:"Dia 1", channel:"LinkedIn", chBg:"#E6F1FB", chColor:"#0C447C", action:"Conexão + mensagem de abertura personalizada", tip:"Mencione algo específico da empresa: crescimento, setor, post recente. Não fale de RPA ainda."},
+  {day:"Dia 3", channel:"E-mail", chBg:"#EEEDFE", chColor:"#3C3489", action:"E-mail de valor: case de RPA no mesmo setor do prospect", tip:"Assunto: '[Nome da empresa deles] faz isso manualmente?'. Inclua 1 número de ROI real."},
+  {day:"Dia 5", channel:"LinkedIn", chBg:"#E6F1FB", chColor:"#0C447C", action:"Follow-up no LinkedIn com pergunta aberta", tip:"'Vi que vocês atuam com [segmento] — qual processo mais toma tempo do time hoje?'"},
+  {day:"Dia 8", channel:"Ligação", chBg:"#EAF3DE", chColor:"#27500A", action:"Cold call de 2 minutos com abertura de curiosidade", tip:"'Estou ligando porque ajudei uma empresa como a de vocês a economizar X horas por mês — faz sentido falar por 15 minutos?'"},
+  {day:"Dia 11", channel:"E-mail", chBg:"#EEEDFE", chColor:"#3C3489", action:"E-mail com vídeo curto (Loom) de demonstração", tip:"Grave 2 minutos mostrando um bot em funcionamento. Vídeo aumenta resposta em 3×."},
+  {day:"Dia 14", channel:"LinkedIn", chBg:"#E6F1FB", chColor:"#0C447C", action:"Compartilhar conteúdo relevante com menção", tip:"Marque o prospect num post sobre automação no setor dele. Visibilidade sem pressão."},
+  {day:"Dia 18", channel:"E-mail", chBg:"#EEEDFE", chColor:"#3C3489", action:"E-mail de breakup — encerra a sequência com elegância", tip:"'Se não faz sentido agora, tudo bem — posso voltar em 3 meses. Só me diga.' Gera resposta por culpa."},
+  {day:"Dia 21", channel:"Ligação", chBg:"#EAF3DE", chColor:"#27500A", action:"Última tentativa: ligação rápida de encerramento", tip:"Se não atender, deixe voicemail curto e mova para nurturing. Nunca insista além desse ponto."}
+];
+
+const cadenceEl = document.getElementById('cadence-container');
+cadence.forEach(c=>{
+  cadenceEl.innerHTML += `
+    <div class="cadence-row">
+      <div class="cadence-day">${c.day}</div>
+      <div class="cadence-card">
+        <span class="cadence-channel" style="background:${c.chBg};color:${c.chColor}">${c.channel}</span>
+        <div class="cadence-action">${c.action}</div>
+        <div class="cadence-tip">${c.tip}</div>
+      </div>
+    </div>
+  `;
+});
+
+const roteiro = [
+  {phase:"Abertura (5 min)", timeBg:"#EEEDFE", timeColor:"#3C3489", perguntas:[
+    "Antes de começar, posso te contar em 2 minutos o que fazemos? [pitch curto] — faz sentido para vocês?",
+    "Me conta um pouco sobre sua operação atual — qual é o time e o volume de trabalho?"
+  ]},
+  {phase:"Diagnóstico do processo (15 min)", timeBg:"#E1F5EE", timeColor:"#085041", perguntas:[
+    "Quais tarefas o time faz hoje que são repetitivas — todo dia ou toda semana, sempre do mesmo jeito?",
+    "Quanto tempo por dia uma pessoa passa nessa atividade? Quantas pessoas fazem isso?",
+    "Quais sistemas vocês usam para isso? ERP, planilha, portal web?",
+    "Já aconteceu erro nesse processo? Qual foi o impacto?"
+  ]},
+  {phase:"Qualificação e dor (10 min)", timeBg:"#FAEEDA", timeColor:"#633806", perguntas:[
+    "Se esse processo estivesse 100% automático, o que seu time faria com esse tempo?",
+    "Isso é prioridade pra vocês agora, ou tem algo mais urgente pela frente?",
+    "Quem mais precisa estar envolvido na decisão de avançar com isso?"
+  ]},
+  {phase:"Educação e validação (10 min)", timeBg:"#E6F1FB", timeColor:"#0C447C", perguntas:[
+    "[Apresente como o bot funcionaria para o processo deles — específico, não genérico]",
+    "Faz sentido o que eu descrevi? Tem alguma parte do processo que eu não entendi bem?",
+    "Já consideraram automação antes? O que parou?"
+  ]},
+  {phase:"Próximo passo (5 min)", timeBg:"#EAF3DE", timeColor:"#27500A", perguntas:[
+    "Com base no que conversamos, consigo te mandar uma proposta até quinta-feira — tudo bem?",
+    "Prefere receber por e-mail e revisar antes, ou marcamos uma call de 30 minutos para apresentar?"
+  ]}
+];
+
+const roteiroEl = document.getElementById('roteiro-container');
+roteiro.forEach(r=>{
+  roteiroEl.innerHTML += `
+    <div class="script-phase">
+      <div class="script-header">
+        <span class="script-time" style="background:${r.timeBg};color:${r.timeColor}">${r.phase}</span>
+      </div>
+      ${r.perguntas.map(q=>`<div class="script-q">${q}</div>`).join('')}
+    </div>
+  `;
+});
+
+const objecoes = [
+  {obj:"'Está caro, não temos budget para isso agora'", iconBg:"#FCEBEB", iconColor:"#A32D2D", icon:"ti-coin",
+   resp:"Certo — posso te mostrar o cálculo de ROI que fizemos? Se o processo leva 40h/mês a R$25/hora, são R$1.000/mês em custo. Nossa solução custa R$X. Em Y meses o investimento se paga. A pergunta real é: custa mais fazer ou não fazer?"},
+  {obj:"'Vamos desenvolver internamente, temos TI aqui'", iconBg:"#FAEEDA", iconColor:"#633806", icon:"ti-tools",
+   resp:"Ótimo que vocês têm TI — isso facilita o projeto. A maioria dos nossos clientes também tem. A diferença é que automação de processos é especialidade nossa: já entregamos X projetos similares e sabemos exatamente onde estão as armadilhas. Seu time de TI fica livre para projetos estratégicos."},
+  {obj:"'Precisamos pensar melhor, vamos avaliar outras opções'", iconBg:"#EEEDFE", iconColor:"#3C3489", icon:"ti-clock",
+   resp:"Faz todo sentido. O que eu posso fazer para ajudar nessa avaliação? Posso preparar uma comparação de abordagens, uma sessão técnica com seu time, ou um projeto piloto menor para vocês testarem sem risco."},
+  {obj:"'E se o bot parar de funcionar? Ficamos dependentes de vocês'", iconBg:"#E1F5EE", iconColor:"#085041", icon:"ti-shield",
+   resp:"Essa é uma preocupação legítima. Por isso todo projeto inclui: documentação completa do código, treinamento do seu time para monitoramento básico, e SLA de suporte com tempo de resposta garantido em contrato. O código é seu — não somos caixa-preta."},
+  {obj:"'Não é o momento certo, tem muitas prioridades'", iconBg:"#EAF3DE", iconColor:"#27500A", icon:"ti-calendar",
+   resp:"Entendo. Posso perguntar: esse processo que mapeamos é urgente ou pode esperar? Se puder esperar, combinamos uma conversa em 60 dias. Se for urgente, cada mês sem automação é exatamente o custo que calculamos multiplicado. Quando seria o momento certo?"}
+];
+
+const objecoesEl = document.getElementById('objecoes-container');
+objecoes.forEach(o=>{
+  objecoesEl.innerHTML += `
+    <div class="obj-card">
+      <div class="obj-title">
+        <div style="width:32px;height:32px;border-radius:var(--border-radius-md);background:${o.iconBg};color:${o.iconColor};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ${o.icon}" aria-hidden="true" style="font-size:16px"></i>
+        </div>
+        ${o.obj}
+      </div>
+      <div class="obj-resp">${o.resp}</div>
+    </div>
+  `;
+});
+</script>

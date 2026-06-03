@@ -1,0 +1,283 @@
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:.15s;}
+  .tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent;}
+  .panel{display:none;}.panel.active{display:block;}
+
+  .channel-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:border-color .2s;}
+  .channel-card:hover,.channel-card.open{border-color:var(--color-border-secondary);}
+  .channel-header{display:flex;align-items:center;gap:12px;}
+  .channel-icon{width:40px;height:40px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .channel-title{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+  .channel-sub{font-size:12px;color:var(--color-text-secondary);}
+  .channel-meta{display:flex;gap:6px;margin-left:auto;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+  .pill{font-size:11px;padding:2px 8px;border-radius:20px;}
+  .chevron{font-size:11px;color:var(--color-text-tertiary);margin-left:6px;transition:transform .2s;}
+  .chevron.open{transform:rotate(180deg);}
+  .channel-detail{display:none;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--color-border-tertiary);}
+  .channel-detail.open{display:block;}
+  .detail-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+  .detail-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .detail-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .detail-item{font-size:12px;color:var(--color-text-primary);line-height:1.7;display:flex;gap:6px;}
+  .detail-item::before{content:"·";color:var(--color-text-tertiary);}
+  .tip-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:var(--color-text-secondary);margin-top:4px;}
+
+  /* CALENDÁRIO */
+  .week-label{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;margin-top:14px;}
+  .content-row{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 14px;margin-bottom:6px;display:grid;grid-template-columns:80px 1fr auto;gap:10px;align-items:center;}
+  .content-day{font-size:12px;font-weight:500;color:var(--color-text-secondary);}
+  .content-text{font-size:13px;color:var(--color-text-primary);}
+  .content-format{font-size:11px;padding:2px 8px;border-radius:20px;}
+
+  /* ICP */
+  .icp-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem 1.25rem;margin-bottom:10px;}
+  .icp-title{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+  .icp-pain{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;}
+  .icp-hooks{font-size:12px;color:var(--color-text-primary);line-height:1.8;}
+
+  /* MÉTRICAS */
+  .metric-table{width:100%;border-collapse:separate;border-spacing:0 6px;}
+  .metric-table th{font-size:11px;color:var(--color-text-secondary);text-align:left;padding:4px 10px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;}
+  .metric-table td{font-size:13px;color:var(--color-text-primary);padding:10px 12px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);}
+  .metric-table td:first-child{border-radius:var(--border-radius-md) 0 0 var(--border-radius-md);}
+  .metric-table td:last-child{border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;}
+
+  .priority-bar{height:8px;border-radius:4px;margin-top:4px;}
+  .metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+  .metric-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .metric-val{font-size:18px;font-weight:500;color:var(--color-text-primary);}
+  .metric-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+</style>
+
+<h2 class="sr-only">Estratégia de marketing B2B para o Atlas RPA</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Marketing B2B — Atlas RPA</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Canais, conteúdo, ICP e métricas para crescer com autoridade</div>
+
+  <div class="metric-grid">
+    <div class="metric-box"><div class="metric-val">LinkedIn</div><div class="metric-lbl">canal #1 para RPA B2B</div></div>
+    <div class="metric-box"><div class="metric-val">Cases</div><div class="metric-lbl">conteúdo que mais converte</div></div>
+    <div class="metric-box"><div class="metric-val">3–6 m</div><div class="metric-lbl">para ver resultados orgânicos</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('canais',this)">Canais e prioridade</div>
+    <div class="tab" onclick="switchTab('conteudo',this)">Calendário de conteúdo</div>
+    <div class="tab" onclick="switchTab('icp',this)">Personas e ICP</div>
+    <div class="tab" onclick="switchTab('metricas',this)">Métricas e metas</div>
+  </div>
+
+  <div class="panel active" id="panel-canais"><div id="canais-container"></div></div>
+  <div class="panel" id="panel-conteudo">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:4px;">Plano de conteúdo para as primeiras 4 semanas. Foco total em LinkedIn + 1 conteúdo de autoridade por semana.</div>
+    <div id="conteudo-container"></div>
+  </div>
+  <div class="panel" id="panel-icp">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">As 4 personas que mais compram RPA no Brasil — cada uma com dor específica e gancho de abordagem.</div>
+    <div id="icp-container"></div>
+  </div>
+  <div class="panel" id="panel-metricas">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">O que medir em cada canal para saber se o marketing está funcionando.</div>
+    <div id="metricas-container"></div>
+  </div>
+</div>
+
+<script>
+function switchTab(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+}
+
+const canais = [
+  { icon:"ti-brand-linkedin", iconBg:"#E6F1FB", iconColor:"#185FA5",
+    title:"LinkedIn (orgânico)", sub:"Autoridade técnica + prospecção ativa",
+    prioridade:"Prioridade máxima", prioBg:"#FCEBEB", prioColor:"#A32D2D",
+    esforco:"Alto", custo:"Gratuito", retorno:"3–6 meses",
+    acoes:["Postar 3× por semana: você e sua sócia em perfis pessoais (empresa cresce com pessoas, não logos)","Formato que mais funciona: carrossel de 'processo manual X bot — antes e depois'","Comentar em posts de gestores financeiros, contábeis e de operações do seu nicho","Pedir conexão com decisores logo após o primeiro post viralizar"],
+    tip:"No LinkedIn B2B, o perfil pessoal do fundador performa 10× melhor que a página da empresa. Invista no seu perfil e no da sua sócia antes do perfil do Atlas."
+  },
+  { icon:"ti-users", iconBg:"#E1F5EE", iconColor:"#0F6E56",
+    title:"Indicações e network ativo", sub:"Seu canal de menor CAC e maior conversão",
+    prioridade:"Prioridade máxima", prioBg:"#FCEBEB", prioColor:"#A32D2D",
+    esforco:"Médio", custo:"Gratuito", retorno:"Imediato",
+    acoes:["Liste 50 contatos que conhecem empresas no seu nicho: ex-colegas, fornecedores, clientes antigos","Avise sua rede do lançamento do Atlas com mensagem personalizada (não broadcast)","A cada cliente fechado, peça formalmente 1 indicação no check-in de 30 dias","Crie um programa de indicação: 10% do primeiro contrato para quem indicar"],
+    tip:"Indicação é o canal com maior taxa de fechamento (60–80%). Não espere o cliente indicar espontaneamente — peça, com script, no momento certo."
+  },
+  { icon:"ti-video", iconBg:"#EEEDFE", iconColor:"#534AB7",
+    title:"Vídeo (YouTube + LinkedIn)", sub:"Demonstrações de bots em funcionamento",
+    prioridade:"Alta", prioBg:"#FAEEDA", prioColor:"#633806",
+    esforco:"Alto", custo:"Gratuito", retorno:"4–8 meses",
+    acoes:["Grave demos de 2–5 min mostrando bots reais (com permissão do cliente ou dados fictícios)","Formato: 'Automatizamos X processo em Y dias — veja como ficou'","Use Loom para demos rápidas no processo de vendas (envie no follow-up)","Reúse no YouTube, LinkedIn, WhatsApp e no site"],
+    tip:"Vídeo de bot funcionando é o maior redutor de resistência em vendas de RPA. O prospect que vê o bot antes da reunião já chega meio convencido."
+  },
+  { icon:"ti-calendar-event", iconBg:"#FAEEDA", iconColor:"#854F0B",
+    title:"Eventos e comunidades", sub:"Visibilidade presencial e palestras técnicas",
+    prioridade:"Média", prioBg:"#EAF3DE", prioColor:"#27500A",
+    esforco:"Médio", custo:"Baixo", retorno:"2–4 meses",
+    acoes:["Palestrar em eventos de contabilidade, financeiro e RH — não de tecnologia (onde estão os compradores, não os técnicos)","Participar de grupos do WhatsApp e Telegram de gestores do seu nicho","Propor workshops gratuitos de 1h sobre 'como identificar processos para automatizar'","Associar-se a associações do segmento-alvo (CRC, ABRH, etc.)"],
+    tip:"Palestre para o nicho do cliente, não para o nicho de TI. Um slot de 20 min numa reunião de contadores vale mais que um estande em feira de tecnologia."
+  },
+  { icon:"ti-writing", iconBg:"#EAF3DE", iconColor:"#3B6D11",
+    title:"Conteúdo escrito (blog + newsletter)", sub:"SEO e nutrição de leads de longo prazo",
+    prioridade:"Média", prioBg:"#EAF3DE", prioColor:"#27500A",
+    esforco:"Médio", custo:"Gratuito", retorno:"6–12 meses",
+    acoes:["2 artigos por mês: 'Como automatizar [processo X] no [segmento Y]'","Newsletter mensal para leads: cases, novidades e dicas de automação","Otimizar para palavras-chave longas: 'automatizar conciliação financeira', 'RPA para contabilidade'","Republique artigos no LinkedIn como carrossel para maximizar alcance"],
+    tip:"Blog leva tempo mas gera leads 24h por dia sem custo. Comece agora para colher em 6 meses. Foque em artigos específicos por segmento — não artigos genéricos sobre RPA."
+  },
+  { icon:"ti-ad-2", iconBg:"#FCEBEB", iconColor:"#A32D2D",
+    title:"Tráfego pago (LinkedIn Ads / Google)", sub:"Aceleração de leads — só após validação orgânica",
+    prioridade:"Baixa agora", prioBg:"#E6F1FB", prioColor:"#0C447C",
+    esforco:"Médio", custo:"Alto (R$3–15k/mês)", retorno:"Imediato mas caro",
+    acoes:["LinkedIn Ads: segmentação por cargo (gerente financeiro, controller) + setor","Google Ads: palavras de intenção alta ('empresa de RPA', 'automação de processos SP')","Só ative após ter ao menos 3 cases documentados para usar nos criativos","Comece com R$1.500/mês para testar — não escale sem medir CPL"],
+    tip:"Não invista em tráfego pago antes de ter cases, site e processo comercial rodando. Dinheiro em anúncio sem esses elementos é desperdício."
+  }
+];
+
+const canaisEl = document.getElementById('canais-container');
+canais.forEach((c,i)=>{
+  const div=document.createElement('div');
+  div.className='channel-card';
+  div.innerHTML=`
+    <div class="channel-header">
+      <div class="channel-icon" style="background:${c.iconBg};color:${c.iconColor}"><i class="ti ${c.icon}" aria-hidden="true"></i></div>
+      <div style="flex:1"><div class="channel-title">${c.title}</div><div class="channel-sub">${c.sub}</div></div>
+      <div class="channel-meta">
+        <span class="pill" style="background:${c.prioBg};color:${c.prioColor}">${c.prioridade}</span>
+        <span class="chevron" id="chev-c-${i}">▼</span>
+      </div>
+    </div>
+    <div class="channel-detail" id="cd-${i}">
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <span class="pill" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">Esforço: ${c.esforco}</span>
+        <span class="pill" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">Custo: ${c.custo}</span>
+        <span class="pill" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">Retorno: ${c.retorno}</span>
+      </div>
+      <div class="detail-cols">
+        <div class="detail-box">
+          <div class="detail-title">Como executar</div>
+          ${c.acoes.map(a=>`<div class="detail-item">${a}</div>`).join('')}
+        </div>
+        <div class="detail-box" style="display:flex;align-items:flex-start">
+          <div>
+            <div class="detail-title">Insight estratégico</div>
+            <div style="font-size:12px;color:var(--color-text-primary);line-height:1.7">${c.tip}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  div.addEventListener('click',()=>{
+    const d=document.getElementById('cd-'+i),ch=document.getElementById('chev-c-'+i);
+    const o=d.classList.toggle('open');
+    div.classList.toggle('open',o);
+    ch.classList.toggle('open',o);
+  });
+  canaisEl.appendChild(div);
+});
+
+const semanas = [
+  { label:"Semana 1 — Fundação", items:[
+    {day:"Seg",text:"Post de lançamento do Atlas: 'Estamos no ar — o que fazemos e por que'",fmt:"Texto",fBg:"#E6F1FB",fC:"#0C447C"},
+    {day:"Qua",text:"Carrossel: '3 processos que toda empresa ainda faz manualmente (e não deveria)'",fmt:"Carrossel",fBg:"#EEEDFE",fC:"#3C3489"},
+    {day:"Sex",text:"Demo em vídeo curto (Loom): bot executando uma automação simples",fmt:"Vídeo",fBg:"#E1F5EE",fC:"#085041"}
+  ]},
+  { label:"Semana 2 — Educação", items:[
+    {day:"Seg",text:"Post: 'Como calculamos o ROI de uma automação em 10 minutos' — com print da planilha",fmt:"Texto",fBg:"#E6F1FB",fC:"#0C447C"},
+    {day:"Qua",text:"Carrossel: 'RPA vs macro de Excel vs Power Automate — qual usar em cada caso'",fmt:"Carrossel",fBg:"#EEEDFE",fC:"#3C3489"},
+    {day:"Sex",text:"Post da sócia: 'O que aprendi nas primeiras reuniões de prospecção do Atlas'",fmt:"Texto",fBg:"#FAEEDA",fC:"#633806"}
+  ]},
+  { label:"Semana 3 — Case e prova social", items:[
+    {day:"Seg",text:"Case anônimo: 'Como automatizamos X horas de trabalho manual em [segmento]'",fmt:"Carrossel",fBg:"#EEEDFE",fC:"#3C3489"},
+    {day:"Qua",text:"Post técnico: 'Os 5 erros mais comuns ao implementar RPA (e como evitar)'",fmt:"Artigo",fBg:"#EAF3DE",fC:"#27500A"},
+    {day:"Sex",text:"Vídeo: bastidores do desenvolvimento de um bot — processo real",fmt:"Vídeo",fBg:"#E1F5EE",fC:"#085041"}
+  ]},
+  { label:"Semana 4 — Conversão", items:[
+    {day:"Seg",text:"Post: 'Quanto custa NÃO automatizar? O cálculo que ninguém faz'",fmt:"Texto",fBg:"#E6F1FB",fC:"#0C447C"},
+    {day:"Qua",text:"Carrossel: 'Antes e depois: como ficou o processo de [cliente] com RPA'",fmt:"Carrossel",fBg:"#EEEDFE",fC:"#3C3489"},
+    {day:"Sex",text:"CTA direto: 'Faço diagnóstico gratuito de 30 min — link na bio'",fmt:"Texto",fBg:"#FCEBEB",fC:"#A32D2D"}
+  ]}
+];
+
+const conteudoEl=document.getElementById('conteudo-container');
+semanas.forEach(s=>{
+  let html=`<div class="week-label">${s.label}</div>`;
+  s.items.forEach(it=>{
+    html+=`<div class="content-row">
+      <span class="content-day">${it.day}</span>
+      <span class="content-text">${it.text}</span>
+      <span class="content-format" style="background:${it.fBg};color:${it.fC}">${it.fmt}</span>
+    </div>`;
+  });
+  conteudoEl.innerHTML+=html;
+});
+
+const icps=[
+  { icon:"ti-calculator", iconBg:"#E6F1FB", iconColor:"#185FA5",
+    title:"Gerente / Diretor Financeiro", tag:"Decisor de budget",
+    pain:"Fechamento contábil manual, conciliação bancária, DRE feito no Excel, retrabalho em relatórios gerenciais",
+    hooks:["'Quanto tempo seu time leva para fechar o mês?'","'Já calculou o custo de um erro de conciliação?'","'E se o relatório estivesse pronto automaticamente toda segunda-feira?'"]
+  },
+  { icon:"ti-report-analytics", iconBg:"#EAF3DE", iconColor:"#3B6D11",
+    title:"Controller / Coordenador Contábil", tag:"Influenciador técnico",
+    pain:"Lançamentos manuais no ERP, geração de SPED, conferência de notas fiscais, backup de arquivos XML",
+    hooks:["'Quantas horas seu time passa gerando o SPED por mês?'","'Já tentou automatizar o processo de entrada de NF?'","'Mostra como é o processo hoje — aposto que consigo te salvar 20h por mês'"]
+  },
+  { icon:"ti-users-group", iconBg:"#FAEEDA", iconColor:"#633806",
+    title:"Gerente de RH / Pessoas", tag:"Comprador em expansão",
+    pain:"Folha de ponto manual, integração de benefícios, geração de holerites, onboarding de novos colaboradores",
+    hooks:["'Qual parte do processo de admissão mais toma tempo do seu time?'","'E no fechamento de folha — ainda é tudo manual?'","'Automatizamos o onboarding de uma empresa com 80 pessoas — quer ver como ficou?'"]
+  },
+  { icon:"ti-truck-delivery", iconBg:"#EEEDFE", iconColor:"#534AB7",
+    title:"Gerente de Operações / Supply", tag:"Perfil emergente",
+    pain:"Pedidos de compra manuais, rastreamento de entregas, atualizações de estoque no ERP, comunicação com fornecedores",
+    hooks:["'Seu time ainda faz pedido de compra digitando no sistema?'","'Quantos fornecedores você tem? E todos os e-mails são respondidos manualmente?'","'Já perdeu pedido por falta de atualização de estoque em tempo real?'"]
+  }
+];
+
+const icpEl=document.getElementById('icp-container');
+icps.forEach(p=>{
+  icpEl.innerHTML+=`
+    <div class="icp-card">
+      <div class="icp-title">
+        <div style="width:32px;height:32px;border-radius:var(--border-radius-md);background:${p.iconBg};color:${p.iconColor};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ${p.icon}" aria-hidden="true" style="font-size:16px"></i>
+        </div>
+        ${p.title}
+        <span class="pill" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">${p.tag}</span>
+      </div>
+      <div class="icp-pain"><strong>Dor principal:</strong> ${p.pain}</div>
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:4px">Ganchos de abordagem</div>
+      <div class="icp-hooks">${p.hooks.map(h=>`<div style="display:flex;gap:6px"><span style="color:var(--color-text-tertiary)">»</span><span>${h}</span></div>`).join('')}</div>
+    </div>
+  `;
+});
+
+const metricas=[
+  ["LinkedIn (perfil pessoal)","Alcance semanal","Impressões + conexões novas","Meta: 5.000 imp/semana em 60 dias"],
+  ["LinkedIn","Taxa de engajamento","Curtidas + comentários / alcance","Meta: ≥ 3% por post"],
+  ["Prospecção ativa","Taxa de resposta","Respostas / mensagens enviadas","Meta: ≥ 20% de resposta"],
+  ["Funil comercial","Taxa de reunião","Leads abordados → reunião agendada","Meta: 1 reunião a cada 5 contatos"],
+  ["Site","Leads gerados","Formulários preenchidos / mês","Meta: 5 leads inbound no mês 3"],
+  ["Indicações","Referrals ativos","Indicações recebidas / mês","Meta: 2 indicações/mês após 3 clientes"],
+  ["Conteúdo","Conteúdo que converte","Posts que geraram reunião ou contato","Replicar formato dos top 3 posts"]
+];
+
+const metEl=document.getElementById('metricas-container');
+let tbl=`<table class="metric-table"><thead><tr>
+  <th>Canal</th><th>Métrica</th><th>Como medir</th><th>Meta inicial</th>
+</tr></thead><tbody>`;
+metricas.forEach(r=>{
+  tbl+=`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`;
+});
+tbl+=`</tbody></table>
+<div style="margin-top:14px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;font-size:12px;color:var(--color-text-secondary)">
+  <strong style="color:var(--color-text-primary)">Regra prática:</strong> nos primeiros 3 meses, meça apenas 2 coisas — reuniões agendadas por semana e origem de cada lead. Tudo que não gera reunião agora pode ser otimizado depois.
+</div>`;
+metEl.innerHTML=tbl;
+</script>

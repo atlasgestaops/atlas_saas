@@ -1,0 +1,269 @@
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+  .stepper-nav{display:flex;gap:0;margin-bottom:20px;border-radius:var(--border-radius-lg);overflow:hidden;border:0.5px solid var(--color-border-tertiary);}
+  .step-tab{flex:1;padding:10px 4px;font-size:11px;font-weight:500;text-align:center;cursor:pointer;background:var(--color-background-secondary);color:var(--color-text-secondary);border-right:0.5px solid var(--color-border-tertiary);transition:.15s;line-height:1.3;}
+  .step-tab:last-child{border-right:none;}
+  .step-tab.active{background:var(--color-text-primary);color:var(--color-background-primary);}
+  .step-tab:hover:not(.active){background:var(--color-background-primary);}
+  .phase-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;}
+  .phase-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .phase-icon{width:44px;height:44px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+  .phase-title{font-size:16px;font-weight:500;color:var(--color-text-primary);}
+  .phase-sub{font-size:12px;color:var(--color-text-secondary);margin-top:2px;}
+  .section-label{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+  .info-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .checklist-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;color:var(--color-text-primary);line-height:1.5;}
+  .checklist-item:last-child{border-bottom:none;}
+  .check-box{width:16px;height:16px;border-radius:4px;border:0.5px solid var(--color-border-secondary);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.1s;}
+  .check-box.checked{background:var(--color-text-primary);border-color:transparent;}
+  .check-box.checked::after{content:"✓";font-size:10px;color:var(--color-background-primary);}
+  .deliverable{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:6px;font-size:13px;}
+  .deliverable i{font-size:16px;color:var(--color-text-secondary);}
+  .duration-bar{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:12px;}
+  .dur-fill{height:6px;border-radius:3px;flex-shrink:0;}
+  .dur-label{font-size:12px;color:var(--color-text-secondary);}
+  .dur-val{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-left:auto;}
+  .warn-box{background:var(--color-background-warning);border-radius:var(--border-radius-md);padding:10px 12px;font-size:12px;color:var(--color-text-warning);display:flex;gap:8px;align-items:flex-start;margin-top:10px;}
+  .nav-btns{display:flex;justify-content:space-between;margin-top:16px;}
+  .progress-dots{display:flex;gap:6px;align-items:center;justify-content:center;margin-bottom:12px;}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--color-border-secondary);transition:.2s;}
+  .dot.active{background:var(--color-text-primary);}
+</style>
+
+<h2 class="sr-only">Processo de entrega de RPA do Atlas, da descoberta ao deploy</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Processo de entrega Atlas</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Da descoberta ao deploy — 6 fases com checklists e entregáveis</div>
+
+  <div class="stepper-nav" id="stepper-nav"></div>
+  <div class="progress-dots" id="progress-dots"></div>
+  <div id="phase-content"></div>
+  <div class="nav-btns">
+    <button id="btn-prev" onclick="navigate(-1)">← Anterior</button>
+    <button id="btn-next" onclick="navigate(1)">Próxima →</button>
+  </div>
+</div>
+
+<script>
+const phases = [
+  {
+    label:"1. Discovery",
+    icon:"ti-search", iconBg:"#EEEDFE", iconColor:"#534AB7",
+    title:"Discovery — entendendo o processo",
+    sub:"Objetivo: mapear o processo candidato à automação e validar se vale automatizar",
+    duration:"3–5 dias úteis", durColor:"#7F77DD", durW:15,
+    tasks:[
+      "Agendar reunião de discovery com o cliente (45–60 min)",
+      "Mapear o processo AS-IS: quem faz, com que frequência, quanto tempo leva",
+      "Identificar sistemas envolvidos (ERP, planilhas, portais web)",
+      "Levantar volume de transações por mês",
+      "Identificar exceções e variações do processo",
+      "Calcular o ROI estimado (horas economizadas × custo hora)",
+      "Validar acesso técnico aos sistemas (login, API, permissões)"
+    ],
+    deliverables:[
+      {icon:"ti-file-text", text:"Relatório de viabilidade (processo, ROI, riscos)"},
+      {icon:"ti-table", text:"Planilha de mapeamento AS-IS"},
+      {icon:"ti-checklist", text:"Checklist de pré-requisitos técnicos"}
+    ],
+    warn:"Processos com muitas exceções ou que mudam com frequência têm ROI baixo. Seja honesto com o cliente — melhor não automatizar do que entregar algo frágil.",
+    warnIcon:"ti-alert-triangle"
+  },
+  {
+    label:"2. Proposta",
+    icon:"ti-file-invoice", iconBg:"#E1F5EE", iconColor:"#0F6E56",
+    title:"Proposta técnica e comercial",
+    sub:"Objetivo: formalizar escopo, prazo e valor antes de iniciar o desenvolvimento",
+    duration:"1–2 dias úteis", durColor:"#1D9E75", durW:10,
+    tasks:[
+      "Definir escopo: o que o bot faz e o que não faz (limitações explícitas)",
+      "Estimar horas de desenvolvimento com buffer de 20%",
+      "Definir modelo de cobrança: projeto fixo ou mensalidade (managed)",
+      "Redigir proposta com: escopo, prazo, preço, SLA pós-entrega e exclusões",
+      "Enviar proposta e agendar reunião de alinhamento",
+      "Coletar assinatura do contrato e NDA antes de qualquer acesso"
+    ],
+    deliverables:[
+      {icon:"ti-file-invoice", text:"Proposta comercial assinada"},
+      {icon:"ti-writing", text:"Contrato de prestação de serviço"},
+      {icon:"ti-lock", text:"NDA assinado pelas duas partes"}
+    ],
+    warn:"Nunca inicie o desenvolvimento sem contrato assinado. Mesmo clientes conhecidos. Escopo verbal é o principal gerador de retrabalho e conflito.",
+    warnIcon:"ti-alert-circle"
+  },
+  {
+    label:"3. Design",
+    icon:"ti-sitemap", iconBg:"#FAEEDA", iconColor:"#854F0B",
+    title:"Design do processo automatizado (PDD)",
+    sub:"Objetivo: documentar exatamente o que o bot vai fazer — passo a passo",
+    duration:"2–4 dias úteis", durColor:"#BA7517", durW:20,
+    tasks:[
+      "Criar o PDD (Process Design Document) — fluxo detalhado do bot",
+      "Mapear cada passo: input, ação, output, condição de erro",
+      "Definir regras de negócio e exceções tratadas",
+      "Documentar credenciais e acessos necessários (cofre de senhas)",
+      "Validar PDD com o cliente antes de codar — aprovação formal",
+      "Definir ambiente de desenvolvimento vs produção",
+      "Estabelecer critérios de aceite do projeto"
+    ],
+    deliverables:[
+      {icon:"ti-sitemap", text:"PDD aprovado e assinado pelo cliente"},
+      {icon:"ti-key", text:"Mapa de acessos e credenciais"},
+      {icon:"ti-circle-check", text:"Critérios de aceite definidos"}
+    ],
+    warn:"O PDD é seu seguro contra escopo-creep. Se o cliente pedir algo fora do PDD, é uma mudança de escopo — com prazo e custo revisados.",
+    warnIcon:"ti-shield"
+  },
+  {
+    label:"4. Desenvolvimento",
+    icon:"ti-code", iconBg:"#E6F1FB", iconColor:"#185FA5",
+    title:"Desenvolvimento do bot",
+    sub:"Objetivo: construir o bot no ambiente de dev com base no PDD aprovado",
+    duration:"5–15 dias úteis", durColor:"#378ADD", durW:60,
+    tasks:[
+      "Configurar ambiente de desenvolvimento isolado do cliente",
+      "Desenvolver o fluxo principal (happy path) primeiro",
+      "Implementar tratamento de erros e exceções mapeadas",
+      "Configurar logs de execução e alertas de falha",
+      "Criar versionamento no GitHub (uma branch por projeto)",
+      "Registrar em diário de desenvolvimento: decisões e mudanças",
+      "Comunicar progresso ao cliente semanalmente (status report)"
+    ],
+    deliverables:[
+      {icon:"ti-brand-github", text:"Código versionado no repositório"},
+      {icon:"ti-file-code", text:"Diário de desenvolvimento"},
+      {icon:"ti-bell", text:"Sistema de alertas configurado"}
+    ],
+    warn:"Desenvolva sempre em cima do PDD. Se descobrir algo diferente durante o desenvolvimento, não adapte silenciosamente — documente e comunique o cliente antes.",
+    warnIcon:"ti-git-branch"
+  },
+  {
+    label:"5. Testes (UAT)",
+    icon:"ti-test-pipe", iconBg:"#EAF3DE", iconColor:"#3B6D11",
+    title:"Testes e homologação (UAT)",
+    sub:"Objetivo: garantir que o bot funciona conforme os critérios de aceite",
+    duration:"3–5 dias úteis", durColor:"#639922", durW:20,
+    tasks:[
+      "Executar testes unitários em cada etapa do fluxo",
+      "Testar cenários de exceção mapeados no PDD",
+      "Executar teste de volume com dados reais do cliente",
+      "Documentar todos os bugs encontrados e corrigidos",
+      "Conduzir sessão de UAT com usuário-chave do cliente",
+      "Coletar aprovação formal do cliente por escrito (e-mail ou assinatura)",
+      "Registrar performance: tempo de execução, taxa de erro"
+    ],
+    deliverables:[
+      {icon:"ti-clipboard-check", text:"Relatório de testes com resultado"},
+      {icon:"ti-circle-check", text:"Termo de aceite assinado pelo cliente"},
+      {icon:"ti-chart-line", text:"Relatório de performance do bot"}
+    ],
+    warn:"Sem termo de aceite, qualquer problema pós-deploy vira sua responsabilidade. O aceite formal protege você e alinha expectativas do cliente.",
+    warnIcon:"ti-writing-sign"
+  },
+  {
+    label:"6. Deploy e Handover",
+    icon:"ti-rocket", iconBg:"#FAECE7", iconColor:"#993C1D",
+    title:"Deploy, handover e sustentação",
+    sub:"Objetivo: colocar o bot em produção e garantir a transição para operação",
+    duration:"2–3 dias úteis", durColor:"#D85A30", durW:15,
+    tasks:[
+      "Migrar bot para ambiente de produção do cliente",
+      "Configurar agendamento das execuções (scheduler)",
+      "Treinar usuário responsável no cliente para monitoramento básico",
+      "Entregar manual de operação e troubleshooting",
+      "Configurar dashboard de monitoramento (logs, alertas)",
+      "Definir canal de suporte pós-entrega (e-mail, WhatsApp, ticket)",
+      "Agendar check-in de 30 dias para avaliar performance"
+    ],
+    deliverables:[
+      {icon:"ti-rocket", text:"Bot rodando em produção"},
+      {icon:"ti-book", text:"Manual de operação e suporte"},
+      {icon:"ti-chart-dots", text:"Dashboard de monitoramento ativo"}
+    ],
+    warn:"O deploy não é o fim — é o início da relação de longo prazo. O check-in de 30 dias é a melhor oportunidade para identificar processos adicionais e expandir o contrato.",
+    warnIcon:"ti-heart"
+  }
+];
+
+let current = 0;
+const checked = phases.map(p => new Array(p.tasks.length).fill(false));
+
+function renderNav() {
+  const nav = document.getElementById('stepper-nav');
+  nav.innerHTML = phases.map((p,i)=>`<div class="step-tab ${i===current?'active':''}" onclick="goTo(${i})">${p.label}</div>`).join('');
+  const dots = document.getElementById('progress-dots');
+  dots.innerHTML = phases.map((_,i)=>`<div class="dot ${i===current?'active':''}"></div>`).join('');
+  document.getElementById('btn-prev').disabled = current === 0;
+  document.getElementById('btn-next').textContent = current === phases.length-1 ? 'Concluído ✓' : 'Próxima →';
+}
+
+function renderPhase() {
+  const p = phases[current];
+  const doneCount = checked[current].filter(Boolean).length;
+  const total = p.tasks.length;
+  document.getElementById('phase-content').innerHTML = `
+    <div class="phase-card">
+      <div class="phase-header">
+        <div class="phase-icon" style="background:${p.iconBg};color:${p.iconColor}">
+          <i class="ti ${p.icon}" aria-hidden="true"></i>
+        </div>
+        <div>
+          <div class="phase-title">${p.title}</div>
+          <div class="phase-sub">${p.sub}</div>
+        </div>
+      </div>
+
+      <div class="duration-bar">
+        <i class="ti ti-clock" aria-hidden="true" style="font-size:16px;color:var(--color-text-secondary)"></i>
+        <div class="dur-fill" style="width:${p.durW}%;background:${p.durColor}"></div>
+        <span class="dur-label">Duração estimada</span>
+        <span class="dur-val">${p.duration}</span>
+      </div>
+
+      <div class="cols2">
+        <div>
+          <div class="section-label">Checklist (${doneCount}/${total})</div>
+          <div class="info-box">
+            ${p.tasks.map((t,i)=>`
+              <div class="checklist-item">
+                <div class="check-box ${checked[current][i]?'checked':''}" onclick="toggleCheck(${i})"></div>
+                <span style="${checked[current][i]?'opacity:.45;text-decoration:line-through':''}">${t}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div>
+          <div class="section-label">Entregáveis desta fase</div>
+          <div>
+            ${p.deliverables.map(d=>`
+              <div class="deliverable">
+                <i class="ti ${d.icon}" aria-hidden="true"></i>
+                <span>${d.text}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="warn-box" style="margin-top:12px">
+            <i class="ti ${p.warnIcon}" aria-hidden="true" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
+            <span>${p.warn}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function toggleCheck(i) {
+  checked[current][i] = !checked[current][i];
+  renderPhase();
+}
+function goTo(i) { current = i; renderNav(); renderPhase(); }
+function navigate(dir) {
+  if (current + dir >= 0 && current + dir < phases.length) goTo(current + dir);
+}
+
+renderNav();
+renderPhase();
+</script>

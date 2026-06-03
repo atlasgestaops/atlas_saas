@@ -1,0 +1,327 @@
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:.15s;}
+  .tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent;}
+  .panel{display:none;}.panel.active{display:block;}
+
+  .clause-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:border-color .2s;}
+  .clause-card:hover,.clause-card.open{border-color:var(--color-border-secondary);}
+  .clause-card.critical{border-left:3px solid #E24B4A;}
+  .clause-header{display:flex;align-items:center;gap:12px;}
+  .clause-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;}
+  .clause-title{font-size:14px;font-weight:500;color:var(--color-text-primary);flex:1;}
+  .clause-tag{font-size:11px;padding:2px 8px;border-radius:20px;}
+  .chevron{font-size:11px;color:var(--color-text-tertiary);margin-left:6px;transition:transform .2s;}
+  .chevron.open{transform:rotate(180deg);}
+  .clause-detail{display:none;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--color-border-tertiary);}
+  .clause-detail.open{display:block;}
+  .clause-why{font-size:13px;color:var(--color-text-secondary);line-height:1.65;margin-bottom:10px;}
+  .clause-text{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;font-size:12px;color:var(--color-text-primary);line-height:1.8;border-left:3px solid var(--color-border-secondary);font-style:italic;}
+  .clause-risk{background:#FCEBEB;border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:#712B13;margin-top:8px;display:flex;gap:8px;align-items:flex-start;}
+
+  .checklist-section{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem 1.25rem;margin-bottom:10px;}
+  .check-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary);}
+  .check-row:last-child{border-bottom:none;}
+  .check-box{width:18px;height:18px;border-radius:4px;border:0.5px solid var(--color-border-secondary);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.1s;}
+  .check-box.checked{background:var(--color-text-primary);border-color:transparent;}
+  .check-box.checked::after{content:"✓";font-size:11px;color:var(--color-background-primary);}
+  .check-label{font-size:13px;color:var(--color-text-primary);line-height:1.5;}
+  .check-label.done{opacity:.4;text-decoration:line-through;}
+  .check-section-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin:14px 0 6px;}
+
+  .error-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
+  .error-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .error-what{font-size:12px;color:var(--color-text-secondary);margin-bottom:6px;}
+  .error-how{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:var(--color-text-primary);line-height:1.6;}
+
+  .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+  .metric-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .metric-val{font-size:16px;font-weight:500;color:var(--color-text-primary);}
+  .metric-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+  .progress-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;color:var(--color-text-secondary);}
+  .progress-bar{flex:1;height:4px;background:var(--color-border-tertiary);border-radius:2px;}
+  .progress-fill{height:4px;border-radius:2px;}
+</style>
+
+<h2 class="sr-only">Cláusulas essenciais de um contrato de RPA para o Atlas</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Contrato de RPA — Atlas</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Cláusulas essenciais, modelos de texto e erros a evitar</div>
+
+  <div class="metric-grid">
+    <div class="metric-box"><div class="metric-val">12</div><div class="metric-lbl">cláusulas essenciais</div></div>
+    <div class="metric-box"><div class="metric-val">4</div><div class="metric-lbl">críticas para o Atlas</div></div>
+    <div class="metric-box"><div class="metric-val">NDA</div><div class="metric-lbl">assinar antes do início</div></div>
+    <div class="metric-box"><div class="metric-val">LGPD</div><div class="metric-lbl">obrigatório desde 2020</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('clausulas',this)">Cláusulas essenciais</div>
+    <div class="tab" onclick="switchTab('checklist',this)">Checklist de revisão</div>
+    <div class="tab" onclick="switchTab('erros',this)">Erros mais comuns</div>
+  </div>
+
+  <div class="panel active" id="panel-clausulas"><div id="clausulas-container"></div></div>
+  <div class="panel" id="panel-checklist">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">Use antes de enviar qualquer contrato ao cliente. Marque cada item conforme revisar.</div>
+    <div id="checklist-container"></div>
+    <div style="margin-top:10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;" id="progress-section">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px">Progresso da revisão</div>
+      <div id="progress-bars"></div>
+    </div>
+  </div>
+  <div class="panel" id="panel-erros">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">Os erros que mais geram conflito com clientes — e como evitar cada um.</div>
+    <div id="erros-container"></div>
+  </div>
+</div>
+
+<script>
+function switchTab(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+}
+
+const clausulas = [
+  { num:"01", critical:true, numBg:"#FCEBEB", numColor:"#A32D2D",
+    title:"Definição de escopo e objeto do contrato",
+    tag:"Crítica", tagBg:"#FCEBEB", tagColor:"#A32D2D",
+    why:"A cláusula mais importante do contrato. Define exatamente o que será entregue — sistemas, processos, volume e limitações. Tudo que não está aqui é escopo extra, com custo adicional.",
+    modelo:`A CONTRATADA compromete-se a desenvolver solução de automação robótica de processos (RPA) para o processo de [NOME DO PROCESSO], conforme mapeamento descrito no Documento de Design de Processo (PDD) anexo a este instrumento, parte integrante e indissociável do contrato. Quaisquer alterações de escopo deverão ser formalizadas por aditivo contratual.`,
+    risco:"Sem escopo definido, o cliente sempre achará que 'mais uma coisa' está incluída. Você trabalhará de graça infinitamente."
+  },
+  { num:"02", critical:true, numBg:"#FCEBEB", numColor:"#A32D2D",
+    title:"Propriedade intelectual do bot desenvolvido",
+    tag:"Crítica", tagBg:"#FCEBEB", tagColor:"#A32D2D",
+    why:"Define quem é o dono do código do bot após a entrega. Há três variações possíveis: código pertence ao cliente, pertence ao Atlas, ou uso licenciado. Defina isso antes de começar.",
+    modelo:`O código-fonte e todos os ativos desenvolvidos pela CONTRATADA no âmbito deste contrato serão [OPÇÃO A: transferidos ao CONTRATANTE mediante pagamento integral / OPÇÃO B: licenciados ao CONTRATANTE para uso exclusivo não-comercial / OPÇÃO C: mantidos sob propriedade da CONTRATADA, com licença de uso concedida ao CONTRATANTE pelo período de vigência deste contrato].`,
+    risco:"Se não definir, o cliente pode reivindicar o código como dele. Ou você pode perder o direito de reutilizar componentes em outros projetos."
+  },
+  { num:"03", critical:true, numBg:"#FCEBEB", numColor:"#A32D2D",
+    title:"SLA de suporte e manutenção pós-entrega",
+    tag:"Crítica", tagBg:"#FCEBEB", tagColor:"#A32D2D",
+    why:"Define o que acontece quando o bot falha depois do go-live. Sem isso, o cliente espera suporte 24/7 gratuito e você fica refém de qualquer incidente.",
+    modelo:`A CONTRATADA oferecerá suporte técnico pós-entrega pelo prazo de [30/60/90] dias, cobrindo falhas originadas no código desenvolvido. O tempo de resposta para falhas críticas (bot parado) será de até [4/8/24] horas úteis. Falhas decorrentes de alterações nos sistemas do CONTRATANTE, mudanças de acesso ou atualizações de terceiros não estão cobertas por este SLA, sendo cotadas separadamente.`,
+    risco:"Sem SLA, o cliente considera que suporte é ilimitado e gratuito para sempre. Defina claramente o que é 'bug do seu código' vs 'mudança no sistema do cliente'."
+  },
+  { num:"04", critical:true, numBg:"#FCEBEB", numColor:"#A32D2D",
+    title:"Limitação de responsabilidade",
+    tag:"Crítica", tagBg:"#FCEBEB", tagColor:"#A32D2D",
+    why:"Protege o Atlas de ser responsabilizado por danos indiretos causados por falha do bot — como perda de receita, multas fiscais ou dados incorretos gerados pela automação.",
+    modelo:`A responsabilidade total da CONTRATADA, por quaisquer danos decorrentes da execução deste contrato, limita-se ao valor total pago pelo CONTRATANTE nos últimos [3/6] meses. A CONTRATADA não se responsabiliza por danos indiretos, lucros cessantes, perda de dados ou penalidades de terceiros resultantes de falhas na automação, salvo nos casos de dolo ou culpa grave comprovados.`,
+    risco:"Um bot que processa 500 pagamentos com erro pode gerar prejuízo de milhões. Sem limitação de responsabilidade, o Atlas pode ser acionado pelo valor total do dano."
+  },
+  { num:"05", critical:false, numBg:"#EEEDFE", numColor:"#3C3489",
+    title:"Condições de pagamento e reajuste",
+    tag:"Financeiro", tagBg:"#EEEDFE", tagColor:"#3C3489",
+    why:"Define o cronograma de pagamento, condições de atraso e reajuste anual do contrato de mensalidade. Evita discussões sobre quando e quanto pagar.",
+    modelo:`O pagamento será realizado conforme o seguinte cronograma: [50% na assinatura do contrato / 50% na entrega e aceite]. Para contratos de mensalidade, o pagamento ocorre até o dia [5] de cada mês. Em caso de atraso, incidirão multa de 2% e juros de 1% ao mês. Os valores serão reajustados anualmente pelo IGP-M ou IPCA, o que for maior.`,
+    risco:"Sem cronograma claro, clientes postergam pagamentos indefinidamente. Defina também o que acontece se o pagamento não ocorrer: suspensão do serviço."
+  },
+  { num:"06", critical:false, numBg:"#EEEDFE", numColor:"#3C3489",
+    title:"Prazo de entrega e cronograma",
+    tag:"Entrega", tagBg:"#EEEDFE", tagColor:"#3C3489",
+    why:"Estabelece o prazo de desenvolvimento e as condições em que o prazo pode ser estendido — como atraso do cliente em fornecer acessos ou aprovar o PDD.",
+    modelo:`O prazo de entrega é de [X] dias úteis, contados a partir da assinatura deste contrato e do recebimento de todos os acessos necessários listados no Anexo I. O prazo será automaticamente suspenso durante: (i) aguardo de aprovação do PDD pelo CONTRATANTE por mais de 3 dias úteis; (ii) indisponibilidade de sistemas do CONTRATANTE; (iii) solicitações de alteração de escopo.`,
+    risco:"Clientes atrasam fornecimento de acessos e depois cobram o prazo original. Inclua suspensão de prazo para proteger sua entrega."
+  },
+  { num:"07", critical:false, numBg:"#E1F5EE", numColor:"#085041",
+    title:"Confidencialidade e NDA",
+    tag:"Segurança", tagBg:"#E1F5EE", tagColor:"#085041",
+    why:"Proíbe ambas as partes de divulgar informações sensíveis obtidas durante o projeto — dados do cliente, processos internos, credenciais, segredos comerciais do Atlas.",
+    modelo:`As partes comprometem-se a manter em sigilo absoluto todas as informações confidenciais obtidas em razão deste contrato, incluindo dados, processos, credenciais e metodologias, pelo prazo de [2/3/5] anos após o término do contrato. A divulgação autorizada depende de consentimento expresso por escrito da parte detentora da informação.`,
+    risco:"Sem NDA, um ex-cliente pode compartilhar sua metodologia com concorrentes, ou você pode inadvertidamente expor dados sensíveis do cliente."
+  },
+  { num:"08", critical:false, numBg:"#E1F5EE", numColor:"#085041",
+    title:"LGPD e tratamento de dados pessoais",
+    tag:"Segurança", tagBg:"#E1F5EE", tagColor:"#085041",
+    why:"Obrigatório desde 2020. Define como o Atlas trata os dados pessoais eventualmente acessados durante o desenvolvimento e operação do bot — quem é controlador, quem é operador.",
+    modelo:`Para fins da Lei nº 13.709/2018 (LGPD), o CONTRATANTE é o Controlador dos dados pessoais tratados no âmbito deste contrato, e a CONTRATADA atua como Operadora, tratando os dados exclusivamente para execução das atividades contratadas, sem compartilhamento com terceiros. A CONTRATADA adota medidas técnicas e organizacionais adequadas para proteger os dados tratados.`,
+    risco:"O Atlas que acessa sistemas com dados de funcionários ou clientes finais é operador de dados. Sem essa cláusula, assume responsabilidades de controlador — muito mais severas."
+  },
+  { num:"09", critical:false, numBg:"#FAEEDA", numColor:"#633806",
+    title:"Rescisão e multas contratuais",
+    tag:"Proteção", tagBg:"#FAEEDA", tagColor:"#633806",
+    why:"Define como qualquer uma das partes pode encerrar o contrato, o prazo de aviso prévio e as penalidades por rescisão antecipada.",
+    modelo:`Qualquer das partes poderá rescindir este contrato mediante aviso prévio de [30/60] dias. A rescisão imotivada pelo CONTRATANTE após o início do desenvolvimento implicará multa de [20/30]% do valor total contratado. A rescisão motivada por inadimplência do CONTRATANTE não exime o pagamento pelos serviços já prestados até a data da rescisão.`,
+    risco:"Sem multa por rescisão, clientes cancelam projetos pela metade sem pagar nada. Você investiu horas de desenvolvimento sem retorno."
+  },
+  { num:"10", critical:false, numBg:"#FAEEDA", numColor:"#633806",
+    title:"Critérios de aceite e homologação",
+    tag:"Entrega", tagBg:"#FAEEDA", tagColor:"#633806",
+    why:"Define objetivamente quando o projeto está 'concluído' e quem aprova. Evita a situação em que o cliente nunca formalmente aceita a entrega e continua pedindo ajustes indefinidamente.",
+    modelo:`O projeto será considerado concluído após aprovação formal pelo CONTRATANTE em sessão de homologação (UAT), conforme critérios de aceite definidos no PDD. Caso o CONTRATANTE não manifeste reprovação fundamentada em até [5] dias úteis após a sessão de UAT, o projeto será considerado tacitamente aceito e o saldo final será exigível.`,
+    risco:"Sem aceite formal, o projeto nunca termina. O cliente sempre tem 'mais um ajuste' e você não consegue faturar o saldo."
+  },
+  { num:"11", critical:false, numBg:"#EAF3DE", numColor:"#27500A",
+    title:"Acesso a sistemas e responsabilidade do cliente",
+    tag:"Operacional", tagBg:"#EAF3DE", tagColor:"#27500A",
+    why:"O bot precisa de credenciais para funcionar. Esta cláusula define que é responsabilidade do cliente fornecer e manter esses acessos válidos — e que falhas por credenciais inválidas não são bug do Atlas.",
+    modelo:`O CONTRATANTE é responsável por fornecer e manter válidos todos os acessos, credenciais e permissões necessários ao funcionamento da automação, conforme listado no Anexo I deste contrato. Indisponibilidades, falhas ou restrições de acesso de responsabilidade do CONTRATANTE ou de sistemas de terceiros não configuram inadimplemento da CONTRATADA e não estão cobertas pelo SLA contratado.`,
+    risco:"Sistemas de ERP pedem senha periodicamente. Se não houver essa cláusula, cada vez que o bot parar por senha expirada será um 'problema seu'."
+  },
+  { num:"12", critical:false, numBg:"#EAF3DE", numColor:"#27500A",
+    title:"Não-aliciamento de colaboradores",
+    tag:"Proteção", tagBg:"#EAF3DE", tagColor:"#27500A",
+    why:"Impede que o cliente contrate diretamente os profissionais do Atlas que trabalharam no projeto — o que esvaziaria seu time e transferiria o conhecimento gratuitamente.",
+    modelo:`Durante a vigência deste contrato e por [12/24] meses após seu término, o CONTRATANTE compromete-se a não contratar, direta ou indiretamente, os profissionais da CONTRATADA que tenham atuado no projeto, sob pena de multa equivalente a [6/12] remunerações mensais do profissional em questão.`,
+    risco:"Sem essa cláusula, o cliente pode contratar seu desenvolvedor diretamente após o projeto, levando todo o conhecimento técnico e relacionamento."
+  }
+];
+
+const clausulasEl=document.getElementById('clausulas-container');
+clausulas.forEach((c,i)=>{
+  const div=document.createElement('div');
+  div.className=`clause-card${c.critical?' critical':''}`;
+  div.innerHTML=`
+    <div class="clause-header">
+      <div class="clause-num" style="background:${c.numBg};color:${c.numColor}">${c.num}</div>
+      <div class="clause-title">${c.title}</div>
+      <span class="clause-tag" style="background:${c.tagBg};color:${c.tagColor}">${c.tag}</span>
+      <span class="chevron" id="chev-cl-${i}">▼</span>
+    </div>
+    <div class="clause-detail" id="cld-${i}">
+      <div class="clause-why">${c.why}</div>
+      <div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Modelo de redação</div>
+      <div class="clause-text">${c.modelo}</div>
+      <div class="clause-risk"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:15px;flex-shrink:0;margin-top:1px"></i><span><strong>Risco sem esta cláusula:</strong> ${c.risco}</span></div>
+    </div>
+  `;
+  div.addEventListener('click',()=>{
+    const d=document.getElementById('cld-'+i),ch=document.getElementById('chev-cl-'+i);
+    const o=d.classList.toggle('open');
+    div.classList.toggle('open',o);
+    ch.classList.toggle('open',o);
+  });
+  clausulasEl.appendChild(div);
+});
+
+const checks={
+  "Antes de redigir":[
+    "PDD aprovado e assinado pelo cliente antes de incluir como anexo",
+    "Lista de sistemas e acessos necessários documentada (Anexo I)",
+    "Modelo de cobrança definido: projeto fixo ou mensalidade",
+    "Prazo de entrega validado com buffer de contingência"
+  ],
+  "No corpo do contrato":[
+    "Escopo descrito com limitações explícitas ('o bot não faz X')",
+    "Propriedade intelectual do código definida claramente",
+    "SLA com tempo de resposta e cobertura especificados",
+    "Limitação de responsabilidade com teto em valor",
+    "Cronograma de pagamento com condições de atraso",
+    "Prazo com condições de suspensão por atraso do cliente",
+    "Critérios de aceite objetivos e prazo de aceite tácito",
+    "Cláusula LGPD definindo Atlas como Operador"
+  ],
+  "Documentos anexos":[
+    "PDD assinado — Anexo obrigatório",
+    "Lista de acessos e sistemas — Anexo I",
+    "NDA assinado separadamente antes do início",
+    "Termo de aceite em branco para assinar no UAT"
+  ],
+  "Antes de enviar ao cliente":[
+    "Revisar com contador ou advogado ao menos uma vez",
+    "Versionar o contrato (v1, v2) para controle de alterações",
+    "Usar plataforma de assinatura digital (DocuSign, ClickSign)",
+    "Guardar cópia assinada em nuvem com acesso restrito"
+  ]
+};
+
+const checkState={};
+let checkIdx=0;
+const allChecks=[];
+let checklistEl=document.getElementById('checklist-container');
+Object.entries(checks).forEach(([section,items])=>{
+  const secDiv=document.createElement('div');
+  secDiv.className='checklist-section';
+  let html=`<div class="check-section-title">${section}</div>`;
+  items.forEach(item=>{
+    const id=checkIdx++;
+    allChecks.push({id,section});
+    checkState[id]=false;
+    html+=`<div class="check-row">
+      <div class="check-box" id="cb-${id}" onclick="toggleCheck(${id})"></div>
+      <span class="check-label" id="cl-${id}">${item}</span>
+    </div>`;
+  });
+  secDiv.innerHTML=html;
+  checklistEl.appendChild(secDiv);
+});
+
+function toggleCheck(id){
+  checkState[id]=!checkState[id];
+  const box=document.getElementById('cb-'+id);
+  const lbl=document.getElementById('cl-'+id);
+  box.classList.toggle('checked',checkState[id]);
+  lbl.classList.toggle('done',checkState[id]);
+  updateProgress();
+}
+
+function updateProgress(){
+  const sections=Object.keys(checks);
+  const barEl=document.getElementById('progress-bars');
+  barEl.innerHTML='';
+  sections.forEach(sec=>{
+    const sItems=allChecks.filter(c=>c.section===sec);
+    const done=sItems.filter(c=>checkState[c.id]).length;
+    const total=sItems.length;
+    const pct=Math.round((done/total)*100);
+    const color=pct===100?'#639922':pct>50?'#EF9F27':'#534AB7';
+    barEl.innerHTML+=`<div class="progress-row">
+      <span style="min-width:140px">${sec}</span>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>
+      <span style="min-width:40px;text-align:right">${done}/${total}</span>
+    </div>`;
+  });
+}
+updateProgress();
+
+const erros=[
+  { icon:"ti-file-x", iconBg:"#FCEBEB", iconColor:"#A32D2D",
+    title:"Escopo descrito de forma vaga ou verbal",
+    what:"Contratos com 'automatizar o processo de faturamento' sem detalhar sistemas, volume, exceções e limitações. O cliente interpreta o máximo, você entregou o mínimo.",
+    how:"Sempre anexe o PDD assinado como parte integrante do contrato. O PDD é o escopo real — o contrato é o invólucro jurídico. Qualquer pedido fora do PDD = aditivo contratual."
+  },
+  { icon:"ti-coin-off", iconBg:"#FCEBEB", iconColor:"#A32D2D",
+    title:"Nenhuma cláusula de limitação de responsabilidade",
+    what:"Bot com falha processa 200 pagamentos duplicados. Sem limitação de responsabilidade, você pode ser responsabilizado pelo valor total dos danos — que pode ser muito maior que o contrato.",
+    how:"Limite sua responsabilidade ao valor pago nos últimos 3 a 6 meses. Exclua danos indiretos, lucros cessantes e penalidades de terceiros. Essa cláusula é padrão em todo contrato de tecnologia sério."
+  },
+  { icon:"ti-lock-open", iconBg:"#FAEEDA", iconColor:"#633806",
+    title:"Propriedade intelectual indefinida",
+    what:"Após a entrega, cliente assume que o código é 100% dele e pode redistribuir ou contratar outro fornecedor para modificar. Ou você usa componentes do projeto em outro cliente e o primeiro reclama.",
+    how:"Defina explicitamente: transferência de propriedade, licença de uso ou propriedade do Atlas. Para a maioria dos casos, licença de uso não-exclusiva protege o Atlas e satisfaz o cliente."
+  },
+  { icon:"ti-clock-off", iconBg:"#FAEEDA", iconColor:"#633806",
+    title:"Prazo sem condições de suspensão",
+    what:"Cliente leva 2 semanas para fornecer acesso ao ERP. Contrato diz 'entrega em 30 dias'. No dia 31, cliente cobra a entrega como se o atraso fosse seu.",
+    how:"Inclua cláusula de suspensão automática de prazo sempre que: (i) acessos não forem fornecidos, (ii) PDD não for aprovado em 3 dias, (iii) sistemas estiverem indisponíveis."
+  },
+  { icon:"ti-user-x", iconBg:"#EAF3DE", iconColor:"#27500A",
+    title:"Sem critério de aceite formal",
+    what:"Projeto entregue, bot funcionando, cliente usa há 2 semanas — mas nunca 'aceitou formalmente'. Fica pedindo ajustes infinitos, saldo nunca é exigível.",
+    how:"Defina UAT com data marcada, critérios objetivos do PDD e prazo de aceite tácito (5 dias sem manifestação = aceito). Envie o Termo de Aceite no kickoff para o cliente já saber o que vai assinar."
+  }
+];
+
+const errosEl=document.getElementById('erros-container');
+erros.forEach(e=>{
+  errosEl.innerHTML+=`
+    <div class="error-card">
+      <div class="error-title">
+        <div style="width:32px;height:32px;border-radius:var(--border-radius-md);background:${e.iconBg};color:${e.iconColor};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ${e.icon}" aria-hidden="true" style="font-size:16px"></i>
+        </div>
+        ${e.title}
+      </div>
+      <div class="error-what"><strong>O problema:</strong> ${e.what}</div>
+      <div class="error-how"><strong>Como evitar:</strong> ${e.how}</div>
+    </div>
+  `;
+});
+</script>

@@ -1,0 +1,312 @@
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:.15s;}
+  .tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent;}
+  .panel{display:none;}.panel.active{display:block;}
+
+  .phase-block{border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);padding:1.1rem 1.25rem;margin-bottom:12px;}
+  .phase-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .phase-badge{padding:4px 14px;border-radius:20px;font-size:12px;font-weight:500;flex-shrink:0;}
+  .phase-title{font-size:15px;font-weight:500;color:var(--color-text-primary);}
+  .phase-sub{font-size:12px;color:var(--color-text-secondary);}
+  .phase-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .phase-col{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .col-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .col-item{font-size:12px;color:var(--color-text-primary);line-height:1.7;display:flex;gap:6px;}
+  .col-item::before{content:"·";color:var(--color-text-tertiary);}
+  .kpi-row{display:flex;gap:8px;margin-top:10px;}
+  .kpi-box{flex:1;border-radius:var(--border-radius-md);padding:8px 10px;text-align:center;}
+  .kpi-val{font-size:16px;font-weight:500;}
+  .kpi-lbl{font-size:11px;margin-top:2px;}
+
+  .mrr-chart{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:12px;}
+  .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .bar-month{font-size:12px;color:var(--color-text-secondary);min-width:30px;}
+  .bar-wrap{flex:1;background:var(--color-border-tertiary);border-radius:3px;height:22px;position:relative;}
+  .bar-fill{height:22px;border-radius:3px;display:flex;align-items:center;padding-left:8px;transition:width .4s;}
+  .bar-label{font-size:11px;font-weight:500;}
+  .bar-val{font-size:12px;color:var(--color-text-secondary);min-width:70px;text-align:right;}
+
+  .okr-block{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem 1.25rem;margin-bottom:10px;}
+  .okr-obj{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .kr-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary);}
+  .kr-row:last-child{border-bottom:none;}
+  .kr-text{font-size:13px;color:var(--color-text-primary);flex:1;}
+  .kr-quarter{font-size:11px;padding:2px 8px;border-radius:20px;flex-shrink:0;}
+  .kr-prog{width:80px;height:6px;background:var(--color-border-tertiary);border-radius:3px;flex-shrink:0;}
+  .kr-fill{height:6px;border-radius:3px;}
+
+  .decision-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:border-color .2s;}
+  .decision-card:hover{border-color:var(--color-border-secondary);}
+  .decision-header{display:flex;align-items:center;gap:12px;}
+  .decision-icon{width:36px;height:36px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .decision-title{font-size:14px;font-weight:500;color:var(--color-text-primary);flex:1;}
+  .decision-when{font-size:12px;color:var(--color-text-secondary);}
+  .chevron{font-size:11px;color:var(--color-text-tertiary);transition:transform .2s;}
+  .chevron.open{transform:rotate(180deg);}
+  .decision-detail{display:none;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--color-border-tertiary);}
+  .decision-detail.open{display:block;}
+  .decision-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .decision-opt{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .opt-title{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;}
+  .opt-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.6;}
+  .rec-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:var(--color-text-primary);margin-top:8px;border-left:3px solid var(--color-border-info);}
+
+  .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+  .metric-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .metric-val{font-size:18px;font-weight:500;color:var(--color-text-primary);}
+  .metric-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+</style>
+
+<h2 class="sr-only">Plano de crescimento do Atlas RPA para os próximos 12 meses</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Plano de crescimento — 12 meses</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Atlas RPA: da operação zero ao negócio escalável</div>
+
+  <div class="metric-grid">
+    <div class="metric-box"><div class="metric-val">3 fases</div><div class="metric-lbl">de crescimento distintas</div></div>
+    <div class="metric-box"><div class="metric-val">R$30k</div><div class="metric-lbl">MRR meta no mês 12</div></div>
+    <div class="metric-box"><div class="metric-val">10–15</div><div class="metric-lbl">clientes ativos no ano 1</div></div>
+    <div class="metric-box"><div class="metric-val">Mês 6</div><div class="metric-lbl">ponto de equilíbrio</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('fases',this)">Fases de crescimento</div>
+    <div class="tab" onclick="switchTab('mrr',this)">Projeção de MRR</div>
+    <div class="tab" onclick="switchTab('okrs',this)">OKRs por trimestre</div>
+    <div class="tab" onclick="switchTab('decisoes',this)">Decisões críticas</div>
+  </div>
+
+  <div class="panel active" id="panel-fases"><div id="fases-container"></div></div>
+  <div class="panel" id="panel-mrr"><div id="mrr-container"></div></div>
+  <div class="panel" id="panel-okrs"><div id="okrs-container"></div></div>
+  <div class="panel" id="panel-decisoes">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">As decisões que vão definir o tipo de empresa que o Atlas será — e quando tomá-las.</div>
+    <div id="decisoes-container"></div>
+  </div>
+</div>
+
+<script>
+function switchTab(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+}
+
+const fases=[
+  { months:"Meses 1–3", label:"Fase 1", title:"Fundação e primeiros clientes",
+    badgeBg:"#EEEDFE", badgeColor:"#3C3489",
+    sub:"Validar o modelo, fechar os primeiros 2–3 clientes e estruturar a operação",
+    foco:["Fechar os 2 primeiros clientes — qualquer nicho, foco em aprender","Entregar com excelência: esses cases são seu portfólio para os próximos 6 meses","Documentar tudo: PDD, processo de entrega, templates de contrato","Definir o nicho-alvo com base nos primeiros feedbacks reais","Construir presença no LinkedIn com consistência (3× semana)"],
+    evitar:["Não tente escalar antes de ter 1 entrega concluída com sucesso","Não diversifique nichos agora — foco total no segmento inicial","Não contrate ninguém antes do mês 3"],
+    kpis:["2–3 clientes","R$0–8k MRR","1 case documentado"],
+    kpiBgs:["#EEEDFE","#E1F5EE","#FAEEDA"],
+    kpiCs:["#3C3489","#085041","#633806"]
+  },
+  { months:"Meses 4–6", label:"Fase 2", title:"Tração e receita recorrente",
+    badgeBg:"#E1F5EE", badgeColor:"#085041",
+    sub:"Transformar projeto em mensalidade e construir o funil comercial sistemático",
+    foco:["Migrar clientes do projeto fechado para managed service (mensalidade)","Ativar cadência de prospecção semanal com meta de 2 reuniões/semana","Publicar 2 cases reais — com números — no LinkedIn","Estruturar processo de CS formal: check-ins, NPS, relatório mensal","Avaliar se precisa de suporte operacional (freelancer ou sócio técnico)"],
+    evitar:["Não aceite projeto fora do nicho por dinheiro fácil — confunde o posicionamento","Não negligencie clientes ativos para perseguir novos","Não expanda portfólio antes de dominar o serviço principal"],
+    kpis:["5–7 clientes","R$8–18k MRR","Breakeven"],
+    kpiBgs:["#EEEDFE","#E1F5EE","#FAEEDA"],
+    kpiCs:["#3C3489","#085041","#633806"]
+  },
+  { months:"Meses 7–12", label:"Fase 3", title:"Escala e especialização",
+    badgeBg:"#FAEEDA", badgeColor:"#633806",
+    sub:"Construir a máquina de crescimento: time, parcerias e novos produtos",
+    foco:["Contratar o primeiro colaborador técnico (dev RPA ou estagiário)","Desenvolver produto próprio: acelerador setorial ou template reutilizável","Fechar 1–2 parcerias com consultorias contábeis ou ERPs regionais","Lançar serviço de IA + RPA para clientes prontos para o próximo nível","Planejar metas do ano 2: novo nicho, nova cidade ou novo produto"],
+    evitar:["Não contrate mais rápido do que a receita permite sustentar","Não abandone o CS dos clientes antigos ao focar em crescimento","Não ignore sinais de churn — 1 cancelamento na fase 3 dói mais que na fase 1"],
+    kpis:["10–15 clientes","R$20–30k MRR","1 colaborador"],
+    kpiBgs:["#EEEDFE","#E1F5EE","#FAEEDA"],
+    kpiCs:["#3C3489","#085041","#633806"]
+  }
+];
+
+const fasesEl=document.getElementById('fases-container');
+fases.forEach(f=>{
+  fasesEl.innerHTML+=`
+    <div class="phase-block">
+      <div class="phase-header">
+        <span class="phase-badge" style="background:${f.badgeBg};color:${f.badgeColor}">${f.months}</span>
+        <div><div class="phase-title">${f.label} — ${f.title}</div><div class="phase-sub">${f.sub}</div></div>
+      </div>
+      <div class="phase-cols">
+        <div class="phase-col">
+          <div class="col-title">Foco principal</div>
+          ${f.foco.map(i=>`<div class="col-item">${i}</div>`).join('')}
+        </div>
+        <div class="phase-col">
+          <div class="col-title">O que evitar</div>
+          ${f.evitar.map(i=>`<div class="col-item" style="color:var(--color-text-secondary)">${i}</div>`).join('')}
+        </div>
+        <div class="phase-col">
+          <div class="col-title">KPIs desta fase</div>
+          ${f.kpis.map((k,i)=>`<div style="background:${f.kpiBgs[i]};border-radius:var(--border-radius-md);padding:6px 10px;margin-bottom:6px;font-size:13px;font-weight:500;color:${f.kpiCs[i]}">${k}</div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+});
+
+const meses=[
+  {m:"Jan",v:0,phase:1},{m:"Fev",v:2500,phase:1},{m:"Mar",v:5000,phase:1},
+  {m:"Abr",v:8000,phase:2},{m:"Mai",v:11000,phase:2},{m:"Jun",v:15000,phase:2},
+  {m:"Jul",v:18000,phase:3},{m:"Ago",v:21000,phase:3},{m:"Set",v:23000,phase:3},
+  {m:"Out",v:25000,phase:3},{m:"Nov",v:27500,phase:3},{m:"Dez",v:30000,phase:3}
+];
+const maxV=30000;
+const phaseColors={1:"#7F77DD",2:"#1D9E75",3:"#D85A30"};
+const phaseLabels={1:"Fundação",2:"Tração",3:"Escala"};
+
+const mrrEl=document.getElementById('mrr-container');
+let mrrHtml=`<div class="mrr-chart">
+  <div style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px">Projeção de MRR mensal</div>
+  <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+    ${[1,2,3].map(p=>`<span style="font-size:12px;display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:${phaseColors[p]};display:inline-block"></span>${phaseLabels[p]}</span>`).join('')}
+  </div>`;
+meses.forEach(m=>{
+  const w=m.v===0?2:Math.round((m.v/maxV)*100);
+  const fmt=m.v===0?'—':'R$'+m.v.toLocaleString('pt-BR');
+  mrrHtml+=`<div class="bar-row">
+    <span class="bar-month">${m.m}</span>
+    <div class="bar-wrap">
+      <div class="bar-fill" style="width:${w}%;background:${phaseColors[m.phase]}">
+        ${m.v>5000?`<span class="bar-label" style="color:#fff;font-size:11px">${fmt}</span>`:''}
+      </div>
+    </div>
+    <span class="bar-val">${fmt}</span>
+  </div>`;
+});
+mrrHtml+=`<div style="margin-top:12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;font-size:12px;color:var(--color-text-secondary)">
+  Premissas: ticket médio projeto R$8k, mensalidade média R$2k, 1–2 novos clientes/mês a partir do mês 3. Projeção conservadora — ajuste conforme seu mercado e ciclo de venda.
+</div></div>`;
+mrrEl.innerHTML=mrrHtml;
+
+const okrs=[
+  { q:"Q1 — Meses 1 a 3", qBg:"#EEEDFE", qColor:"#3C3489",
+    obj:"Validar o modelo e fechar os primeiros clientes pagantes",
+    krs:[
+      {text:"Fechar 2 contratos pagantes (projeto ou mensalidade)",q:"Mar",prog:0,pBg:"#7F77DD"},
+      {text:"Entregar 1 projeto com aceite formal documentado",q:"Mar",prog:0,pBg:"#7F77DD"},
+      {text:"Publicar 3 posts por semana no LinkedIn por 12 semanas consecutivas",q:"Mar",prog:0,pBg:"#7F77DD"},
+      {text:"Ter contrato padrão, NDA e PDD revisados por advogado",q:"Fev",prog:0,pBg:"#7F77DD"}
+    ]
+  },
+  { q:"Q2 — Meses 4 a 6", qBg:"#E1F5EE", qColor:"#085041",
+    obj:"Construir receita recorrente e funil comercial sistemático",
+    krs:[
+      {text:"Atingir R$12k de MRR até o final do trimestre",q:"Jun",prog:0,pBg:"#1D9E75"},
+      {text:"Ter ao menos 2 clientes em managed service (mensalidade)",q:"Mai",prog:0,pBg:"#1D9E75"},
+      {text:"Publicar 1 case de sucesso com ROI documentado",q:"Mai",prog:0,pBg:"#1D9E75"},
+      {text:"Realizar 8 reuniões de discovery por mês (meta semanal de 2)",q:"Jun",prog:0,pBg:"#1D9E75"}
+    ]
+  },
+  { q:"Q3 — Meses 7 a 9", qBg:"#FAEEDA", qColor:"#633806",
+    obj:"Escalar a capacidade de entrega sem perder qualidade",
+    krs:[
+      {text:"Contratar 1 profissional técnico (CLT ou PJ) ou parceiro de entrega",q:"Ago",prog:0,pBg:"#D85A30"},
+      {text:"Atingir R$22k de MRR com churn menor que 5%",q:"Set",prog:0,pBg:"#D85A30"},
+      {text:"Ter NPS médio ≥ 50 com ao menos 5 respostas coletadas",q:"Set",prog:0,pBg:"#D85A30"},
+      {text:"Fechar 1 parceria formal com consultoria ou ERP regional",q:"Set",prog:0,pBg:"#D85A30"}
+    ]
+  },
+  { q:"Q4 — Meses 10 a 12", qBg:"#EAF3DE", qColor:"#27500A",
+    obj:"Consolidar o Atlas como referência no nicho e planejar o ano 2",
+    krs:[
+      {text:"Atingir R$30k de MRR com 10–15 clientes ativos",q:"Dez",prog:0,pBg:"#639922"},
+      {text:"Lançar 1 novo serviço ou produto (IA+RPA, acelerador setorial)",q:"Nov",prog:0,pBg:"#639922"},
+      {text:"Ter 3 cases publicados e ao menos 5 indicações recebidas no ano",q:"Dez",prog:0,pBg:"#639922"},
+      {text:"Definir OKRs do ano 2 com metas de expansão documentadas",q:"Dez",prog:0,pBg:"#639922"}
+    ]
+  }
+];
+
+const okrsEl=document.getElementById('okrs-container');
+okrs.forEach(o=>{
+  okrsEl.innerHTML+=`
+    <div class="okr-block">
+      <div style="margin-bottom:8px"><span style="font-size:12px;padding:3px 10px;border-radius:20px;background:${o.qBg};color:${o.qColor}">${o.q}</span></div>
+      <div class="okr-obj"><i class="ti ti-target" aria-hidden="true" style="font-size:16px;color:var(--color-text-secondary)"></i>${o.obj}</div>
+      ${o.krs.map(k=>`
+        <div class="kr-row">
+          <span class="kr-text">${k.text}</span>
+          <span class="kr-quarter" style="background:${o.qBg};color:${o.qColor}">${k.q}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+});
+
+const decisoes=[
+  { icon:"ti-users-group", iconBg:"#EEEDFE", iconColor:"#534AB7",
+    title:"Quando contratar o primeiro colaborador?", when:"Decisão: mês 5–7",
+    opts:[
+      {title:"Freelancer / PJ por projeto",desc:"Menor risco, sem vínculo. Ideal para testar demanda antes de contratar fixo. Use até ter R$15k de MRR estável."},
+      {title:"CLT tempo integral",desc:"Maior comprometimento e capacidade de formação. Só viável com MRR ≥ R$20k e pipeline previsível."}
+    ],
+    rec:"Recomendação Atlas: comece com 1 freelancer técnico no mês 5 para validar a demanda. Converta para CLT se a demanda se mantiver por 2 meses consecutivos."
+  },
+  { icon:"ti-building-store", iconBg:"#E1F5EE", iconColor:"#0F6E56",
+    title:"Nicho único ou múltiplos segmentos?", when:"Decisão: mês 4",
+    opts:[
+      {title:"Nicho único (ex: só contabilidade)",desc:"Autoridade máxima, marketing mais fácil, cases comparáveis. Risco: dependência de um setor."},
+      {title:"Multi-nicho controlado",desc:"Menos concentração de risco. Exige mais esforço de marketing e personalização de abordagem por segmento."}
+    ],
+    rec:"Recomendação Atlas: domine 1 nicho até ter 5 clientes nele. Só depois abra o segundo. Empresas de RPA que crescem mais rápido são reconhecidas como especialistas em um setor."
+  },
+  { icon:"ti-device-laptop", iconBg:"#FAEEDA", iconColor:"#854F0B",
+    title:"Produto próprio ou só serviço?", when:"Decisão: mês 8–10",
+    opts:[
+      {title:"Só serviço (projetos + managed)",desc:"Menor complexidade, cashflow imediato. Escala linear com time. Margem limitada no longo prazo."},
+      {title:"Produto próprio (acelerador/template)",desc:"Alavanca a entrega, melhora margem, diferencia do mercado. Exige investimento inicial de desenvolvimento."}
+    ],
+    rec:"Recomendação Atlas: a partir do mês 8, identifique qual processo você mais automatizou e crie um template reutilizável. Isso reduz 40% do tempo de entrega e aumenta margem por projeto."
+  },
+  { icon:"ti-world", iconBg:"#EAF3DE", iconColor:"#3B6D11",
+    title:"Crescer local ou expandir geograficamente?", when:"Decisão: mês 10–12",
+    opts:[
+      {title:"Aprofundar no mercado local",desc:"Menor custo de aquisição, relacionamento presencial, indicações mais fáceis. Teto de mercado menor."},
+      {title:"Expansão para outras cidades/estados",desc:"Mercado maior, mas exige operação remota estruturada, marketing digital mais robusto e equipe distribuída."}
+    ],
+    rec:"Recomendação Atlas: para serviços de RPA, expansão geográfica via digital é viável desde o início — os projetos são entregues remotamente. Mas só invista nisso com o mercado local saturando."
+  },
+  { icon:"ti-robot", iconBg:"#E6F1FB", iconColor:"#185FA5",
+    title:"Quando incorporar IA ao portfólio?", when:"Decisão: mês 6–9",
+    opts:[
+      {title:"Manter RPA puro",desc:"Simples de vender e entregar. Sem dependência de LLMs ou APIs de IA. Risco de commoditização com o avanço da IA agêntica."},
+      {title:"RPA + IA (agentes, OCR, LLMs)",desc:"Diferencial competitivo crescente. Permite automatizar processos não-estruturados. Curva de aprendizado técnica."}
+    ],
+    rec:"Recomendação Atlas: estude IA agêntica a partir do mês 4, mesmo sem aplicar em cliente. No mês 8, ofereça para 1 cliente como piloto gratuito. Quem dominar RPA + IA em 2025–2026 tem vantagem de 2–3 anos sobre o mercado."
+  }
+];
+
+const decisoesEl=document.getElementById('decisoes-container');
+decisoes.forEach((d,i)=>{
+  const div=document.createElement('div');
+  div.className='decision-card';
+  div.innerHTML=`
+    <div class="decision-header">
+      <div class="decision-icon" style="background:${d.iconBg};color:${d.iconColor}"><i class="ti ${d.icon}" aria-hidden="true"></i></div>
+      <div style="flex:1"><div class="decision-title">${d.title}</div><div class="decision-when">${d.when}</div></div>
+      <span class="chevron" id="chev-d-${i}">▼</span>
+    </div>
+    <div class="decision-detail" id="dd-${i}">
+      <div class="decision-options">
+        ${d.opts.map(o=>`<div class="decision-opt"><div class="opt-title">${o.title}</div><div class="opt-desc">${o.desc}</div></div>`).join('')}
+      </div>
+      <div class="rec-box"><strong>Recomendação:</strong> ${d.rec}</div>
+    </div>
+  `;
+  div.addEventListener('click',()=>{
+    const det=document.getElementById('dd-'+i),ch=document.getElementById('chev-d-'+i);
+    const o=det.classList.toggle('open');
+    ch.classList.toggle('open',o);
+  });
+  decisoesEl.appendChild(div);
+});
+</script>

@@ -1,0 +1,292 @@
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:.15s;}
+  .tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent;}
+  .panel{display:none;}.panel.active{display:block;}
+
+  /* JORNADA */
+  .journey-stage{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
+  .journey-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .journey-icon{width:40px;height:40px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .journey-title{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+  .journey-sub{font-size:12px;color:var(--color-text-secondary);}
+  .journey-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .journey-col{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .journey-col-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .journey-item{font-size:12px;color:var(--color-text-primary);line-height:1.6;display:flex;gap:6px;padding:2px 0;}
+  .journey-item::before{content:"·";color:var(--color-text-tertiary);}
+  .risk-badge{font-size:11px;padding:2px 8px;border-radius:20px;margin-left:auto;}
+
+  /* RITUAIS */
+  .ritual-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;cursor:pointer;transition:border-color .2s;}
+  .ritual-card:hover{border-color:var(--color-border-secondary);}
+  .ritual-header{display:flex;align-items:center;gap:10px;}
+  .ritual-freq{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;flex-shrink:0;}
+  .ritual-title{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+  .ritual-who{font-size:12px;color:var(--color-text-secondary);}
+  .ritual-detail{display:none;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--color-border-tertiary);}
+  .ritual-detail.open{display:block;}
+  .ritual-agenda{font-size:12px;color:var(--color-text-primary);line-height:1.8;}
+  .ritual-agenda li{margin-bottom:2px;}
+  .template-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;margin-top:8px;font-size:12px;color:var(--color-text-secondary);font-style:italic;line-height:1.7;}
+  .chevron{font-size:11px;color:var(--color-text-tertiary);margin-left:auto;transition:transform .2s;}
+  .chevron.open{transform:rotate(180deg);}
+
+  /* SAÚDE */
+  .health-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .signal-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
+  .signal-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .signal-list{font-size:12px;color:var(--color-text-secondary);line-height:1.8;}
+  .signal-action{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:var(--color-text-primary);margin-top:8px;}
+  .dot-red{width:10px;height:10px;border-radius:50%;background:#E24B4A;flex-shrink:0;}
+  .dot-amber{width:10px;height:10px;border-radius:50%;background:#EF9F27;flex-shrink:0;}
+  .dot-green{width:10px;height:10px;border-radius:50%;background:#639922;flex-shrink:0;}
+
+  /* EXPANSÃO */
+  .expand-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:10px;}
+  .expand-title{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+  .expand-trigger{font-size:12px;color:var(--color-text-secondary);margin-bottom:8px;}
+  .expand-script{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;font-size:13px;color:var(--color-text-primary);line-height:1.65;border-left:3px solid var(--color-border-secondary);}
+
+  .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+  .metric-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .metric-val{font-size:18px;font-weight:500;color:var(--color-text-primary);}
+  .metric-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+</style>
+
+<h2 class="sr-only">Processo de customer success para clientes de RPA do Atlas</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Customer Success — Atlas</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Jornada completa do cliente: do onboarding à expansão</div>
+
+  <div class="metric-grid">
+    <div class="metric-box"><div class="metric-val">90d</div><div class="metric-lbl">período crítico de retenção</div></div>
+    <div class="metric-box"><div class="metric-val">&lt;5%</div><div class="metric-lbl">churn meta anual</div></div>
+    <div class="metric-box"><div class="metric-val">NPS</div><div class="metric-lbl">meta ≥ 50</div></div>
+    <div class="metric-box"><div class="metric-val">2×</div><div class="metric-lbl">expansão média/cliente</div></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('jornada',this)">Jornada do cliente</div>
+    <div class="tab" onclick="switchTab('rituais',this)">Rituais de CS</div>
+    <div class="tab" onclick="switchTab('saude',this)">Sinais de saúde</div>
+    <div class="tab" onclick="switchTab('expansao',this)">Expansão e upsell</div>
+  </div>
+
+  <div class="panel active" id="panel-jornada">
+    <div id="jornada-container"></div>
+  </div>
+  <div class="panel" id="panel-rituais">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">Clique em cada ritual para ver a pauta e o template de mensagem.</div>
+    <div id="rituais-container"></div>
+  </div>
+  <div class="panel" id="panel-saude">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">Indicadores que revelam se um cliente vai ficar, crescer ou cancelar — antes que ele diga qualquer coisa.</div>
+    <div id="saude-container"></div>
+  </div>
+  <div class="panel" id="panel-expansao">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">O momento certo e o script certo para transformar um cliente satisfeito em um cliente maior.</div>
+    <div id="expansao-container"></div>
+  </div>
+</div>
+
+<script>
+function switchTab(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+}
+
+const jornada = [
+  { icon:"ti-rocket", iconBg:"#EEEDFE", iconColor:"#534AB7",
+    title:"Onboarding (Dias 0–7)", sub:"Semana 1: transformar contrato em confiança",
+    risk:"Alto risco", riskBg:"#FCEBEB", riskColor:"#A32D2D",
+    acoes:["Kickoff em até 3 dias úteis","Apresentar o time e papéis","Alinhar expectativas de prazo e comunicação","Criar canal de suporte exclusivo (WhatsApp ou Slack)"],
+    entregaveis:["Canal de comunicação ativo","Cronograma do projeto compartilhado","Acesso técnico concedido"],
+    sentimento:["Cliente ansioso e empolgado","Qualquer atraso gera desconfiança","Comunicação excessiva é bem-vinda aqui"]
+  },
+  { icon:"ti-settings-automation", iconBg:"#E1F5EE", iconColor:"#0F6E56",
+    title:"Desenvolvimento ativo (Dias 8–45)", sub:"Período de construção — cliente precisa sentir progresso",
+    risk:"Risco médio", riskBg:"#FAEEDA", riskColor:"#633806",
+    acoes:["Status report semanal por escrito","Demo de progresso a cada 2 semanas","Comunicar imprevistos antes que o cliente pergunte","Validar decisões técnicas com o cliente"],
+    entregaveis:["Status reports semanais","Demos intermediárias documentadas","Log de decisões e mudanças"],
+    sentimento:["Silêncio = preocupação no cliente","Updates proativos criam confiança","Mostre o bot funcionando, mesmo incompleto"]
+  },
+  { icon:"ti-circle-check", iconBg:"#FAEEDA", iconColor:"#854F0B",
+    title:"Go-live e UAT (Dias 45–60)", sub:"Momento de maior vulnerabilidade — gestão cuidadosa",
+    risk:"Alto risco", riskBg:"#FCEBEB", riskColor:"#A32D2D",
+    acoes:["Conduzir UAT com usuário-chave do cliente","Treinamento do time operacional","Acompanhar primeiras execuções em produção ao vivo","Resolver bugs críticos em até 4 horas"],
+    entregaveis:["Termo de aceite assinado","Manual de operação entregue","Primeiras execuções documentadas"],
+    sentimento:["Expectativa máxima — não falhe aqui","Presença física ou por vídeo aumenta confiança","Problemas normais resolvidos rápido = herói"]
+  },
+  { icon:"ti-chart-line", iconBg:"#E6F1FB", iconColor:"#185FA5",
+    title:"Adoção e estabilização (Dias 60–90)", sub:"O bot está rodando — agora é sobre valor percebido",
+    risk:"Risco médio", riskBg:"#FAEEDA", riskColor:"#633806",
+    acoes:["Check-in de 30 dias com relatório de performance","Mostrar horas economizadas e ROI real","Identificar fricções na operação do bot","Coletar NPS informal"],
+    entregaveis:["Relatório de performance (30 dias)","Dashboard de monitoramento ativo","Primeiras métricas de ROI documentadas"],
+    sentimento:["Cliente calculando se valeu a pena","Dados de ROI concretos são mais poderosos que qualquer pitch","Esse é o momento de pedir indicação"]
+  },
+  { icon:"ti-stars", iconBg:"#EAF3DE", iconColor:"#3B6D11",
+    title:"Expansão e parceria (90+ dias)", sub:"Cliente maduro — foco em crescimento da conta",
+    risk:"Baixo risco", riskBg:"#EAF3DE", riskColor:"#27500A",
+    acoes:["QBR trimestral (Quarterly Business Review)","Propor novos processos para automação","Solicitar case de sucesso ou depoimento","Pedir indicações para o network do cliente"],
+    entregaveis:["QBR com novos processos identificados","Case de sucesso aprovado pelo cliente","Ao menos 1 indicação ativa"],
+    sentimento:["Cliente virou advogado da marca","Custo de aquisição = zero (indicação)","Receita previsível via expansão"]
+  }
+];
+
+const jornadaEl = document.getElementById('jornada-container');
+jornada.forEach(j=>{
+  jornadaEl.innerHTML += `
+    <div class="journey-stage">
+      <div class="journey-header">
+        <div class="journey-icon" style="background:${j.iconBg};color:${j.iconColor}"><i class="ti ${j.icon}" aria-hidden="true"></i></div>
+        <div style="flex:1"><div class="journey-title">${j.title}</div><div class="journey-sub">${j.sub}</div></div>
+        <span class="risk-badge" style="background:${j.riskBg};color:${j.riskColor}">${j.risk}</span>
+      </div>
+      <div class="journey-cols">
+        <div class="journey-col">
+          <div class="journey-col-title">Ações do Atlas</div>
+          ${j.acoes.map(a=>`<div class="journey-item">${a}</div>`).join('')}
+        </div>
+        <div class="journey-col">
+          <div class="journey-col-title">Entregáveis</div>
+          ${j.entregaveis.map(a=>`<div class="journey-item">${a}</div>`).join('')}
+        </div>
+        <div class="journey-col">
+          <div class="journey-col-title">Estado emocional do cliente</div>
+          ${j.sentimento.map(a=>`<div class="journey-item">${a}</div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+});
+
+const rituais = [
+  { freq:"Diário", freqBg:"#FCEBEB", freqColor:"#A32D2D",
+    title:"Monitoramento dos bots", who:"Responsável: você (CEO/tech)",
+    agenda:["Verificar logs de execução de todos os bots","Checar alertas de erro ou falha","Registrar qualquer anomalia no log interno","Resolver falhas críticas antes que o cliente perceba"],
+    template:"Verificação diária feita. Todos os bots operando normalmente. [Se houver falha: 'Identificamos uma falha às XX:XX e corrigimos às XX:XX — nenhum impacto no resultado final.']"
+  },
+  { freq:"Semanal", freqBg:"#FAEEDA", freqColor:"#633806",
+    title:"Status report por escrito", who:"Responsável: ambos",
+    agenda:["Volume processado na semana","Erros encontrados e resolvidos","O que será feito na semana seguinte","Algum ponto de atenção ou decisão pendente"],
+    template:"Olá [Nome], segue o resumo da semana do projeto Atlas:\n✅ Executamos X processos com sucesso\n⚡ Resolvemos Y ocorrências\n📅 Esta semana: [próximos passos]\nQualquer dúvida, é só chamar."
+  },
+  { freq:"Mensal", freqBg:"#EEEDFE", freqColor:"#3C3489",
+    title:"Check-in de performance", who:"Responsável: sócia (CS) + você (dados)",
+    agenda:["Apresentar relatório de performance do bot","Mostrar horas economizadas e ROI acumulado","Ouvir feedbacks e pontos de melhoria","Identificar novos processos candidatos à automação","Confirmar satisfação e coletar NPS"],
+    template:"[Nome], passando para nosso check-in mensal! Tenho os dados de performance de [mês] prontos — ficou incrível o resultado. Posso te ligar na [data]? São 20 minutos só."
+  },
+  { freq:"Trimestral", freqBg:"#E1F5EE", freqColor:"#085041",
+    title:"QBR — Quarterly Business Review", who:"Responsável: ambos + decisor do cliente",
+    agenda:["Apresentar ROI acumulado dos últimos 3 meses","Benchmark: como está vs. expectativa inicial","Roadmap: quais processos automatizar a seguir","Revisão do contrato e condições para o próximo trimestre","Coleta de depoimento ou case de sucesso"],
+    template:"[Nome], chegou a hora do nosso QBR do trimestre! Preparei uma apresentação com os resultados de [período] — tenho certeza que vai gostar dos números. Podemos reunir o time na [data]?"
+  },
+  { freq:"Pontual", freqBg:"#EAF3DE", freqColor:"#27500A",
+    title:"Pesquisa de NPS", who:"Responsável: sócia",
+    agenda:["Enviar após 30 dias do go-live","Repetir a cada 6 meses","1 pergunta quantitativa (0–10) + 1 aberta","Agir em até 24h em respostas 0–6 (detratores)"],
+    template:"Olá [Nome]! Em uma escala de 0 a 10, o quanto você indicaria o Atlas para um colega?\n👉 [Link do formulário — Google Forms ou Typeform]\nSua resposta leva 30 segundos e nos ajuda muito. Obrigado!"
+  }
+];
+
+const rituaisEl = document.getElementById('rituais-container');
+rituais.forEach((r,i)=>{
+  const div = document.createElement('div');
+  div.className = 'ritual-card';
+  div.innerHTML = `
+    <div class="ritual-header">
+      <span class="ritual-freq" style="background:${r.freqBg};color:${r.freqColor}">${r.freq}</span>
+      <div><div class="ritual-title">${r.title}</div><div class="ritual-who">${r.who}</div></div>
+      <span class="chevron" id="chev-r-${i}">▼</span>
+    </div>
+    <div class="ritual-detail" id="rd-${i}">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px">Pauta</div>
+      <ul class="ritual-agenda">${r.agenda.map(a=>`<li>${a}</li>`).join('')}</ul>
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin:10px 0 6px">Template de mensagem</div>
+      <div class="template-box" style="white-space:pre-line">${r.template}</div>
+    </div>
+  `;
+  div.addEventListener('click',()=>{
+    const d=document.getElementById('rd-'+i);
+    const c=document.getElementById('chev-r-'+i);
+    const o=d.classList.toggle('open');
+    c.classList.toggle('open',o);
+  });
+  rituaisEl.appendChild(div);
+});
+
+const saude = [
+  { dot:'dot-green', label:'Cliente saudável', bg:'#EAF3DE', color:'#27500A',
+    sinais:["Bot executa sem erros há +7 dias","Cliente responde mensagens em até 24h","Participou do último check-in","Abriu relatório de performance","Mencionou o bot positivamente para alguém"],
+    acao:"Momento ideal para pedir indicação ou apresentar proposta de expansão."
+  },
+  { dot:'dot-amber', label:'Cliente em atenção', bg:'#FAEEDA', color:'#633806',
+    sinais:["Bot teve 2+ erros na semana sem resolução rápida","Cliente não respondeu mensagem em +48h","Faltou ao último check-in","Não abriu relatório enviado","Tom das mensagens mudou — mais frio ou formal"],
+    acao:"Agir imediatamente: ligar (não enviar mensagem), entender o que mudou, oferecer reunião de alinhamento em até 24h."
+  },
+  { dot:'dot-red', label:'Cliente em risco de churn', bg:'#FCEBEB', color:'#A32D2D',
+    sinais:["Bot parado há +48h sem resolução","Cliente questionou o valor do serviço","Pediu para 'pausar' o contrato","Não responde há +1 semana","Mencionou que 'está avaliando outras opções'"],
+    acao:"Reunião de resgate com decisor (não o operacional). Trazer dados de ROI, escutar sem defender. Oferecer revisão de escopo ou condições antes de aceitar o cancelamento."
+  }
+];
+
+const saudeEl = document.getElementById('saude-container');
+saude.forEach(s=>{
+  saudeEl.innerHTML += `
+    <div class="signal-card">
+      <div class="signal-title">
+        <div class="${s.dot}"></div>
+        <span style="background:${s.bg};color:${s.color};padding:2px 10px;border-radius:20px;font-size:12px">${s.label}</span>
+      </div>
+      <div class="signal-list">
+        ${s.sinais.map(x=>`<div style="display:flex;gap:6px"><span style="color:var(--color-text-tertiary)">·</span><span>${x}</span></div>`).join('')}
+      </div>
+      <div class="signal-action"><strong>Ação:</strong> ${s.acao}</div>
+    </div>
+  `;
+});
+
+const expansao = [
+  { icon:"ti-plus", iconBg:"#EEEDFE", iconColor:"#534AB7",
+    title:"Novo processo para automatizar",
+    trigger:"Gatilho: check-in de 30 dias com ROI positivo confirmado",
+    script:"'[Nome], vendo os resultados do bot de [processo X], identifiquei que vocês também fazem [processo Y] manualmente. Se calcularmos o mesmo ganho, são mais X horas por mês economizadas. Posso te mandar uma análise rápida?'"
+  },
+  { icon:"ti-users", iconBg:"#E1F5EE", iconColor:"#0F6E56",
+    title:"Expansão para outro departamento",
+    trigger:"Gatilho: cliente menciona que outros times têm processos parecidos",
+    script:"'Que ótimo saber que o financeiro também tem esse problema. Seria fácil adaptar o que fizemos para vocês. Você consegue nos apresentar para o gestor desse time? Posso fazer uma demo de 20 minutos.'"
+  },
+  { icon:"ti-shield-check", iconBg:"#FAEEDA", iconColor:"#854F0B",
+    title:"Upgrade para plano managed (sustentação mensal)",
+    trigger:"Gatilho: cliente pergunta sobre garantia de longo prazo ou menciona dependência do bot",
+    script:"'Como o bot já é crítico para a operação de vocês, faz sentido falar sobre um contrato de sustentação. Por [valor], garantimos monitoramento diário, suporte prioritário com SLA de 4h e atualizações sempre que o sistema deles mudar. Quer que eu formalize?'"
+  },
+  { icon:"ti-star", iconBg:"#EAF3DE", iconColor:"#3B6D11",
+    title:"Indicação para parceiro ou fornecedor",
+    trigger:"Gatilho: cliente satisfeito, NPS ≥ 8, mencionou positivamente o serviço",
+    script:"'[Nome], muito feliz que os resultados estão sendo bons. Posso te pedir um favor? Se você conhece outro gestor com desafios parecidos, uma apresentação sua abre portas que levariam meses pelo caminho normal. Tem alguém que viria à mente?'"
+  }
+];
+
+const expansaoEl = document.getElementById('expansao-container');
+expansao.forEach(e=>{
+  expansaoEl.innerHTML += `
+    <div class="expand-card">
+      <div class="expand-title">
+        <div style="width:32px;height:32px;border-radius:var(--border-radius-md);background:${e.iconBg};color:${e.iconColor};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ${e.icon}" aria-hidden="true" style="font-size:16px"></i>
+        </div>
+        ${e.title}
+      </div>
+      <div class="expand-trigger">${e.trigger}</div>
+      <div class="expand-script">${e.script}</div>
+    </div>
+  `;
+});
+</script>

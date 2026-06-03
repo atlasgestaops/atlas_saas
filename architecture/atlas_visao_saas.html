@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visão do SaaS AtlasOps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #0B0C10;
+      --bg-surface: #15161C;
+      --text-primary: #F8F9FA;
+      --text-secondary: #A0AAB2;
+      --text-highlight: #FFFFFF;
+      --accent-color: #6366F1;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --code-bg: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      line-height: 1.7;
+      font-size: 1.125rem; /* 18px para leitura confortável */
+      -webkit-font-smoothing: antialiased;
+      padding: 3rem 1.5rem;
+    }
+
+    .document-container {
+      max-width: 740px;
+      margin: 0 auto;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 3.5rem 4rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      .document-container {
+        padding: 2rem 1.5rem;
+      }
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 2rem;
+      color: var(--text-highlight);
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      color: var(--text-highlight);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-highlight);
+    }
+
+    p {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    strong, b {
+      color: var(--text-highlight);
+      font-weight: 600;
+    }
+
+    em, i {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    hr {
+      border: none;
+      height: 1px;
+      background-color: var(--border-color);
+      margin: 2.5rem 0;
+    }
+
+    ul, ol {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.75rem;
+    }
+
+    li::marker {
+      color: var(--accent-color);
+    }
+
+    code {
+      background-color: var(--code-bg);
+      color: #818CF8;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.95em;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="document-container">
+    
+    <h1>🚀 Visão do SaaS AtlasOps: A Nossa Torre de Controle</h1>
+    
+    <p>Olá! Este documento resume o que estamos desenhando para o futuro da operação da <strong>Atlas RPA</strong>.</p>
+    
+    <p>Em vez de termos nossos processos de Vendas, Customer Success e Delivery espalhados por planilhas e documentos soltos, estamos construindo o <strong>AtlasOps</strong>: o nosso sistema próprio de gestão (SaaS).</p>
+    
+    <p>A ideia é usarmos automação (nossa especialidade) "dentro de casa" para escalar a agência sem precisarmos de um exército de pessoas na operação. O sistema será uma verdadeira torre de controle para a empresa.</p>
+
+    <hr>
+
+    <h2>🎯 O que muda para o Comercial e Vendas?</h2>
+    
+    <p>Como você lidera essa frente, o AtlasOps vai tirar muito do "trabalho braçal" e focar a sua energia em negociação e fechamento:</p>
+
+    <ul>
+      <li><strong>Funil de Vendas Inteligente:</strong> Você terá um Kanban visual com os nossos leads. Não é só visualização; ao mover um card, automações (via n8n) já podem preparar pastas de clientes e minutas de contrato.</li>
+      <li><strong>Roteiro de Discovery Embutido:</strong> Clicando no card do lead, o roteiro com as perguntas cruciais da venda abre na tela, já com campos para anotar as respostas.</li>
+      <li><strong>Calculadora de ROI ao Vivo:</strong> No próprio card do cliente, você insere quantas pessoas fazem o processo manual dele e o custo-hora. O sistema calcula a margem e o nosso preço automaticamente. Um botão <code>[ Gerar Proposta ]</code> montará o PDF do orçamento sozinho.</li>
+    </ul>
+
+    <h2>🤝 O que muda no Customer Success (Gestão de Clientes)?</h2>
+
+    <p>O nosso modelo de CS deixará de ser reativo e passará a ser pró-ativo. O sistema vai avisar o momento exato de agir:</p>
+
+    <ul>
+      <li><strong>Health Score Automático:</strong> Um painel com todos os clientes mostrando faróis (🟢 Saudável, 🟡 Atenção, 🔴 Risco de Churn). Você não precisa preencher isso: o sistema cruza os dados sozinho (ex: se o bot do cliente deu erro na AWS/n8n, o farol dele cai para amarelo na sua tela).</li>
+      <li><strong>Agenda de Rituais Integrada:</strong> Chega de esquecer a data do QBR (Quarterly Business Review) ou do Check-in mensal. O sistema te avisa: <em>"Hoje é dia de Report do Cliente Alfa"</em>. Com um clique em <code>[ Gerar Report ]</code>, ele junta os dados de performance e gera o texto para você mandar no WhatsApp.</li>
+      <li><strong>Gatilhos de Upsell (Dinheiro na mesa):</strong> Se um cliente completou 90 dias com Health Score Verde, o sistema te alerta: <em>"Sugerir upgrade para Managed Services ou automação de novo processo"</em> e já te dá o script na tela.</li>
+    </ul>
+
+    <h2>⚙️ E no Delivery (Fábrica de Bots)?</h2>
+
+    <p>A criação técnica ganha "Quality Gates". Isso significa previsibilidade de entrega:</p>
+
+    <ul>
+      <li>O time técnico não consegue começar o código sem que você (ou o cliente) tenha feito o upload do arquivo do <strong>PDD assinado</strong>.</li>
+      <li>Termos de aceite (UAT) serão gerados com um clique após os testes passarem. Isso blinda a empresa contra mudanças de escopo inesperadas.</li>
+    </ul>
+
+    <h2>💡 O Futuro (Próximas Fases)</h2>
+
+    <p>Além de CRM, Delivery, CS e Financeiro (que estarão na primeira versão), o plano é plugar:</p>
+
+    <ol>
+      <li><strong>Marketing:</strong> Dashboard para você acompanhar cliques, leads que chegam pelo site e custo de aquisição.</li>
+      <li><strong>Jurídico:</strong> Geração de Contratos de Serviço e NDAs no automático, direto para assinatura via DocuSign.</li>
+      <li><strong>Estratégia:</strong> Um painel com os nossos OKRs (Objetivos Trimestrais) e caixa da empresa (MRR).</li>
+    </ol>
+
+    <hr>
+
+    <h3>Resumo do nosso plano de ataque:</h3>
+
+    <ul>
+      <li><strong>Fase 1:</strong> Construir a "casca" do sistema, o login e a tela inicial (Dashboard do CEO/Sócia).</li>
+      <li><strong>Fase 2:</strong> Subir o Módulo Comercial (CRM e Calculadora).</li>
+      <li><strong>Fase 3:</strong> Subir o Módulo de Delivery (Projetos) e o Hub de CS.</li>
+      <li><strong>Fase 4:</strong> Automações avançadas via n8n enviando dados e relatórios sozinhos.</li>
+    </ul>
+
+    <p>Vamos profissionalizar a nossa operação para estarmos prontos quando a carteira de clientes dobrar. O que acha?</p>
+
+  </div>
+
+</body>
+</html>

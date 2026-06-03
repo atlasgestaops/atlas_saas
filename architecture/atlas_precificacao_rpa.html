@@ -1,0 +1,357 @@
+
+<style>
+  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .tab{font-size:12px;padding:5px 14px;border-radius:20px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:.15s;}
+  .tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent;}
+  .panel{display:none;}.panel.active{display:block;}
+
+  /* MODELOS */
+  .model-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem 1.25rem;margin-bottom:10px;}
+  .model-card.featured{border:2px solid var(--color-border-info);}
+  .model-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .model-icon{width:40px;height:40px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+  .model-title{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+  .model-range{font-size:13px;font-weight:500;}
+  .badge-rec{font-size:11px;padding:2px 8px;border-radius:20px;background:var(--color-background-info);color:var(--color-text-info);margin-left:auto;}
+  .pro-con{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+  .pro-box{background:#EAF3DE;border-radius:var(--border-radius-md);padding:8px 10px;}
+  .con-box{background:#FCEBEB;border-radius:var(--border-radius-md);padding:8px 10px;}
+  .pc-title{font-size:11px;font-weight:500;margin-bottom:4px;}
+  .pc-item{font-size:12px;line-height:1.6;display:flex;gap:5px;}
+  .when-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 12px;font-size:12px;color:var(--color-text-secondary);}
+
+  /* CALCULADORA */
+  .calc-section{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:12px;}
+  .calc-title{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:14px;}
+  .calc-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .calc-label{font-size:13px;color:var(--color-text-secondary);min-width:170px;}
+  .calc-val{font-size:13px;font-weight:500;color:var(--color-text-primary);min-width:60px;text-align:right;}
+  .result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px;}
+  .result-box{border-radius:var(--border-radius-md);padding:12px;}
+  .result-label{font-size:11px;margin-bottom:4px;}
+  .result-val{font-size:18px;font-weight:500;}
+  .divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:14px 0;}
+
+  /* TABELA */
+  .tier-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.1rem 1.25rem;margin-bottom:10px;}
+  .tier-card.highlight{border:2px solid var(--color-border-info);}
+  .tier-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+  .tier-name{font-size:15px;font-weight:500;color:var(--color-text-primary);}
+  .tier-price{font-size:20px;font-weight:500;text-align:right;}
+  .tier-freq{font-size:11px;color:var(--color-text-secondary);}
+  .tier-desc{font-size:12px;color:var(--color-text-secondary);margin-bottom:10px;}
+  .tier-item{font-size:12px;color:var(--color-text-primary);padding:4px 0;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;gap:8px;align-items:flex-start;}
+  .tier-item:last-child{border-bottom:none;}
+  .tier-item i{font-size:14px;flex-shrink:0;margin-top:1px;}
+
+  /* ROI */
+  .roi-input{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .roi-field{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;}
+  .roi-field label{font-size:11px;color:var(--color-text-secondary);display:block;margin-bottom:6px;}
+  .roi-result{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;}
+  .roi-big{font-size:28px;font-weight:500;color:var(--color-text-primary);}
+  .roi-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;}
+  .roi-row:last-child{border-bottom:none;}
+</style>
+
+<h2 class="sr-only">Modelos de precificação de serviços de RPA para o Atlas</h2>
+
+<div style="padding:1rem 0">
+  <div style="font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Precificação — Atlas RPA</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px;">Modelos de cobrança, calculadora de projeto e tabela de serviços</div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('modelos',this)">Modelos de cobrança</div>
+    <div class="tab" onclick="switchTab('calculadora',this)">Calculadora de projeto</div>
+    <div class="tab" onclick="switchTab('tabela',this)">Tabela de serviços</div>
+    <div class="tab" onclick="switchTab('roi',this)">Calculadora de ROI</div>
+  </div>
+
+  <div class="panel active" id="panel-modelos">
+    <div id="modelos-container"></div>
+  </div>
+  <div class="panel" id="panel-calculadora">
+    <div class="calc-section">
+      <div class="calc-title">Calculadora de precificação por projeto</div>
+      <div class="calc-row">
+        <span class="calc-label">Horas estimadas de desenvolvimento</span>
+        <input type="range" min="8" max="200" value="40" step="4" id="horas" oninput="calcProject()" style="flex:1">
+        <span class="calc-val" id="v-horas">40h</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">Sua hora técnica (custo interno)</span>
+        <input type="range" min="50" max="300" value="120" step="10" id="custo-hora" oninput="calcProject()" style="flex:1">
+        <span class="calc-val" id="v-custo">R$120</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">Complexidade do projeto</span>
+        <input type="range" min="1" max="3" value="2" step="1" id="complex" oninput="calcProject()" style="flex:1">
+        <span class="calc-val" id="v-complex">Média</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">Margem desejada</span>
+        <input type="range" min="40" max="150" value="80" step="5" id="margem" oninput="calcProject()" style="flex:1">
+        <span class="calc-val" id="v-margem">80%</span>
+      </div>
+      <hr class="divider">
+      <div class="result-grid">
+        <div class="result-box" style="background:#EEEDFE">
+          <div class="result-label" style="color:#3C3489">Custo do projeto</div>
+          <div class="result-val" style="color:#534AB7" id="r-custo">R$4.800</div>
+        </div>
+        <div class="result-box" style="background:#E1F5EE">
+          <div class="result-label" style="color:#085041">Preço sugerido</div>
+          <div class="result-val" style="color:#0F6E56" id="r-preco">R$8.640</div>
+        </div>
+        <div class="result-box" style="background:#FAEEDA">
+          <div class="result-label" style="color:#633806">Margem bruta</div>
+          <div class="result-val" style="color:#854F0B" id="r-margem">R$3.840</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-top:10px;padding:8px 12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)" id="r-obs"></div>
+    </div>
+    <div class="calc-section">
+      <div class="calc-title">Calculadora de mensalidade (Managed Service)</div>
+      <div class="calc-row">
+        <span class="calc-label">Nº de bots em produção</span>
+        <input type="range" min="1" max="10" value="2" step="1" id="bots" oninput="calcManaged()" style="flex:1">
+        <span class="calc-val" id="v-bots">2</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">Complexidade operacional</span>
+        <input type="range" min="1" max="3" value="2" step="1" id="op-complex" oninput="calcManaged()" style="flex:1">
+        <span class="calc-val" id="v-op-complex">Média</span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">SLA de suporte</span>
+        <input type="range" min="1" max="3" value="2" step="1" id="sla" oninput="calcManaged()" style="flex:1">
+        <span class="calc-val" id="v-sla">8h</span>
+      </div>
+      <hr class="divider">
+      <div class="result-grid">
+        <div class="result-box" style="background:#EEEDFE">
+          <div class="result-label" style="color:#3C3489">Mensalidade mínima</div>
+          <div class="result-val" style="color:#534AB7" id="m-min">R$1.200</div>
+        </div>
+        <div class="result-box" style="background:#E1F5EE">
+          <div class="result-label" style="color:#085041">Mensalidade sugerida</div>
+          <div class="result-val" style="color:#0F6E56" id="m-sug">R$1.800</div>
+        </div>
+        <div class="result-box" style="background:#FAEEDA">
+          <div class="result-label" style="color:#633806">MRR com 5 clientes</div>
+          <div class="result-val" style="color:#854F0B" id="m-mrr">R$9.000</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-tabela">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">Tabela de referência para o Atlas. Ajuste conforme seu mercado e posicionamento.</div>
+    <div id="tabela-container"></div>
+  </div>
+
+  <div class="panel" id="panel-roi">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">Use no discovery com o cliente — calcule ao vivo o retorno do investimento em RPA.</div>
+    <div class="roi-input">
+      <div class="roi-field">
+        <label>Pessoas que fazem o processo</label>
+        <input type="number" id="roi-pessoas" value="2" min="1" oninput="calcRoi()" style="width:100%;box-sizing:border-box">
+      </div>
+      <div class="roi-field">
+        <label>Horas/mês por pessoa nessa tarefa</label>
+        <input type="number" id="roi-horas" value="20" min="1" oninput="calcRoi()" style="width:100%;box-sizing:border-box">
+      </div>
+      <div class="roi-field">
+        <label>Custo hora do funcionário (R$)</label>
+        <input type="number" id="roi-custo-hora" value="35" min="1" oninput="calcRoi()" style="width:100%;box-sizing:border-box">
+      </div>
+      <div class="roi-field">
+        <label>Valor do projeto Atlas (R$)</label>
+        <input type="number" id="roi-projeto" value="8000" min="1" oninput="calcRoi()" style="width:100%;box-sizing:border-box">
+      </div>
+    </div>
+    <div class="roi-result">
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:4px">Economia mensal gerada pela automação</div>
+      <div class="roi-big" id="roi-economia">R$1.400</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin:10px 0 6px">Detalhamento do retorno</div>
+      <div class="roi-row"><span style="color:var(--color-text-secondary)">Custo mensal atual do processo</span><span id="roi-custo-atual" style="font-weight:500">R$1.400</span></div>
+      <div class="roi-row"><span style="color:var(--color-text-secondary)">Economia anual</span><span id="roi-anual" style="font-weight:500">R$16.800</span></div>
+      <div class="roi-row"><span style="color:var(--color-text-secondary)">Payback do investimento</span><span id="roi-payback" style="font-weight:500">5,7 meses</span></div>
+      <div class="roi-row"><span style="color:var(--color-text-secondary)">ROI no 1º ano</span><span id="roi-pct" style="font-weight:500;color:#3B6D11">110%</span></div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-top:10px;padding:8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)" id="roi-frase"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+}
+
+const modelos = [
+  { icon:"ti-file-invoice", iconBg:"#EEEDFE", iconColor:"#534AB7",
+    title:"Projeto fechado (escopo fixo)", range:"R$3.000 – R$35.000 por projeto",
+    rangeColor:"#534AB7", featured:false,
+    pros:["Fácil de vender — o cliente sabe exatamente quanto vai pagar","Ótimo para primeiros clientes e para processos bem definidos","Entrada de caixa concentrada"],
+    cons:["Sem receita recorrente — você precisa vender sempre","Escopo-creep corrói a margem se o PDD não for sólido","Previsibilidade financeira baixa"],
+    when:"Use para: primeiros clientes, processos simples e bem mapeados, clientes que resistem a mensalidade."
+  },
+  { icon:"ti-refresh", iconBg:"#E1F5EE", iconColor:"#0F6E56",
+    title:"Managed service (mensalidade)", range:"R$800 – R$5.000/mês por cliente",
+    rangeColor:"#0F6E56", featured:true,
+    pros:["MRR previsível — o melhor modelo para escalar","Cria dependência positiva (saudável) — cliente não quer perder o serviço","Inclui suporte, monitoramento e manutenção — cliente dorme tranquilo"],
+    cons:["Mais difícil de vender no início — requer confiança","Você precisa entregar valor continuamente todo mês","Margem por cliente menor, mas multiplica com volume"],
+    when:"Use para: clientes após o primeiro projeto, processos críticos para a operação, empresas que não têm TI interna."
+  },
+  { icon:"ti-building", iconBg:"#FAEEDA", iconColor:"#854F0B",
+    title:"Banco de horas mensal", range:"R$150 – R$350/hora · pacotes de 10–40h",
+    rangeColor:"#854F0B", featured:false,
+    pros:["Flexível — cliente usa conforme a demanda","Bom para clientes com múltiplos processos em evolução","Gera MRR se o pacote for contratado mensalmente"],
+    cons:["Difícil de prever sua carga de trabalho real","Cliente pode questionar o que foi feito com as horas","Requer controle rigoroso de timesheet"],
+    when:"Use para: clientes que já automatizaram e querem evoluir continuamente, projetos de melhoria contínua."
+  },
+  { icon:"ti-chart-dots", iconBg:"#E6F1FB", iconColor:"#185FA5",
+    title:"Por resultado / success fee", range:"% da economia gerada ou por transação processada",
+    rangeColor:"#185FA5", featured:false,
+    pros:["Alinha incentivos — você só ganha se o cliente ganhar","Argumento de venda poderoso para resistência a preço","Potencial de ganho alto em processos de alto volume"],
+    cons:["Difícil de medir e auditar com precisão","Depende de dados que o cliente precisa fornecer","Risco de não receber se a medição não for acordada no contrato"],
+    when:"Use para: clientes céticos, processos de alto volume com ROI mensurável claro (ex: conciliação financeira)."
+  }
+];
+
+const modelosEl = document.getElementById('modelos-container');
+modelos.forEach(m=>{
+  modelosEl.innerHTML += `
+    <div class="model-card ${m.featured?'featured':''}">
+      <div class="model-header">
+        <div class="model-icon" style="background:${m.iconBg};color:${m.iconColor}"><i class="ti ${m.icon}" aria-hidden="true"></i></div>
+        <div style="flex:1">
+          <div class="model-title">${m.title}</div>
+          <div class="model-range" style="color:${m.rangeColor}">${m.range}</div>
+        </div>
+        ${m.featured?'<span class="badge-rec">Recomendado para o Atlas</span>':''}
+      </div>
+      <div class="pro-con">
+        <div class="pro-box">
+          <div class="pc-title" style="color:#27500A">Vantagens</div>
+          ${m.pros.map(p=>`<div class="pc-item"><span style="color:#3B6D11">+</span><span style="color:#27500A">${p}</span></div>`).join('')}
+        </div>
+        <div class="con-box">
+          <div class="pc-title" style="color:#A32D2D">Atenção</div>
+          ${m.cons.map(c=>`<div class="pc-item"><span style="color:#E24B4A">−</span><span style="color:#A32D2D">${c}</span></div>`).join('')}
+        </div>
+      </div>
+      <div class="when-box"><strong>Quando usar:</strong> ${m.when}</div>
+    </div>
+  `;
+});
+
+function fmt(n){ return 'R$'+Math.round(n).toLocaleString('pt-BR'); }
+
+function calcProject(){
+  const h=+document.getElementById('horas').value;
+  const ch=+document.getElementById('custo-hora').value;
+  const cx=+document.getElementById('complex').value;
+  const mg=+document.getElementById('margem').value/100;
+  const cxLabels=['','Baixa','Média','Alta'];
+  const cxMult=[1,1,1.2,1.5];
+  document.getElementById('v-horas').textContent=h+'h';
+  document.getElementById('v-custo').textContent='R$'+ch;
+  document.getElementById('v-complex').textContent=cxLabels[cx];
+  document.getElementById('v-margem').textContent=Math.round(mg*100)+'%';
+  const custo=h*ch*cxMult[cx];
+  const preco=custo*(1+mg);
+  const margem=preco-custo;
+  document.getElementById('r-custo').textContent=fmt(custo);
+  document.getElementById('r-preco').textContent=fmt(preco);
+  document.getElementById('r-margem').textContent=fmt(margem);
+  const obs = cx===3 ? 'Projeto complexo: inclua 25% de buffer de horas no contrato e defina claramente os critérios de aceite.' :
+              cx===1 ? 'Projeto simples: considere oferecer como piloto para novos clientes e migrar para mensalidade após o go-live.' :
+              'Projeto padrão: proponha migração para managed service (mensalidade) após a entrega — cliente já confia em você.';
+  document.getElementById('r-obs').textContent=obs;
+}
+
+function calcManaged(){
+  const b=+document.getElementById('bots').value;
+  const cx=+document.getElementById('op-complex').value;
+  const sla=+document.getElementById('sla').value;
+  const cxLabels=['','Baixa','Média','Alta'];
+  const slaLabels=['','24h','8h','4h'];
+  const basePorBot=[0,600,900,1400];
+  const slaAdd=[0,0,200,500];
+  document.getElementById('v-bots').textContent=b;
+  document.getElementById('v-op-complex').textContent=cxLabels[cx];
+  document.getElementById('v-sla').textContent=slaLabels[sla];
+  const min=b*basePorBot[cx];
+  const sug=min+slaAdd[sla];
+  document.getElementById('m-min').textContent=fmt(min);
+  document.getElementById('m-sug').textContent=fmt(sug);
+  document.getElementById('m-mrr').textContent=fmt(sug*5);
+}
+
+function calcRoi(){
+  const p=+document.getElementById('roi-pessoas').value||1;
+  const h=+document.getElementById('roi-horas').value||1;
+  const c=+document.getElementById('roi-custo-hora').value||1;
+  const proj=+document.getElementById('roi-projeto').value||1;
+  const mensal=p*h*c;
+  const anual=mensal*12;
+  const payback=proj/mensal;
+  const roi=((anual-proj)/proj)*100;
+  document.getElementById('roi-economia').textContent=fmt(mensal);
+  document.getElementById('roi-custo-atual').textContent=fmt(mensal);
+  document.getElementById('roi-anual').textContent=fmt(anual);
+  document.getElementById('roi-payback').textContent=payback.toFixed(1)+' meses';
+  document.getElementById('roi-pct').textContent=Math.round(roi)+'%';
+  document.getElementById('roi-pct').style.color=roi>50?'#3B6D11':roi>0?'#854F0B':'#A32D2D';
+  const frase = payback<=3 ? `Payback em ${payback.toFixed(1)} meses — ROI excepcional. Apresente esse número no início da reunião.` :
+                payback<=6 ? `Payback em ${payback.toFixed(1)} meses — retorno sólido. Reforce que a partir do mês ${Math.ceil(payback)+1} é lucro puro.` :
+                `Payback em ${payback.toFixed(1)} meses — ajuste o escopo ou o preço do projeto para melhorar o argumento de venda.`;
+  document.getElementById('roi-frase').textContent=frase;
+}
+
+const tabela = [
+  { name:"Automação simples", highlight:false, priceProj:"R$3.000 – R$6.000", priceManaged:"R$800 – R$1.200/mês",
+    desc:"1 sistema, fluxo linear, baixo volume de exceções. Ex: envio automático de relatórios por e-mail, download e organização de arquivos.",
+    items:[{icon:"ti-check",color:"#27500A",text:"1 bot, 1 sistema"},{icon:"ti-check",color:"#27500A",text:"Prazo: 1–2 semanas"},{icon:"ti-check",color:"#27500A",text:"Ideal para projeto piloto"}]
+  },
+  { name:"Automação intermediária", highlight:true, priceProj:"R$7.000 – R$18.000", priceManaged:"R$1.500 – R$2.800/mês",
+    desc:"2–3 sistemas integrados, regras de negócio moderadas. Ex: conciliação financeira, processamento de NF-e, onboarding de clientes.",
+    items:[{icon:"ti-check",color:"#27500A",text:"1–2 bots, múltiplos sistemas"},{icon:"ti-check",color:"#27500A",text:"Prazo: 3–5 semanas"},{icon:"ti-check",color:"#27500A",text:"Perfil mais comum de projeto"}]
+  },
+  { name:"Automação complexa", highlight:false, priceProj:"R$20.000 – R$45.000", priceManaged:"R$3.000 – R$5.000/mês",
+    desc:"Múltiplos sistemas críticos, alto volume, exceções complexas ou IA embarcada. Ex: automação de folha de pagamento, RPA + OCR + ERP.",
+    items:[{icon:"ti-check",color:"#27500A",text:"3+ bots integrados"},{icon:"ti-check",color:"#27500A",text:"Prazo: 6–10 semanas"},{icon:"ti-check",color:"#27500A",text:"Exige discovery aprofundado"}]
+  },
+  { name:"Discovery / consultoria", highlight:false, priceProj:"R$1.500 – R$4.000", priceManaged:"—",
+    desc:"Mapeamento de processos, cálculo de ROI e roadmap de automação. Entregável: relatório de viabilidade. Pode ser abatido no projeto se fechar.",
+    items:[{icon:"ti-check",color:"#27500A",text:"Entregável: relatório + roadmap"},{icon:"ti-check",color:"#27500A",text:"Prazo: 1 semana"},{icon:"ti-info-circle",color:"#185FA5",text:"Abata no projeto se fechar contrato"}]
+  }
+];
+
+const tabelaEl = document.getElementById('tabela-container');
+tabela.forEach(t=>{
+  tabelaEl.innerHTML += `
+    <div class="tier-card ${t.highlight?'highlight':''}">
+      ${t.highlight?'<div style="font-size:11px;background:var(--color-background-info);color:var(--color-text-info);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px">Mais contratado</div>':''}
+      <div class="tier-header">
+        <div><div class="tier-name">${t.name}</div></div>
+        <div style="text-align:right">
+          <div class="tier-price" style="color:var(--color-text-primary)">${t.priceProj}</div>
+          <div class="tier-freq">${t.priceManaged}</div>
+        </div>
+      </div>
+      <div class="tier-desc">${t.desc}</div>
+      ${t.items.map(it=>`<div class="tier-item"><i class="ti ${it.icon}" aria-hidden="true" style="color:${it.color}"></i><span>${it.text}</span></div>`).join('')}
+    </div>
+  `;
+});
+
+calcProject();
+calcManaged();
+calcRoi();
+</script>
