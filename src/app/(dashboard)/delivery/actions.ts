@@ -170,3 +170,63 @@ export async function toggleTask(taskId: string, isDone: boolean) {
   revalidatePath('/delivery')
   return { success: true }
 }
+
+export async function getMyTasks() {
+  const supabase = await createClient()
+
+  // Get current user
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
+
+  // Get all active projects where the user is responsible
+  const { data: projects, error: projErr } = await supabase
+    .from('projects')
+    .select(`
+      id,
+      name,
+      types,
+      current_phase,
+      estimated_end_date,
+      status,
+      clients ( name )
+    `)
+    .eq('responsible_id', user.id)
+    .in('status', ['on-track', 'attention', 'delayed'])
+    .order('estimated_end_date', { ascending: true, nullsFirst: false })
+
+  if (projErr || !projects) {
+    console.error('Error fetching my projects:', projErr)
+    return []
+  }
+
+  // Get pending tasks for the current phase of each project, assigned to the user
+  const projectGroups = []
+
+  for (const project of projects) {
+    const { data: tasks, error: taskErr } = await supabase
+      .from('project_tasks')
+      .select('id, description, is_done, phase, task_index')
+      .eq('project_id', project.id)
+      .eq('phase', project.current_phase)
+      .eq('is_done', false)
+      .or(`assigned_to.eq.${user.id},assigned_to.is.null`)
+      .order('task_index', { ascending: true })
+
+    if (taskErr) continue
+
+    if (tasks && tasks.length > 0) {
+      projectGroups.push({
+        project_id: project.id,
+        project_name: project.name,
+        client_name: (project.clients as any)?.name || 'Sem cliente',
+        types: project.types || [],
+        current_phase: project.current_phase,
+        estimated_end_date: project.estimated_end_date,
+        status: project.status,
+        tasks,
+      })
+    }
+  }
+
+  return projectGroups
+}

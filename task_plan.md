@@ -42,27 +42,27 @@
 ## Fase 3: A — Arquitetura (Construção P.D.S.)
 
 ### Módulo 0: Fundação
-- [ ] Layout master (sidebar + content area)
-- [ ] Sistema de roteamento (App Router)
-- [ ] Componente de Auth (login/logout)
-- [ ] Middleware de proteção de rotas
-- [ ] Provider do Supabase
-- [ ] Componentes base: Button, Card, Input, Modal, Badge, Table
+- [x] Layout master (sidebar + content area)
+- [x] Sistema de roteamento (App Router)
+- [x] Componente de Auth (login/logout)
+- [x] Middleware de proteção de rotas (agora proxy.ts)
+- [x] Provider do Supabase
+- [x] Componentes base: Button, Card, Input, Modal, Badge, Table
 
 ### Módulo 1: Delivery (Gestão de Projetos)
-- [ ] Página `/delivery` — pipeline de projetos
-- [ ] Visão Kanban (6 colunas por fase)
-- [ ] Visão Lista (com barra de progresso pipeline)
-- [ ] Tab Playbook (referência de processo)
-- [ ] Drawer de detalhes do projeto
-  - [ ] Stepper de fases
-  - [ ] Checklist interativo por fase
-  - [ ] Entregáveis por fase
-  - [ ] Quality Gates visuais (PDD, UAT)
-- [ ] CRUD de projetos (criar, editar, arquivar)
-- [ ] CRUD de clientes (criar, editar)
-- [ ] Integração Supabase (queries reais)
-- [ ] Real-time updates (Supabase Realtime)
+- [x] Página `/delivery` — pipeline de projetos
+- [x] Visão Kanban (6 colunas por fase)
+- [x] Visão Lista (com barra de progresso pipeline)
+- [x] Tab Playbook (referência de processo)
+- [x] Drawer de detalhes do projeto
+  - [x] Stepper de fases
+  - [x] Checklist interativo por fase
+  - [x] Entregáveis por fase
+  - [x] Quality Gates visuais (PDD, UAT)
+- [x] CRUD de projetos (criar, editar, arquivar)
+- [x] CRUD de clientes (criar, editar)
+- [x] Integração Supabase (queries reais e suporte a múltiplos serviços/checklists dinâmicos)
+- [x] Real-time updates (Supabase Realtime via revalidatePath)
 
 ### Módulo 2: Comercial (CRM Básico)
 - [ ] Página `/comercial` — funil de vendas
@@ -89,8 +89,8 @@
 ---
 
 ## Fase 5: G — Gatilho (Deploy e Operação)
-- [ ] Deploy em produção via Coolify
-- [ ] Configurar domínio + SSL
+- [x] Deploy em produção via Coolify
+- [x] Configurar domínio + SSL (app.atlasbot.tech)
 - [ ] Workflows n8n de produção
   - [ ] Alerta quando projeto muda de status
   - [ ] Notificação WhatsApp para sócia

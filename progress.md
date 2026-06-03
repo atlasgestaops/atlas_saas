@@ -62,6 +62,33 @@
 - Variáveis de ambiente configuradas no `.env.local` e `manager.md`
 - Pacotes `@supabase/supabase-js` e `@supabase/ssr` instalados
 
+---
+
+## Sprint 3 — Fundação, Módulo 1 (Delivery) e Deploy
+**Data:** 03/Jun/2026  
+**Responsável:** Antigravity  
+
+### ✅ Concluído
+- **Módulo Fundação:**
+  - Login/Logout (Supabase Auth via Server Actions).
+  - Proxy.ts configurado para proteger rotas da dashboard.
+  - Componentes de UI construídos (`Button`, `Input`, `Card`, `Sidebar`, Layout Mestre).
+- **Módulo 1 — Delivery:**
+  - Visualização Kanban e Lista totalmente integradas com o banco de dados.
+  - Drawer do projeto com painel lateral dinâmico.
+  - Quality Gates implementados (Avanço de fase travado por aprovação de PDD e UAT).
+- **Atualização Arquitetural de Múltiplos Serviços:**
+  - Coluna `projects.type` alterada para `text[]` suportando projetos híbridos.
+  - UI de Novo Projeto convertida de Select para Checkboxes de múltipla escolha.
+  - Injeção dinâmica de Checklists (Gerador lê os PDFs de Automação e Website e cria as tasks corretas para o projeto de acordo com o serviço contratado).
+- **Correção de Bugs no Banco:**
+  - Atualização do gatilho `handle_new_user` no Supabase para preencher o `full_name` de usuários criados via Painel Administrativo.
+- **Deploy via Coolify (Fase 5 - Parcial):**
+  - Repositório Git inicializado e subido pro GitHub (`atlas_saas.git`).
+  - `Dockerfile` criado para Next.js 16 Standalone (Node 20).
+  - Aplicação Coolify conectada ao repo e à VPS.
+  - Integração de domínio configurada para `app.atlasbot.tech`.
+
 ### 🔜 Próximo
-- Iniciar Fase 3 (Arquitetura) — Módulo 0 (Fundação)
-- Configurar layout master, rota de Auth e providers do Supabase
+- Iniciar **Módulo 2 (Comercial / CRM Básico)**.
+- Desdobrar o Kanban de vendas e cartões de *Deals*.

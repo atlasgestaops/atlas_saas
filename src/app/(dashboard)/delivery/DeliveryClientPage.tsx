@@ -3,12 +3,13 @@
 import { useState } from 'react'
 import { KanbanBoard } from '@/components/delivery/KanbanBoard'
 import { ListView } from '@/components/delivery/ListView'
+import { MyTasks } from '@/components/delivery/MyTasks'
 import { ProjectDrawer } from '@/components/delivery/ProjectDrawer'
 import { NewProjectModal } from '@/components/delivery/NewProjectModal'
-import { LayoutGrid, List } from 'lucide-react'
+import { LayoutGrid, List, ClipboardCheck } from 'lucide-react'
 
-export function DeliveryClientPage({ initialProjects }: { initialProjects: any[] }) {
-  const [view, setView] = useState<'kanban' | 'list'>('kanban')
+export function DeliveryClientPage({ initialProjects, initialMyTasks }: { initialProjects: any[]; initialMyTasks: any[] }) {
+  const [view, setView] = useState<'kanban' | 'list' | 'mytasks'>('kanban')
   const [selectedProject, setSelectedProject] = useState<any | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -34,6 +35,20 @@ export function DeliveryClientPage({ initialProjects }: { initialProjects: any[]
             <List className="w-4 h-4" />
             Lista
           </button>
+          <button
+            onClick={() => setView('mytasks')}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
+              view === 'mytasks' ? 'bg-[#18181b] text-white shadow' : 'text-zinc-500 hover:text-zinc-300'
+            }`}
+          >
+            <ClipboardCheck className="w-4 h-4" />
+            Minhas Tarefas
+            {initialMyTasks.length > 0 && (
+              <span className="ml-1 bg-blue-500/20 text-blue-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                {initialMyTasks.reduce((sum: number, g: any) => sum + g.tasks.length, 0)}
+              </span>
+            )}
+          </button>
         </div>
 
         <div className="flex gap-3">
@@ -49,22 +64,25 @@ export function DeliveryClientPage({ initialProjects }: { initialProjects: any[]
         </div>
       </div>
 
-      <div onClick={(e) => {
-        // Simple delegator for project clicks
-        const target = e.target as HTMLElement
-        const card = target.closest('[data-project-id]')
-        if (card) {
-          const id = card.getAttribute('data-project-id')
-          const proj = initialProjects.find(p => p.id === id)
-          if (proj) setSelectedProject(proj)
-        }
-      }}>
-        {view === 'kanban' ? (
-          <KanbanBoard projects={initialProjects} />
-        ) : (
-          <ListView projects={initialProjects} />
-        )}
-      </div>
+      {view === 'mytasks' ? (
+        <MyTasks projectGroups={initialMyTasks} />
+      ) : (
+        <div onClick={(e) => {
+          const target = e.target as HTMLElement
+          const card = target.closest('[data-project-id]')
+          if (card) {
+            const id = card.getAttribute('data-project-id')
+            const proj = initialProjects.find(p => p.id === id)
+            if (proj) setSelectedProject(proj)
+          }
+        }}>
+          {view === 'kanban' ? (
+            <KanbanBoard projects={initialProjects} />
+          ) : (
+            <ListView projects={initialProjects} />
+          )}
+        </div>
+      )}
 
       {selectedProject && (
         <ProjectDrawer 

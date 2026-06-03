@@ -1,8 +1,11 @@
-import { getProjects } from './actions'
+import { getProjects, getMyTasks } from './actions'
 import { DeliveryClientPage } from './DeliveryClientPage'
 
 export default async function DeliveryPage() {
-  const projects = await getProjects()
+  const [projects, myTasks] = await Promise.all([
+    getProjects(),
+    getMyTasks(),
+  ])
 
   return (
     <div>
@@ -11,7 +14,7 @@ export default async function DeliveryPage() {
         <p className="text-zinc-400">Gestão e acompanhamento de todos os projetos em andamento.</p>
       </div>
 
-      <DeliveryClientPage initialProjects={projects} />
+      <DeliveryClientPage initialProjects={projects} initialMyTasks={myTasks} />
     </div>
   )
 }
