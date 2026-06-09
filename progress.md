@@ -122,6 +122,11 @@
   - Renomeado o módulo geral 'Delivery' para 'Projetos' na barra lateral e cabeçalho da dashboard.
   - Alterada a nomenclatura das etapas (0 a 5) para: Diagnóstico ➜ Escopo ➜ Desenho ➜ Construção ➜ Validação ➜ Ativação.
   - Removidos termos e siglas excessivamente técnicos (como UAT, PDD, Bugs, Deploy) das descrições de tarefas automáticas geradas no banco, tornando a interface acessível para clientes e equipe comercial.
+- **Autonomia de Exclusão e Arquivamento:**
+  - Criada Server Action `deleteProject` protegida com validação de perfil (apenas a role `'admin'` pode excluir permanentemente do banco de dados).
+  - Integrada uma **Zona de Perigo (Danger Zone)** com dupla confirmação no final da coluna esquerda do Drawer de projetos, exibida exclusivamente para administradores.
+  - Criado um seletor de **Status Geral do Projeto** no Drawer (No Prazo, Atenção, Atrasado, Pausado, Concluído) para possibilitar o arquivamento de projetos pelo time.
+  - Implementado o switch **"Mostrar Arquivados"** na tela de Projetos, que oculta projetos pausados ou concluídos do Kanban e da Lista por padrão, permitindo focar na esteira ativa mas preservando o histórico para consultas futuras.
 
 ### 🔜 Próximo
 - Iniciar **Módulo 2 (Comercial / CRM Básico)**.

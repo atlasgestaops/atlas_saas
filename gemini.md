@@ -207,7 +207,7 @@ erDiagram
 
 1. **Quality Gate — Desenho:** Um projeto NÃO pode avançar para `current_phase = 3` (Construção) se `pdd_approved = false`.
 2. **Quality Gate — Validação:** Um projeto NÃO pode avançar para `current_phase = 5` (Ativação) se `uat_approved = false`.
-3. **Projeto nunca é deletado.** Status pode ser 'paused' ou 'completed', mas o registro permanece.
+3. **Autonomia de Exclusão e Arquivamento:** A exclusão permanente de projetos (e suas tarefas associadas) é exclusiva de administradores (Detlef). Os demais usuários podem arquivar projetos mudando o status para 'paused' (Pausado) ou 'completed' (Concluído) no Drawer, removendo-os da esteira ativa de trabalho mas preservando os dados no banco.
 4. **Deal perdido requer motivo.** Se `stage = 'lost'`, `lost_reason` é obrigatório.
 5. **Histórico imutável.** Registros em `deal_activities` nunca são editados ou deletados.
 6. **Cascata Client → Projeto:** Um cliente só pode ser arquivado se todos seus projetos estiverem 'completed' ou 'paused'.
