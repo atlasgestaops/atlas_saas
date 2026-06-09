@@ -127,6 +127,9 @@
   - Integrada uma **Zona de Perigo (Danger Zone)** com dupla confirmação no final da coluna esquerda do Drawer de projetos, exibida exclusivamente para administradores.
   - Criado um seletor de **Status Geral do Projeto** no Drawer (No Prazo, Atenção, Atrasado, Pausado, Concluído) para possibilitar o arquivamento de projetos pelo time.
   - Implementado o switch **"Mostrar Arquivados"** na tela de Projetos, que oculta projetos pausados ou concluídos do Kanban e da Lista por padrão, permitindo focar na esteira ativa mas preservando o histórico para consultas futuras.
+- **Melhorias de Usabilidade no Kanban:**
+  - Reduzida a largura das colunas do Kanban de `300px` para `260px`, melhorando o aproveitamento de espaço em tela e reduzindo o scroll horizontal desnecessário.
+  - Implementado scroll horizontal por clique e arraste (Drag-to-Scroll) nativo no container, com alteração dinâmica de cursores de mouse (`grab` e `grabbing`) e proteção de seleção de texto para garantir gestos de arraste fluidos e orgânicos.
 
 ### 🔜 Próximo
 - Iniciar **Módulo 2 (Comercial / CRM Básico)**.
