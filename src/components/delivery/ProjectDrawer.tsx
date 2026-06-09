@@ -60,9 +60,11 @@ function TaskItem({ task, team, onChange }: { task: any, team: any[], onChange: 
                 onChange={(e) => handleAssign(e.target.value)}
                 className="bg-transparent text-xs text-zinc-400 focus:outline-none focus:text-white cursor-pointer w-28 truncate"
               >
-                <option value="unassigned">Sem responsável</option>
+                <option value="unassigned" className="bg-[#18181b] text-zinc-300">Sem responsável</option>
                 {team.map(member => (
-                  <option key={member.id} value={member.id}>{member.full_name}</option>
+                  <option key={member.id} value={member.id} className="bg-[#18181b] text-zinc-200">
+                    {member.full_name}
+                  </option>
                 ))}
               </select>
             </div>

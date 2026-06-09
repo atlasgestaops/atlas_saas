@@ -77,3 +77,8 @@ O protótipo já usa dark mode. Manter como tema ÚNICO (sem toggle light/dark) 
 - **Largura Mínima da Sidebar:** Para evitar que o menu lateral seja esmagado e empurrado para fora da tela devido à largura do Kanban de 6 colunas, a Sidebar deve conter obrigatoriamente a classe `shrink-0` e uma largura fixa (definida como `w-[240px]`).
 - **Overflow de Conteúdo:** O container principal do layout (`main`) precisa de `min-w-0` para confinar o overflow horizontal dentro dos filhos flex (a grade do Kanban), evitando empurrar outros elementos estáticos do DOM.
 - **Offset do Drawer:** O `ProjectDrawer` em desktops deve usar o offset `left-[240px]` permanentemente para coincidir com a largura física do menu e não sobrepor a navegação lateral.
+
+### Rolagem Horizontal do Kanban (Drag-to-Scroll)
+- **Implementação:** Para melhorar a usabilidade em desktops sem trackpads, foi programado um hook de manipulação de eventos de mouse (`onMouseDown`, `onMouseUp`, `onMouseLeave`, `onMouseMove`) no contêiner do Kanban. Ele permite rolar horizontalmente arrastando o cursor.
+- **Evitar Conflito de Clique:** O manipulador verifica se o alvo (`target`) possui o seletor `[data-project-id]` para não prejudicar ou anular a abertura de gaveta de detalhes ao clicar em um card.
+- **Cursores Premium:** Uso das propriedades CSS `cursor-grab`, `cursor-grabbing` e da classe `select-none` durante o arraste para garantir um toque orgânico de manipulação direta.
