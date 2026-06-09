@@ -109,6 +109,7 @@
   - Criadas e aplicadas migrações para adicionar `due_date`, `field_type` e `field_value` às tarefas (`project_tasks`).
   - Implementado server action para extrair templates estruturados específicos para cada um dos 5 serviços contratados.
   - Injeção dinâmica no banco ao criar um novo projeto.
+  - Alterado o tipo da tarefa "Definir escopo: o que faz e o que NÃO faz" de `checkbox` para `text` (texto longo), permitindo documentar/colar o escopo do projeto diretamente na etapa de Escopo (aplicado retroativamente no banco de dados para projetos existentes).
 - **Refatoração do ProjectDrawer (Cofre & Duas Colunas):**
   - Layout do painel expandido para `1050px` de largura com estrutura de duas colunas fixas lado a lado.
   - **Coluna Esquerda (Cofre / Visão Geral):** Mantém visível o cabeçalho, status geral de delivery, ações de avanço de fase, o cofre reativo de links/documentos e a gaveta de notas/credenciais agregadas de todas as fases.
