@@ -114,7 +114,9 @@
   - **Coluna Esquerda (Cofre / Visão Geral):** Mantém visível o cabeçalho, status geral de delivery, ações de avanço de fase, o cofre reativo de links/documentos e a gaveta de notas/credenciais agregadas de todas as fases.
   - **Coluna Direita (Operações):** Controle exclusivo de checklists e abas para navegar livremente entre as fases do projeto.
   - Os campos especiais atualizados na direita refletem-se no Cofre instantaneamente ao salvar (onBlur).
-  - Adicionado recuo de `280px` (`md:left-[280px]`) no container principal e no backdrop do Drawer para evitar a sobreposição da Sidebar. O menu lateral agora permanece fixo, visível e clicável o tempo todo.
+  - Adicionado recuo de `280px` (`left-[280px]`) no container principal e no backdrop do Drawer para evitar a sobreposição da Sidebar. O menu lateral agora permanece fixo, visível e clicável o tempo todo.
+- **Correção de Overflow e Encolhimento de Sidebar:**
+  - Adicionadas as propriedades `shrink-0` à Sidebar e `min-w-0` ao container principal (`main`) para resolver o bug de flexbox que comprimia e ocultava o menu lateral na extrema esquerda ao renderizar elementos horizontais largos (como o quadro Kanban).
 - **Renomeação de Fases e Módulos:**
   - Renomeado o módulo geral 'Delivery' para 'Projetos' na barra lateral e cabeçalho da dashboard.
   - Alterada a nomenclatura das etapas (0 a 5) para: Diagnóstico ➜ Escopo ➜ Desenho ➜ Construção ➜ Validação ➜ Ativação.
