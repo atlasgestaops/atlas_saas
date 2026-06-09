@@ -12,6 +12,11 @@ export function DeliveryClientPage({ initialProjects, initialMyTasks }: { initia
   const [view, setView] = useState<'kanban' | 'list' | 'mytasks'>('kanban')
   const [selectedProject, setSelectedProject] = useState<any | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [showArchived, setShowArchived] = useState(false)
+
+  const filteredProjects = showArchived 
+    ? initialProjects 
+    : initialProjects.filter(p => p.status === 'on-track' || p.status === 'attention' || p.status === 'delayed')
 
   return (
     <div>
@@ -51,7 +56,16 @@ export function DeliveryClientPage({ initialProjects, initialMyTasks }: { initia
           </button>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex items-center gap-3">
+          <label className="flex items-center gap-2 bg-[#111113] border border-white/5 rounded-lg px-3 py-2 text-xs text-zinc-400 cursor-pointer hover:text-white transition-colors">
+            <input 
+              type="checkbox" 
+              checked={showArchived}
+              onChange={(e) => setShowArchived(e.target.checked)}
+              className="rounded border-white/10 bg-transparent text-blue-600 focus:ring-0 focus:ring-offset-0 cursor-pointer w-3.5 h-3.5"
+            />
+            Mostrar Arquivados
+          </label>
           <button className="bg-white/5 border border-white/10 hover:bg-white/10 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
             Playbook
           </button>
@@ -77,9 +91,9 @@ export function DeliveryClientPage({ initialProjects, initialMyTasks }: { initia
           }
         }}>
           {view === 'kanban' ? (
-            <KanbanBoard projects={initialProjects} />
+            <KanbanBoard projects={filteredProjects} />
           ) : (
-            <ListView projects={initialProjects} />
+            <ListView projects={filteredProjects} />
           )}
         </div>
       )}

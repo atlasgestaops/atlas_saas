@@ -453,3 +453,65 @@ export async function getTeamMembers() {
 
   return data
 }
+
+export async function getUserRole() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return 'comercial'
+  
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+    
+  if (error || !data) return 'comercial'
+  return data.role
+}
+
+export async function updateProjectStatus(projectId: string, status: string) {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('projects')
+    .update({ status: status })
+    .eq('id', projectId)
+
+  if (error) {
+    console.error('Error updating project status:', error)
+    return { success: false, error: error.message }
+  }
+
+  revalidatePath('/delivery')
+  return { success: true }
+}
+
+export async function deleteProject(projectId: string) {
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false, error: 'Não autenticado' }
+
+  const { data: profile, error: profileErr } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (profileErr || !profile || profile.role !== 'admin') {
+    return { success: false, error: 'Apenas administradores podem excluir projetos' }
+  }
+
+  const { error } = await supabase
+    .from('projects')
+    .delete()
+    .eq('id', projectId)
+
+  if (error) {
+    console.error('Error deleting project:', error)
+    return { success: false, error: error.message }
+  }
+
+  revalidatePath('/delivery')
+  return { success: true }
+}

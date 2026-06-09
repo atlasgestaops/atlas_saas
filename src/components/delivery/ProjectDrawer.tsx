@@ -2,7 +2,7 @@
 
 import { X, CheckCircle2, Circle, Paperclip, Link as LinkIcon, FileText, UserCircle, Calendar } from 'lucide-react'
 import { useState, useEffect, useTransition } from 'react'
-import { getProjectTasks, toggleTask, updateProjectPhase, getTeamMembers, updateTaskField, updateTaskAssignment, updateTaskDueDate } from '@/app/(dashboard)/delivery/actions'
+import { getProjectTasks, toggleTask, updateProjectPhase, getTeamMembers, updateTaskField, updateTaskAssignment, updateTaskDueDate, getUserRole, deleteProject, updateProjectStatus } from '@/app/(dashboard)/delivery/actions'
 
 function TaskItem({ task, team, onChange }: { task: any, team: any[], onChange: (task: any) => void }) {
   const [fieldValue, setFieldValue] = useState(task.field_value || '')
@@ -142,25 +142,50 @@ export function ProjectDrawer({ project, onClose }: { project: any, onClose: () 
   const [isPending, startTransition] = useTransition()
   const [viewingPhase, setViewingPhase] = useState(project?.current_phase || 0)
   const [lastProjectId, setLastProjectId] = useState<string | null>(null)
+  
+  const [userRole, setUserRole] = useState<'admin' | 'comercial'>('comercial')
+  const [projectStatus, setProjectStatus] = useState(project?.status || 'on-track')
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     if (project) {
       if (project.id !== lastProjectId) {
         setViewingPhase(project.current_phase)
+        setProjectStatus(project.status)
         setLastProjectId(project.id)
+        setIsConfirmingDelete(false)
       }
       
       setLoading(true)
       Promise.all([
         getProjectTasks(project.id),
-        getTeamMembers()
-      ]).then(([tasksData, teamData]) => {
+        getTeamMembers(),
+        getUserRole()
+      ]).then(([tasksData, teamData, roleData]) => {
         setTasks(tasksData)
         setTeam(teamData)
+        setUserRole(roleData as any)
         setLoading(false)
       })
     }
   }, [project?.id])
+
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    const res = await deleteProject(project.id)
+    setIsDeleting(false)
+    if (res.success) {
+      onClose()
+    } else {
+      alert(res.error || 'Erro ao excluir projeto')
+    }
+  }
+
+  const handleStatusChange = async (newStatus: string) => {
+    setProjectStatus(newStatus)
+    await updateProjectStatus(project.id, newStatus)
+  }
 
   if (!project) return null
 
@@ -226,12 +251,29 @@ export function ProjectDrawer({ project, onClose }: { project: any, onClose: () 
             {/* Status do Projeto */}
             <div className="bg-[#18181b] border border-white/5 rounded-xl p-4 flex flex-col gap-3">
               <div>
-                <div className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">Status do Projeto</div>
+                <div className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">Status & Etapa</div>
                 <div className="text-sm font-semibold text-white mt-1.5 flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
-                  Fase Atual: {phaseNames[project.current_phase]}
+                  Etapa Atual: {phaseNames[project.current_phase]}
                 </div>
-                <div className="text-xs text-zinc-400 mt-1">
+                
+                {/* Seletor de Status Geral */}
+                <div className="mt-3 flex items-center justify-between bg-black/40 rounded-lg px-2.5 py-1.5 border border-white/5">
+                  <span className="text-xs text-zinc-400">Status Geral:</span>
+                  <select 
+                    value={projectStatus} 
+                    onChange={(e) => handleStatusChange(e.target.value)}
+                    className="bg-transparent text-xs text-zinc-200 font-semibold focus:outline-none cursor-pointer text-right w-32"
+                  >
+                    <option value="on-track" className="bg-[#18181b] text-green-400">No Prazo</option>
+                    <option value="attention" className="bg-[#18181b] text-yellow-400">Atenção</option>
+                    <option value="delayed" className="bg-[#18181b] text-red-400">Atrasado</option>
+                    <option value="paused" className="bg-[#18181b] text-zinc-400">Pausado (Arquivar)</option>
+                    <option value="completed" className="bg-[#18181b] text-blue-400">Concluído (Arquivar)</option>
+                  </select>
+                </div>
+
+                <div className="text-xs text-zinc-400 mt-2">
                   {allCurrentPhaseTasksDone 
                     ? 'Checklist completo! Pronto para avançar.' 
                     : 'Conclua o checklist da fase para avançar.'}
@@ -243,7 +285,7 @@ export function ProjectDrawer({ project, onClose }: { project: any, onClose: () 
                   disabled={!allCurrentPhaseTasksDone || isPending}
                   className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:bg-zinc-800 disabled:text-zinc-500 text-white text-xs font-semibold py-2 px-3 rounded-lg transition-colors flex items-center justify-center gap-1.5"
                 >
-                  {isPending ? 'Avançando...' : 'Avançar para Próxima Fase'}
+                  {isPending ? 'Avançando...' : 'Avançar para Próxima Etapa'}
                 </button>
               )}
             </div>
@@ -317,6 +359,41 @@ export function ProjectDrawer({ project, onClose }: { project: any, onClose: () 
                 </div>
               )}
             </div>
+
+            {/* Danger Zone - Apenas Admins */}
+            {userRole === 'admin' && (
+              <div className="mt-auto pt-6 border-t border-white/5">
+                <h3 className="text-[11px] font-semibold text-red-500/80 uppercase tracking-wider mb-2">Zona de Perigo</h3>
+                {isConfirmingDelete ? (
+                  <div className="space-y-2">
+                    <p className="text-[10px] text-zinc-400 leading-relaxed">Esta ação é irreversível e excluirá permanentemente o projeto, todas as suas tarefas e os dados do cofre.</p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleDelete}
+                        disabled={isDeleting}
+                        className="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold py-2 rounded-lg transition-colors"
+                      >
+                        {isDeleting ? 'Excluindo...' : 'Confirmar'}
+                      </button>
+                      <button
+                        onClick={() => setIsConfirmingDelete(false)}
+                        disabled={isDeleting}
+                        className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold py-2 rounded-lg transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setIsConfirmingDelete(true)}
+                    className="w-full bg-red-950/20 hover:bg-red-950/40 text-red-400 hover:text-red-300 border border-red-900/20 text-xs font-semibold py-2 rounded-lg transition-colors flex items-center justify-center"
+                  >
+                    Excluir Projeto Permanentemente
+                  </button>
+                )}
+              </div>
+            )}
 
           </div>
 
