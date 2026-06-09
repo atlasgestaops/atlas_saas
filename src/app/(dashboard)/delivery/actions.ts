@@ -82,7 +82,7 @@ export async function createProject(formData: FormData) {
     addTask(0, 'Levantamento de requisitos com o cliente');
     addTask(0, 'Validar acesso técnico aos sistemas do cliente', 'text');
     // Fase 1
-    addTask(1, 'Definir escopo: o que faz e o que NÃO faz');
+    addTask(1, 'Definir escopo: o que faz e o que NÃO faz', 'text');
     addTask(1, 'Estimar horas com buffer de 20%');
     addTask(1, 'Redigir proposta (escopo, prazo, preço, SLA, exclusões)');
     addTask(1, 'Enviar proposta e agendar alinhamento');
