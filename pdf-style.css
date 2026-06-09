@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap');
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #1f2937;
+  line-height: 1.6;
+  font-size: 11pt;
+  margin: 20px auto;
+  max-width: 800px;
+  background-color: #ffffff;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Outfit', sans-serif;
+  color: #111827;
+  font-weight: 700;
+  page-break-after: avoid;
+}
+
+h1 {
+  font-size: 26pt;
+  border-bottom: 2px solid #3b82f6;
+  padding-bottom: 8px;
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+h2 {
+  font-size: 18pt;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 6px;
+  margin-top: 36px;
+  margin-bottom: 18px;
+  color: #1e3a8a; /* Azul marinho elegante */
+}
+
+h3 {
+  font-size: 13pt;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  color: #2563eb; /* Azul Atlas */
+}
+
+p, ul, ol {
+  margin-bottom: 16px;
+}
+
+blockquote {
+  margin: 16px 0;
+  padding: 12px 18px;
+  border-left: 4px solid #d1d5db;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border-radius: 0 6px 6px 0;
+}
+
+/* Callouts do GitHub */
+blockquote p:first-child {
+  margin-top: 0;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Note */
+blockquote:has(strong:contains("NOTE")), 
+blockquote:has(strong:contains("📋")) {
+  border-left-color: #3b82f6;
+  background-color: #eff6ff;
+  color: #1e40af;
+}
+
+/* Important */
+blockquote:has(strong:contains("IMPORTANT")) {
+  border-left-color: #8b5cf6;
+  background-color: #f5f3ff;
+  color: #5b21b6;
+}
+
+/* Estilo para tabelas (Tabelas de Checklists) */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  margin-bottom: 24px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+}
+
+th, td {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+th {
+  background-color: #f8fafc;
+  color: #334155;
+  font-weight: 600;
+  font-size: 9pt;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+/* Estilo para links e marcadores de arquivos */
+a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 9pt;
+  background-color: #f1f5f9;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: #0f172a;
+}
+
+/* Quebra de página no PDF */
+.page-break {
+  page-break-before: always;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+  margin: 32px 0;
+}
+
+/* Centralizar cabeçalhos de tabela menores */
+th:first-child, td:first-child {
+  width: 5%;
+  text-align: center;
+}
+
+th:nth-child(3), td:nth-child(3) {
+  width: 25%;
+}
+
+th:nth-child(4), td:nth-child(4) {
+  width: 25%;
+}

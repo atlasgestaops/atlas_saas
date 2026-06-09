@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Checklist de Tarefas por Etapa — AtlasOps</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap');
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #1f2937;
+  line-height: 1.6;
+  font-size: 11pt;
+  margin: 20px auto;
+  max-width: 800px;
+  background-color: #ffffff;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Outfit', sans-serif;
+  color: #111827;
+  font-weight: 700;
+  page-break-after: avoid;
+}
+
+h1 {
+  font-size: 26pt;
+  border-bottom: 2px solid #3b82f6;
+  padding-bottom: 8px;
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+h2 {
+  font-size: 18pt;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 6px;
+  margin-top: 36px;
+  margin-bottom: 18px;
+  color: #1e3a8a; /* Azul marinho elegante */
+}
+
+h3 {
+  font-size: 13pt;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  color: #2563eb; /* Azul Atlas */
+}
+
+p, ul, ol {
+  margin-bottom: 16px;
+}
+
+blockquote {
+  margin: 16px 0;
+  padding: 12px 18px;
+  border-left: 4px solid #d1d5db;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border-radius: 0 6px 6px 0;
+}
+
+/* Callouts do GitHub */
+blockquote p:first-child {
+  margin-top: 0;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Note */
+blockquote:has(strong:contains("NOTE")), 
+blockquote:has(strong:contains("📋")) {
+  border-left-color: #3b82f6;
+  background-color: #eff6ff;
+  color: #1e40af;
+}
+
+/* Important */
+blockquote:has(strong:contains("IMPORTANT")) {
+  border-left-color: #8b5cf6;
+  background-color: #f5f3ff;
+  color: #5b21b6;
+}
+
+/* Estilo para tabelas (Tabelas de Checklists) */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  margin-bottom: 24px;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+}
+
+th, td {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+th {
+  background-color: #f8fafc;
+  color: #334155;
+  font-weight: 600;
+  font-size: 9pt;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+/* Estilo para links e marcadores de arquivos */
+a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 9pt;
+  background-color: #f1f5f9;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: #0f172a;
+}
+
+/* Quebra de página no PDF */
+.page-break {
+  page-break-before: always;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+  margin: 32px 0;
+}
+
+/* Centralizar cabeçalhos de tabela menores */
+th:first-child, td:first-child {
+  width: 5%;
+  text-align: center;
+}
+
+th:nth-child(3), td:nth-child(3) {
+  width: 25%;
+}
+
+th:nth-child(4), td:nth-child(4) {
+  width: 25%;
+}
+
+  </style>
+</head>
+<body>
+  <h1>Checklist de Tarefas por Etapa — Todos os Serviços</h1>
+<blockquote>
+<p>📋 <strong>Objetivo:</strong> Listar todas as tarefas por fase do delivery, para cada tipo de serviço da Atlas.<br>
+Revise com a equipe e marque o que fica, o que sai e o que muda.</p>
+</blockquote>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>As tarefas marcadas com 📎 indicam um <strong>tipo de campo especial</strong> (upload de arquivo, texto longo, link, etc.).<br>
+Tarefas sem marcação são checkboxes simples (feito/não feito).</p>
+</div>
+<hr>
+<h2>⚡ Automação (RPA / IA)</h2>
+<h3>Fase 0 — Discovery</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Reunião de Kickoff</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Levantamento de requisitos com o cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Mapear processo AS-IS: quem faz, frequência, tempo</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Identificar sistemas envolvidos (ERP, planilhas, portais)</td>
+<td>📎 Texto longo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Levantar volume de transações por mês</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Identificar exceções e variações do processo</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Calcular ROI estimado (horas economizadas × custo hora)</td>
+<td>☑️ Checkbox</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Validar acesso técnico aos sistemas do cliente</td>
+<td>📎 Texto longo (dados de acesso)</td>
+<td>Dev</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 1 — Proposta</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Definir escopo: o que faz e o que NÃO faz</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Estimar horas com buffer de 20%</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Redigir proposta (escopo, prazo, preço, SLA, exclusões)</td>
+<td>☑️ Checkbox</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Enviar proposta e agendar alinhamento</td>
+<td>☑️ Checkbox</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Contrato de prestação de serviço assinado</td>
+<td>📎 Upload de arquivo</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>6</td>
+<td>NDA assinado (quando aplicável)</td>
+<td>📎 Upload de arquivo</td>
+<td>Comercial</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 2 — Design (PDD)</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Criar PDD (Process Design Document) — fluxo detalhado</td>
+<td>📎 Upload de arquivo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Mapear cada passo: input, ação, output, condição de erro</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Definir regras de negócio e exceções tratadas</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Documentar credenciais e acessos necessários</td>
+<td>📎 Texto longo (cofre de senhas)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Dicionário de dados simplificado</td>
+<td>📎 Upload de arquivo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Estruturação do banco (Postgres/Sheets)</td>
+<td>📎 Texto longo (link + credenciais)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>7</td>
+<td>PDD aprovado pelo cliente</td>
+<td>📎 Upload de arquivo (PDD assinado)</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Critérios de aceite definidos</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 3 — Desenvolvimento</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Setup inicial Docker/Infra</td>
+<td>📎 Texto longo (link do ambiente)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Construção do fluxo principal (happy path)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Construção da lógica no n8n</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Criação de prompts para IA (quando aplicável)</td>
+<td>📎 Texto longo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Implementar tratamento de erros e exceções</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Configurar logs de execução e alertas de falha</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Versionamento no GitHub (branch do projeto)</td>
+<td>📎 Link (URL do repo)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Status report semanal ao cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 4 — Testes (UAT)</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Executar testes unitários em cada etapa do fluxo</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Testar cenários de exceção mapeados no PDD</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Teste de volume com dados reais do cliente</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Execução da matriz de testes</td>
+<td>📎 Upload de arquivo (relatório)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Ajuste de fallbacks e loops</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Relatório de performance (tempo, taxa de erro)</td>
+<td>📎 Texto longo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Conduzir sessão de UAT com usuário-chave do cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Documentar bugs encontrados e correções aplicadas</td>
+<td>📎 Texto longo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Termo de aceite assinado pelo cliente</td>
+<td>📎 Upload de arquivo</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 5 — Deploy &amp; Handover</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Migrar bot para ambiente de produção</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Configurar agendamento (scheduler)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Dashboard de monitoramento ativo</td>
+<td>📎 Link</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Manual de operação (POP) finalizado</td>
+<td>📎 Upload de arquivo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Configuração de handoff humano</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Treinar usuário responsável no cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Definir canal de suporte pós-entrega</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Agendar check-in de 30 dias</td>
+<td>☑️ Checkbox</td>
+<td>CS / Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<hr>
+<h2>🌐 Website / Landing Page</h2>
+<h3>Fase 0 — Discovery</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Reunião de Kickoff</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Levantamento de requisitos com o cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Briefing de negócio (público-alvo, tom de voz, referências)</td>
+<td>📎 Texto longo</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Definir estrutura de seções (wireframe textual)</td>
+<td>☑️ Checkbox</td>
+<td>Designer</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Levantar conteúdo existente (textos, fotos, vídeos)</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Definir integrações (formulário, WhatsApp, analytics)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Validar acesso técnico aos sistemas do cliente</td>
+<td>📎 Texto longo (dados de acesso)</td>
+<td>Dev</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 1 — Proposta</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Definir escopo: o que faz e o que NÃO faz</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Estimar horas com buffer de 20%</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Redigir proposta (escopo, prazo, preço, SLA, exclusões)</td>
+<td>☑️ Checkbox</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Enviar proposta e agendar alinhamento</td>
+<td>☑️ Checkbox</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Contrato de prestação de serviço assinado</td>
+<td>📎 Upload de arquivo</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>6</td>
+<td>NDA assinado (quando aplicável)</td>
+<td>📎 Upload de arquivo</td>
+<td>Comercial</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 2 — Design (PDD)</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Criação do wireframe / layout (Figma ou similar)</td>
+<td>📎 Link (URL do Figma)</td>
+<td>Designer</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Aprovação da identidade visual pelo cliente</td>
+<td>📎 Upload de arquivo</td>
+<td>Designer</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Catalogação de ativos (mídias: fotos, vídeos, ícones)</td>
+<td>☑️ Checkbox</td>
+<td>Designer</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Definição de estilos globais (cores, fontes, espaçamentos)</td>
+<td>☑️ Checkbox</td>
+<td>Designer</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Revisão de textos / copywriting</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 3 — Desenvolvimento</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Setup do projeto (framework, repositório, domínio de dev)</td>
+<td>📎 Link (URL do repo)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Construção segregada de seções</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Implementação de animações e interações</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Integração de formulários e CTAs</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Configuração de SEO (meta tags, OG, sitemap)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Congelamento de código (code freeze)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 4 — Testes (UAT)</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Otimização mobile (responsivo)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Testes cross-browser (Chrome, Safari, Firefox)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Testes de velocidade (Lighthouse / PageSpeed)</td>
+<td>📎 Texto longo (scores)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Revisão de conteúdo final com o cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Conduzir sessão de UAT com usuário-chave do cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Documentar bugs encontrados e correções aplicadas</td>
+<td>📎 Texto longo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Termo de aceite assinado pelo cliente</td>
+<td>📎 Upload de arquivo</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 5 — Deploy &amp; Handover</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Configuração de domínio e DNS</td>
+<td>📎 Texto longo (dados DNS)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Publicação (Go-Live)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Configuração de analytics (GA, GTM, Pixel)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Entrega de acessos ao cliente (CMS, painel)</td>
+<td>📎 Texto longo</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Treinar usuário responsável no cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Definir canal de suporte pós-entrega</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Agendar check-in de 30 dias</td>
+<td>☑️ Checkbox</td>
+<td>CS / Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<hr>
+<h2>💻 SaaS / Web App</h2>
+<h3>Fase 0 — Discovery</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Reunião de Kickoff</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Levantamento de requisitos com o cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Definir funcionalidades core (user stories ou lista de features)</td>
+<td>📎 Texto longo</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Definir personas e fluxos de usuário</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Definir modelo de autenticação (login, roles, permissões)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Definir integrações externas (APIs, pagamento, e-mail)</td>
+<td>📎 Texto longo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Validar acesso técnico aos sistemas do cliente</td>
+<td>📎 Texto longo (dados de acesso)</td>
+<td>Dev</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 1 — Proposta</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Definir escopo: o que faz e o que NÃO faz</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Estimar horas com buffer de 20%</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Redigir proposta (escopo, prazo, preço, SLA, exclusões)</td>
+<td>☑️ Checkbox</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Enviar proposta e agendar alinhamento</td>
+<td>☑️ Checkbox</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Contrato de prestação de serviço assinado</td>
+<td>📎 Upload de arquivo</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>6</td>
+<td>NDA assinado (quando aplicável)</td>
+<td>📎 Upload de arquivo</td>
+<td>Comercial</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 2 — Design (PDD)</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Wireframes / protótipo navegável (Figma)</td>
+<td>📎 Link</td>
+<td>Designer</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Design System definido (cores, tipografia, componentes)</td>
+<td>☑️ Checkbox</td>
+<td>Designer</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Modelagem do banco de dados (ERD)</td>
+<td>📎 Upload de arquivo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Definição de endpoints / API</td>
+<td>📎 Texto longo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Aprovação do protótipo pelo cliente</td>
+<td>📎 Upload de arquivo (assinatura)</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 3 — Desenvolvimento</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Setup do projeto (framework, CI/CD, repositório)</td>
+<td>📎 Link (URL do repo)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Criação do banco de dados</td>
+<td>📎 Texto longo (link + credenciais)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Implementação do sistema de autenticação</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Desenvolvimento dos módulos/features core</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Implementação de integrações externas</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Configuração de deploy (Coolify/Vercel)</td>
+<td>📎 Link (URL de staging)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Status report semanal ao cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 4 — Testes (UAT)</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Testes funcionais de cada módulo</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Testes de segurança (auth, permissões, SQL injection)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Testes de performance e carga</td>
+<td>📎 Texto longo (resultados)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Teste de fluxo completo com dados reais</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Conduzir sessão de UAT com usuário-chave do cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Documentar bugs encontrados e correções aplicadas</td>
+<td>📎 Texto longo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Termo de aceite assinado pelo cliente</td>
+<td>📎 Upload de arquivo</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 5 — Deploy &amp; Handover</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Deploy em produção</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Configuração de domínio e SSL</td>
+<td>📎 Texto longo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Configuração de backups automáticos</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Documentação técnica (API, arquitetura)</td>
+<td>📎 Upload de arquivo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Onboarding do cliente (treinamento na plataforma)</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Treinar usuário responsável no cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Definir canal de suporte pós-entrega</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Agendar check-in de 30 dias</td>
+<td>☑️ Checkbox</td>
+<td>CS / Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<hr>
+<h2>🛒 E-commerce</h2>
+<h3>Fase 0 — Discovery</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Reunião de Kickoff</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Levantamento de requisitos com o cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Definir plataforma (Shopify, WooCommerce, customizado)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Levantamento de catálogo (quantidade de produtos, categorias)</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Definir meios de pagamento e frete</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Definir integrações (ERP, estoque, nota fiscal)</td>
+<td>📎 Texto longo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Validar acesso técnico aos sistemas do cliente</td>
+<td>📎 Texto longo (dados de acesso)</td>
+<td>Dev</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 1 — Proposta</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Definir escopo: o que faz e o que NÃO faz</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Estimar horas com buffer de 20%</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Redigir proposta (escopo, prazo, preço, SLA, exclusões)</td>
+<td>☑️ Checkbox</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Enviar proposta e agendar alinhamento</td>
+<td>☑️ Checkbox</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Contrato de prestação de serviço assinado</td>
+<td>📎 Upload de arquivo</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>6</td>
+<td>NDA assinado (quando aplicável)</td>
+<td>📎 Upload de arquivo</td>
+<td>Comercial</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 2 — Design (PDD)</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Layout da loja (home, PDP, carrinho, checkout)</td>
+<td>📎 Link (Figma)</td>
+<td>Designer</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Identidade visual da loja aprovada</td>
+<td>📎 Upload de arquivo</td>
+<td>Designer</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Estrutura de categorias e filtros</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Definição de fluxo de checkout</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Estratégia de frete e regiões de entrega</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 3 — Desenvolvimento</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Setup da plataforma + tema</td>
+<td>📎 Link (URL da loja staging)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Cadastro de produtos (ou importação em massa)</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Configuração de pagamentos (gateway)</td>
+<td>📎 Texto longo (credenciais)</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Configuração de frete e logística</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Integração com ERP / sistema de estoque</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Implementação de e-mails transacionais</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 4 — Testes (UAT)</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Pedido teste completo (do carrinho à confirmação)</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Teste de pagamento em sandbox</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Teste de cálculo de frete</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Teste mobile (responsividade da loja)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Revisão de conteúdo de produtos</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Conduzir sessão de UAT com usuário-chave do cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Documentar bugs encontrados e correções aplicadas</td>
+<td>📎 Texto longo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Termo de aceite assinado pelo cliente</td>
+<td>📎 Upload de arquivo</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 5 — Deploy &amp; Handover</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Configuração de domínio e SSL</td>
+<td>📎 Texto longo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Ativação de pagamento real (sair de sandbox)</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Configuração de analytics e pixel de conversão</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Treinamento do operador da loja</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Manual de operação (cadastrar produtos, processar pedidos)</td>
+<td>📎 Upload de arquivo</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Treinar usuário responsável no cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Definir canal de suporte pós-entrega</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Agendar check-in de 30 dias</td>
+<td>☑️ Checkbox</td>
+<td>CS / Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<hr>
+<h2>📢 Tráfego Pago</h2>
+<h3>Fase 0 — Discovery</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Reunião de Kickoff</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Levantamento de requisitos com o cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Definir objetivo da campanha (leads, vendas, branding)</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Definir público-alvo e personas</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Definir canais (Google Ads, Meta Ads, LinkedIn, TikTok)</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Definir orçamento mensal e período</td>
+<td>☑️ Checkbox</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Acesso às contas de anúncio do cliente</td>
+<td>📎 Texto longo (logins, BM ID)</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 1 — Proposta</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Definir escopo: o que faz e o que NÃO faz</td>
+<td>☑️ Checkbox</td>
+<td>Gestor de Projetos</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Estimar horas com buffer de 20%</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Redigir proposta (escopo, prazo, preço, SLA, exclusões)</td>
+<td>☑️ Checkbox</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Enviar proposta e agendar alinhamento</td>
+<td>☑️ Checkbox</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Contrato de prestação de serviço assinado</td>
+<td>📎 Upload de arquivo</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>6</td>
+<td>NDA assinado (quando aplicável)</td>
+<td>📎 Upload de arquivo</td>
+<td>Comercial</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 2 — Design (PDD)</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Criação da estratégia de campanha</td>
+<td>📎 Upload de arquivo</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Definição de criativos (textos + imagens/vídeos)</td>
+<td>☑️ Checkbox</td>
+<td>Designer</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Criação/revisão da landing page de destino</td>
+<td>📎 Link</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Configuração de pixel e eventos de conversão</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Aprovação dos criativos pelo cliente</td>
+<td>📎 Upload de arquivo</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 3 — Desenvolvimento (Execução)</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Estruturação das campanhas na plataforma</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Upload de criativos e configuração de segmentação</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Configuração de UTMs e rastreamento</td>
+<td>☑️ Checkbox</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Ativação das campanhas</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Monitoramento inicial (primeiras 48h)</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 4 — Testes (Otimização)</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Análise de métricas (CTR, CPC, CPA, ROAS)</td>
+<td>📎 Texto longo (dados)</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Testes A/B de criativos</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Otimização de públicos e lances</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Relatório de performance da primeira semana</td>
+<td>📎 Upload de arquivo</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Conduzir sessão de UAT com usuário-chave do cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Documentar bugs encontrados e correções aplicadas</td>
+<td>📎 Texto longo</td>
+<td>Dev</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Termo de aceite assinado pelo cliente</td>
+<td>📎 Upload de arquivo</td>
+<td>Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Fase 5 — Deploy &amp; Handover</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>#</th>
+<th>Tarefa</th>
+<th>Tipo de Campo</th>
+<th>Responsável Sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Relatório final de campanha</td>
+<td>📎 Upload de arquivo</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Documentação de aprendizados (o que funcionou/não)</td>
+<td>📎 Texto longo</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Transferência de acesso das contas (se aplicável)</td>
+<td>📎 Texto longo</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Proposta de continuidade / próximo ciclo</td>
+<td>☑️ Checkbox</td>
+<td>Comercial</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Treinar usuário responsável no cliente</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Definir canal de suporte pós-entrega</td>
+<td>☑️ Checkbox</td>
+<td>Gestor</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Agendar check-in de 30 dias</td>
+<td>☑️ Checkbox</td>
+<td>CS / Gestor</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<hr>
+<h2>Proposta de Alteração no Banco de Dados</h2>
+<div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p><p>Para suportar os tipos de campo, datas e responsáveis por tarefa, precisamos adicionar <strong>3 colunas</strong> à tabela <code class="notranslate">project_tasks</code>. Não é necessário mexer na estrutura existente.</p>
+</div>
+<h3>Novas colunas em <code class="notranslate">project_tasks</code></h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Já existe?</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="notranslate">assigned_to</code></td>
+<td>uuid (FK → profiles)</td>
+<td>✅ Sim</td>
+<td>Responsável pela tarefa</td>
+</tr>
+<tr>
+<td><code class="notranslate">due_date</code></td>
+<td>date</td>
+<td>❌ Novo</td>
+<td>Data prevista de conclusão</td>
+</tr>
+<tr>
+<td><code class="notranslate">field_type</code></td>
+<td>text</td>
+<td>❌ Novo</td>
+<td><code class="notranslate">'checkbox'</code> | <code class="notranslate">'file'</code> | <code class="notranslate">'text'</code> | <code class="notranslate">'link'</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">field_value</code></td>
+<td>text</td>
+<td>❌ Novo</td>
+<td>Valor do campo (URL do arquivo, texto, link, etc.)</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>Como funciona</h3>
+<pre class="notranslate"><code class="notranslate">field_type = 'checkbox'  →  campo padrão (só marca feito/não feito)
+field_type = 'file'      →  mostra botão de upload, salva URL no field_value
+field_type = 'text'      →  mostra textarea, salva conteúdo no field_value
+field_type = 'link'      →  mostra input de URL, salva link no field_value
+</code></pre>
+</body>
+</html>

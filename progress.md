@@ -77,18 +77,25 @@
   - Visualização Kanban e Lista totalmente integradas com o banco de dados.
   - Drawer do projeto com painel lateral dinâmico.
   - Quality Gates implementados (Avanço de fase travado por aprovação de PDD e UAT).
+  - **Aba "Minhas Tarefas":** Visualização centralizada de afazeres ordenados por prazo e urgência do usuário ativo, integrada com a nova coluna `assigned_to` na tabela `project_tasks`.
 - **Atualização Arquitetural de Múltiplos Serviços:**
   - Coluna `projects.type` alterada para `text[]` suportando projetos híbridos.
   - UI de Novo Projeto convertida de Select para Checkboxes de múltipla escolha.
   - Injeção dinâmica de Checklists (Gerador lê os PDFs de Automação e Website e cria as tasks corretas para o projeto de acordo com o serviço contratado).
+- **Mapeamento de Checklists por Serviço:**
+  - Levantamento completo das tarefas estruturadas das 5 verticais de negócio (Automação, Website, SaaS, E-commerce, Tráfego Pago).
+  - Configuração de tipos de campo (upload, texto longo, link) e atribuição de papéis de responsabilidade.
+  - Geração automatizada do PDF de processos (`checklist_delivery_por_servico.pdf`) estilizado para a equipe.
 - **Correção de Bugs no Banco:**
   - Atualização do gatilho `handle_new_user` no Supabase para preencher o `full_name` de usuários criados via Painel Administrativo.
-- **Deploy via Coolify (Fase 5 - Parcial):**
+- **Deploy via Coolify (Fase 5):**
   - Repositório Git inicializado e subido pro GitHub (`atlas_saas.git`).
   - `Dockerfile` criado para Next.js 16 Standalone (Node 20).
   - Aplicação Coolify conectada ao repo e à VPS.
   - Integração de domínio configurada para `app.atlasbot.tech`.
 
 ### 🔜 Próximo
+- Aguardar alinhamento da equipe sobre os checklists para criar as migrations das novas colunas (`due_date`, `field_type`, `field_value`).
 - Iniciar **Módulo 2 (Comercial / CRM Básico)**.
 - Desdobrar o Kanban de vendas e cartões de *Deals*.
+

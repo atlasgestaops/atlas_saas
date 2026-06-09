@@ -1,42 +1,185 @@
 'use client'
 
-import { X, CheckCircle2, Circle } from 'lucide-react'
+import { X, CheckCircle2, Circle, Paperclip, Link as LinkIcon, FileText, UserCircle, Calendar } from 'lucide-react'
 import { useState, useEffect, useTransition } from 'react'
-import { getProjectTasks, toggleTask, updateProjectPhase } from '@/app/(dashboard)/delivery/actions'
+import { getProjectTasks, toggleTask, updateProjectPhase, getTeamMembers, updateTaskField, updateTaskAssignment, updateTaskDueDate } from '@/app/(dashboard)/delivery/actions'
+
+function TaskItem({ task, team, onChange }: { task: any, team: any[], onChange: (task: any) => void }) {
+  const [fieldValue, setFieldValue] = useState(task.field_value || '')
+  
+  const handleToggleDone = async () => {
+    const newVal = !task.is_done
+    onChange({ ...task, is_done: newVal })
+    if (task.field_type === 'checkbox') {
+      await toggleTask(task.id, newVal)
+    } else {
+      await updateTaskField(task.id, newVal, fieldValue)
+    }
+  }
+
+  const handleFieldBlur = async () => {
+    if (fieldValue !== task.field_value) {
+      onChange({ ...task, field_value: fieldValue })
+      await updateTaskField(task.id, task.is_done, fieldValue)
+    }
+  }
+
+  const handleAssign = async (userId: string) => {
+    const newVal = userId === 'unassigned' ? null : userId
+    onChange({ ...task, assigned_to: newVal })
+    await updateTaskAssignment(task.id, newVal)
+  }
+
+  const handleDateChange = async (date: string) => {
+    const newVal = date || null
+    onChange({ ...task, due_date: newVal })
+    await updateTaskDueDate(task.id, newVal)
+  }
+
+  return (
+    <div className={`p-4 rounded-xl border transition-colors ${task.is_done ? 'bg-blue-500/5 border-blue-500/20' : 'bg-[#18181b] border-white/5'}`}>
+      <div className="flex items-start gap-3">
+        <button className="mt-0.5 focus:outline-none" onClick={handleToggleDone}>
+          {task.is_done ? (
+            <CheckCircle2 className="w-5 h-5 text-blue-500" />
+          ) : (
+            <Circle className="w-5 h-5 text-zinc-500" />
+          )}
+        </button>
+        <div className="flex-1 min-w-0">
+          <div className={`text-sm font-medium ${task.is_done ? 'text-zinc-400 line-through' : 'text-zinc-200'}`}>
+            {task.description}
+          </div>
+          
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {/* Responsável */}
+            <div className="flex items-center gap-1.5 bg-black/40 rounded-md px-2 py-1.5 border border-white/5">
+              <UserCircle className="w-3.5 h-3.5 text-zinc-500" />
+              <select 
+                value={task.assigned_to || 'unassigned'} 
+                onChange={(e) => handleAssign(e.target.value)}
+                className="bg-transparent text-xs text-zinc-400 focus:outline-none focus:text-white cursor-pointer w-28 truncate"
+              >
+                <option value="unassigned">Sem responsável</option>
+                {team.map(member => (
+                  <option key={member.id} value={member.id}>{member.full_name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Prazo */}
+            <div className="flex items-center gap-1.5 bg-black/40 rounded-md px-2 py-1.5 border border-white/5">
+              <Calendar className="w-3.5 h-3.5 text-zinc-500" />
+              <input 
+                type="date" 
+                value={task.due_date || ''}
+                onChange={(e) => handleDateChange(e.target.value)}
+                className="bg-transparent text-xs text-zinc-400 focus:outline-none focus:text-white cursor-text w-[110px]"
+              />
+            </div>
+          </div>
+
+          {/* Campo Especial Baseado no Tipo */}
+          {task.field_type !== 'checkbox' && (
+            <div className="mt-3">
+              {task.field_type === 'text' && (
+                <div className="flex gap-2 items-start bg-black/20 p-1.5 rounded-lg border border-white/5">
+                  <FileText className="w-4 h-4 text-zinc-500 mt-1.5 ml-1" />
+                  <textarea
+                    placeholder="Adicione notas, credenciais ou detalhes da entrega..."
+                    value={fieldValue}
+                    onChange={(e) => setFieldValue(e.target.value)}
+                    onBlur={handleFieldBlur}
+                    className="w-full bg-transparent border-none p-1 text-xs text-zinc-300 focus:outline-none focus:ring-0 min-h-[60px] resize-y"
+                  />
+                </div>
+              )}
+              {task.field_type === 'link' && (
+                <div className="flex gap-2 items-center bg-black/20 p-1.5 rounded-lg border border-white/5">
+                  <LinkIcon className="w-4 h-4 text-zinc-500 ml-1" />
+                  <input
+                    type="url"
+                    placeholder="Cole a URL do documento, repo ou design..."
+                    value={fieldValue}
+                    onChange={(e) => setFieldValue(e.target.value)}
+                    onBlur={handleFieldBlur}
+                    className="flex-1 bg-transparent border-none p-1 text-xs text-zinc-300 focus:outline-none focus:ring-0"
+                  />
+                  {fieldValue && (
+                    <a href={fieldValue} target="_blank" rel="noreferrer" className="text-[11px] font-medium text-blue-400 hover:text-blue-300 transition-colors px-2 py-1 bg-blue-500/10 rounded mr-1">Abrir Link</a>
+                  )}
+                </div>
+              )}
+              {task.field_type === 'file' && (
+                <div className="flex gap-2 items-center bg-black/20 p-1.5 rounded-lg border border-white/5">
+                  <Paperclip className="w-4 h-4 text-zinc-500 ml-1" />
+                  <input
+                    type="url"
+                    placeholder="Cole o link do anexo ou Google Drive..."
+                    value={fieldValue}
+                    onChange={(e) => setFieldValue(e.target.value)}
+                    onBlur={handleFieldBlur}
+                    className="flex-1 bg-transparent border-none p-1 text-xs text-zinc-300 focus:outline-none focus:ring-0"
+                  />
+                   {fieldValue && (
+                    <a href={fieldValue} target="_blank" rel="noreferrer" className="text-[11px] font-medium text-zinc-400 hover:text-white transition-colors px-2 py-1 bg-white/5 rounded mr-1">Acessar</a>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export function ProjectDrawer({ project, onClose }: { project: any, onClose: () => void }) {
   const [tasks, setTasks] = useState<any[]>([])
+  const [team, setTeam] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [isPending, startTransition] = useTransition()
+  const [viewingPhase, setViewingPhase] = useState(project?.current_phase || 0)
+  const [lastProjectId, setLastProjectId] = useState<string | null>(null)
 
   useEffect(() => {
     if (project) {
+      if (project.id !== lastProjectId) {
+        setViewingPhase(project.current_phase)
+        setLastProjectId(project.id)
+      }
+      
       setLoading(true)
-      getProjectTasks(project.id).then(data => {
-        setTasks(data)
+      Promise.all([
+        getProjectTasks(project.id),
+        getTeamMembers()
+      ]).then(([tasksData, teamData]) => {
+        setTasks(tasksData)
+        setTeam(teamData)
         setLoading(false)
       })
     }
-  }, [project])
+  }, [project?.id])
 
   if (!project) return null
 
-  const handleToggle = async (task: any) => {
-    const newVal = !task.is_done
-    // Optimistic UI update
-    setTasks(prev => prev.map(t => t.id === task.id ? { ...t, is_done: newVal } : t))
-    await toggleTask(task.id, newVal)
+  const handleTaskChange = (updatedTask: any) => {
+    setTasks(prev => prev.map(t => t.id === updatedTask.id ? updatedTask : t))
   }
 
-  const phaseTasks = tasks.filter(t => t.phase === project.current_phase)
-  const allPhaseTasksDone = phaseTasks.length > 0 && phaseTasks.every(t => t.is_done)
+  const phaseNames = ['Discovery', 'Proposta', 'Design', 'Dev', 'UAT', 'Deploy']
+  
+  const viewedTasks = tasks.filter(t => t.phase === viewingPhase)
+  const currentPhaseTasks = tasks.filter(t => t.phase === project.current_phase)
+  const allCurrentPhaseTasksDone = currentPhaseTasks.length > 0 && currentPhaseTasks.every(t => t.is_done)
   const isFinalPhase = project.current_phase === 5
 
   const handleAdvancePhase = () => {
-    if (!allPhaseTasksDone || isFinalPhase) return
+    if (!allCurrentPhaseTasksDone || isFinalPhase) return
     startTransition(async () => {
       await updateProjectPhase(project.id, project.current_phase + 1)
-      onClose() // Fechar a gaveta pra forçar a atualização visual (ou poderia usar roteamento)
+      onClose() // Fechar a gaveta para forçar a atualização visual
     })
   }
 
@@ -46,7 +189,7 @@ export function ProjectDrawer({ project, onClose }: { project: any, onClose: () 
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       
       {/* Drawer */}
-      <div className="relative w-[500px] h-full bg-[#111113] border-l border-white/10 shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+      <div className="relative w-[540px] h-full bg-[#111113] border-l border-white/10 shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
         
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-white/5">
@@ -55,7 +198,7 @@ export function ProjectDrawer({ project, onClose }: { project: any, onClose: () 
             <div className="flex items-center gap-2 mt-1">
               <span className="text-sm text-zinc-400">{project.clients?.name}</span>
               <span className="text-zinc-600">•</span>
-              <div className="flex gap-1">
+              <div className="flex gap-1 flex-wrap max-w-[250px]">
                 {project.types?.map((t: string) => (
                   <span key={t} className="text-[10px] px-1.5 py-0.5 bg-white/5 rounded text-zinc-400 capitalize border border-white/5">
                     {t}
@@ -70,60 +213,76 @@ export function ProjectDrawer({ project, onClose }: { project: any, onClose: () 
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-8">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
           
-          {/* Status Section */}
-          <div>
-            <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-4">Status Atual</h3>
-            <div className="bg-[#18181b] border border-white/5 rounded-xl p-4 flex justify-between items-center">
-              <div>
-                <div className="text-sm font-medium text-white">Fase {project.current_phase}</div>
-                <div className="text-xs mt-1 text-zinc-400">
-                  {allPhaseTasksDone 
-                    ? 'Checklist completo! Pronto para avançar.' 
-                    : 'Conclua o checklist abaixo para liberar a próxima fase.'}
-                </div>
-              </div>
-              {!isFinalPhase && (
-                <button 
-                  onClick={handleAdvancePhase}
-                  disabled={!allPhaseTasksDone || isPending}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:bg-zinc-800 disabled:text-zinc-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-                >
-                  {isPending ? 'Avançando...' : 'Avançar Fase'}
-                </button>
-              )}
-            </div>
+          {/* Phase Navigation Tabs */}
+          <div className="flex gap-1 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
+            {phaseNames.map((name, idx) => (
+              <button
+                key={idx}
+                onClick={() => setViewingPhase(idx)}
+                className={`px-3 py-1.5 text-[11px] font-medium rounded-md whitespace-nowrap transition-colors ${
+                  viewingPhase === idx 
+                    ? 'bg-blue-600 text-white shadow-md' 
+                    : idx < project.current_phase
+                      ? 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20'
+                      : idx === project.current_phase
+                        ? 'bg-zinc-800 text-zinc-300 border border-white/10 hover:bg-zinc-700'
+                        : 'text-zinc-500 hover:text-zinc-400'
+                }`}
+              >
+                {idx}. {name}
+              </button>
+            ))}
           </div>
+
+          {/* Status Section */}
+          {viewingPhase === project.current_phase && (
+            <div>
+              <h3 className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider mb-3">Status do Projeto</h3>
+              <div className="bg-[#18181b] border border-white/5 rounded-xl p-4 flex justify-between items-center">
+                <div>
+                  <div className="text-sm font-medium text-white">Fase Atual ({project.current_phase})</div>
+                  <div className="text-xs mt-1 text-zinc-400">
+                    {allCurrentPhaseTasksDone 
+                      ? 'Checklist completo! Pronto para avançar.' 
+                      : 'Conclua o checklist para liberar a próxima fase.'}
+                  </div>
+                </div>
+                {!isFinalPhase && (
+                  <button 
+                    onClick={handleAdvancePhase}
+                    disabled={!allCurrentPhaseTasksDone || isPending}
+                    className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:bg-zinc-800 disabled:text-zinc-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                  >
+                    {isPending ? 'Avançando...' : 'Avançar Fase'}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Checklist */}
           <div>
-            <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-4">Checklist da Fase</h3>
+            <h3 className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+              {viewingPhase === project.current_phase ? 'Checklist Atual' : `Checklist - ${phaseNames[viewingPhase]}`}
+            </h3>
             
             {loading ? (
-              <div className="text-sm text-zinc-500 text-center py-4">Carregando tarefas...</div>
-            ) : phaseTasks.length === 0 ? (
-              <div className="text-sm text-zinc-500 text-center py-4 bg-white/5 rounded-lg border border-white/5 border-dashed">
-                Nenhuma tarefa para esta fase.
+              <div className="text-sm text-zinc-500 text-center py-6 bg-white/5 rounded-xl border border-white/5">Carregando tarefas e time...</div>
+            ) : viewedTasks.length === 0 ? (
+              <div className="text-sm text-zinc-500 text-center py-6 bg-white/5 rounded-xl border border-white/5 border-dashed">
+                Nenhuma tarefa mapeada nesta fase.
               </div>
             ) : (
-              <div className="space-y-2">
-                {phaseTasks.map(task => (
-                  <label 
+              <div className="space-y-3">
+                {viewedTasks.map(task => (
+                  <TaskItem 
                     key={task.id} 
-                    className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${task.is_done ? 'bg-blue-500/5 border-blue-500/20' : 'bg-[#18181b] border-white/5 hover:border-white/10'}`}
-                  >
-                    <div className="mt-0.5" onClick={() => handleToggle(task)}>
-                      {task.is_done ? (
-                        <CheckCircle2 className="w-5 h-5 text-blue-500" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-zinc-500" />
-                      )}
-                    </div>
-                    <div className={`text-sm ${task.is_done ? 'text-zinc-300 line-through' : 'text-zinc-200'}`}>
-                      {task.description}
-                    </div>
-                  </label>
+                    task={task} 
+                    team={team} 
+                    onChange={handleTaskChange} 
+                  />
                 ))}
               </div>
             )}
