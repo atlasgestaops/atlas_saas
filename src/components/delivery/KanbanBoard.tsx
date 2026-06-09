@@ -4,12 +4,12 @@ import { useState } from 'react'
 
 export function KanbanBoard({ projects }: { projects: any[] }) {
   const phases = [
-    { id: 0, name: 'Discovery' },
-    { id: 1, name: 'Proposta' },
-    { id: 2, name: 'Design (PDD)' },
-    { id: 3, name: 'Desenvolvimento' },
-    { id: 4, name: 'Testes (UAT)' },
-    { id: 5, name: 'Deploy & Handover' },
+    { id: 0, name: 'Diagnóstico' },
+    { id: 1, name: 'Escopo' },
+    { id: 2, name: 'Desenho' },
+    { id: 3, name: 'Construção' },
+    { id: 4, name: 'Validação' },
+    { id: 5, name: 'Ativação' },
   ]
 
   return (
@@ -46,7 +46,10 @@ export function KanbanBoard({ projects }: { projects: any[] }) {
                     project.status === 'attention' ? 'bg-yellow-500/10 text-yellow-500' :
                     'bg-white/10 text-zinc-400'
                   }`}>
-                    {project.status}
+                    {project.status === 'on-track' ? 'No Prazo' :
+                     project.status === 'delayed' ? 'Atrasado' :
+                     project.status === 'attention' ? 'Atenção' :
+                     project.status}
                   </span>
                 </div>
               </div>

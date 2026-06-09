@@ -16,7 +16,7 @@ import {
 
 const navigation = [
   { name: 'Comercial', href: '/comercial', icon: Briefcase },
-  { name: 'Delivery', href: '/delivery', icon: Rocket },
+  { name: 'Projetos', href: '/delivery', icon: Rocket },
   { name: 'Customer Success', href: '/cs', icon: Handshake },
   { name: 'Marketing', href: '/marketing', icon: Megaphone },
   { name: 'Precificação', href: '/precificacao', icon: Coins },

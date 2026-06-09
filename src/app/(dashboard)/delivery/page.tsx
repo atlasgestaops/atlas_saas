@@ -10,7 +10,7 @@ export default async function DeliveryPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold font-outfit mb-2">Delivery</h1>
+        <h1 className="text-3xl font-bold font-outfit mb-2">Projetos</h1>
         <p className="text-zinc-400">Gestão e acompanhamento de todos os projetos em andamento.</p>
       </div>
 

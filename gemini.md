@@ -38,15 +38,15 @@
 
 ## 4. Módulos do MVP
 
-### MVP (Fase 1): Delivery + Comercial Básico
+### MVP (Fase 1): Projetos + Comercial Básico
 
-#### 4.1 Módulo Delivery (Gestão de Projetos)
+#### 4.1 Módulo Projetos (Gestão de Entregas)
 - **Pipeline de projetos** com visão Kanban e Lista
 - **Tipos de projeto:** Automação (RPA), SaaS, Website, E-commerce, Tráfego Pago
-- **6 fases padrão:** Discovery → Proposta → Design (PDD) → Desenvolvimento → Testes (UAT) → Deploy & Handover
+- **6 fases padrão:** Diagnóstico → Escopo → Desenho → Construção → Validação → Ativação
 - **Quality Gates:**
-  - ❌ PDD/Escopo assinado é bloqueador para início do Desenvolvimento
-  - ❌ Termo de Aceite assinado é bloqueador para Go-Live
+  - ❌ Desenho assinado é bloqueador para início da Construção
+  - ❌ Termo de Aceite assinado é bloqueador para Ativação
 - **Card de projeto:** Nome do cliente, nome do projeto, tipo, fase atual, progresso (checklist), status (no prazo/atenção/atrasado), responsável, datas
 - **Drawer de detalhes:** Checklist interativo por fase, entregáveis, notas, timeline
 - **Playbook:** Referência do processo padrão por tipo de projeto
@@ -127,14 +127,14 @@ Um projeto de automação RPA.
 | `deal_id` | uuid | ✅ | null | FK → deals.id (deal que originou) |
 | `name` | text | ❌ | — | Nome do projeto |
 | `type` | text | ❌ | 'automation' | 'automation' \| 'saas' \| 'website' \| 'ecommerce' \| 'traffic' |
-| `current_phase` | int2 | ❌ | 0 | 0=Discovery, 1=Proposta, 2=PDD, 3=Dev, 4=UAT, 5=Deploy |
+| `current_phase` | int2 | ❌ | 0 | 0=Diagnóstico, 1=Escopo, 2=Desenho, 3=Construção, 4=Validação, 5=Ativação |
 | `status` | text | ❌ | 'on-track' | 'on-track' \| 'attention' \| 'delayed' \| 'completed' \| 'paused' |
 | `responsible_id` | uuid | ❌ | FK → profiles.id | Responsável |
 | `start_date` | date | ✅ | null | Data de início |
 | `estimated_end_date` | date | ✅ | null | Previsão de entrega |
 | `actual_end_date` | date | ✅ | null | Data real de entrega |
-| `pdd_approved` | boolean | ❌ | false | Quality Gate: PDD aprovado? |
-| `uat_approved` | boolean | ❌ | false | Quality Gate: UAT aprovado? |
+| `pdd_approved` | boolean | ❌ | false | Quality Gate: Desenho aprovado? |
+| `uat_approved` | boolean | ❌ | false | Quality Gate: Validação aprovada? |
 | `notes` | text | ✅ | — | Anotações do projeto |
 | `created_at` | timestamptz | ❌ | now() | — |
 | `updated_at` | timestamptz | ❌ | now() | — |
@@ -146,7 +146,7 @@ Checklists de cada fase de cada projeto.
 |-------|------|------|---------|-----------|
 | `id` | uuid | ❌ | gen_random_uuid() | PK |
 | `project_id` | uuid | ❌ | FK → projects.id (CASCADE) | Projeto |
-| `phase` | int2 | ❌ | — | 0-5 (fase do delivery) |
+| `phase` | int2 | ❌ | — | 0-5 (etapa do projeto) |
 | `task_index` | int2 | ❌ | — | Ordem da tarefa na fase |
 | `description` | text | ❌ | — | Texto da tarefa |
 | `is_done` | boolean | ❌ | false | Concluída? |
@@ -205,8 +205,8 @@ erDiagram
 
 ## 8. Regras de Negócio Críticas
 
-1. **Quality Gate — PDD:** Um projeto NÃO pode avançar para `current_phase = 3` (Dev) se `pdd_approved = false`.
-2. **Quality Gate — UAT:** Um projeto NÃO pode avançar para `current_phase = 5` (Deploy) se `uat_approved = false`.
+1. **Quality Gate — Desenho:** Um projeto NÃO pode avançar para `current_phase = 3` (Construção) se `pdd_approved = false`.
+2. **Quality Gate — Validação:** Um projeto NÃO pode avançar para `current_phase = 5` (Ativação) se `uat_approved = false`.
 3. **Projeto nunca é deletado.** Status pode ser 'paused' ou 'completed', mas o registro permanece.
 4. **Deal perdido requer motivo.** Se `stage = 'lost'`, `lost_reason` é obrigatório.
 5. **Histórico imutável.** Registros em `deal_activities` nunca são editados ou deletados.

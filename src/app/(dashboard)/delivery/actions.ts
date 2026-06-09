@@ -89,8 +89,8 @@ export async function createProject(formData: FormData) {
     addTask(1, 'Contrato de prestação de serviço assinado', 'file');
     addTask(1, 'NDA assinado (quando aplicável)', 'file');
     // Fase 4
-    addTask(4, 'Conduzir sessão de UAT com usuário-chave do cliente');
-    addTask(4, 'Documentar bugs encontrados e correções aplicadas', 'text');
+    addTask(4, 'Conduzir validação final com usuário-chave do cliente');
+    addTask(4, 'Documentar ajustes e correções aplicadas', 'text');
     addTask(4, 'Termo de aceite assinado pelo cliente', 'file');
     // Fase 5
     addTask(5, 'Treinar usuário responsável no cliente');
@@ -104,13 +104,13 @@ export async function createProject(formData: FormData) {
     addTask(0, 'Levantar volume de transações por mês');
     addTask(0, 'Identificar exceções e variações do processo');
     addTask(0, 'Calcular ROI estimado (horas economizadas × custo hora)');
-    addTask(2, 'Criar PDD (Process Design Document) — fluxo detalhado', 'file');
+    addTask(2, 'Criar Desenho de Processo (Desenho Técnico) — fluxo detalhado', 'file');
     addTask(2, 'Mapear cada passo: input, ação, output, condição de erro');
     addTask(2, 'Definir regras de negócio e exceções tratadas');
     addTask(2, 'Documentar credenciais e acessos necessários', 'text');
     addTask(2, 'Dicionário de dados simplificado', 'file');
     addTask(2, 'Estruturação do banco (Postgres/Sheets)', 'text');
-    addTask(2, 'PDD aprovado pelo cliente', 'file');
+    addTask(2, 'Desenho de processo aprovado pelo cliente', 'file');
     addTask(2, 'Critérios de aceite definidos');
     addTask(3, 'Setup inicial Docker/Infra', 'link');
     addTask(3, 'Construção do fluxo principal (happy path)');
@@ -121,7 +121,7 @@ export async function createProject(formData: FormData) {
     addTask(3, 'Versionamento no GitHub (branch do projeto)', 'link');
     addTask(3, 'Status report semanal ao cliente');
     addTask(4, 'Executar testes unitários em cada etapa do fluxo');
-    addTask(4, 'Testar cenários de exceção mapeados no PDD');
+    addTask(4, 'Testar cenários de exceção mapeados no Desenho');
     addTask(4, 'Teste de volume com dados reais do cliente');
     addTask(4, 'Execução da matriz de testes', 'file');
     addTask(4, 'Ajuste de fallbacks e loops');

@@ -23,7 +23,7 @@ interface ProjectGroup {
   tasks: Task[]
 }
 
-const phases = ['Discovery', 'Proposta', 'Design (PDD)', 'Desenvolvimento', 'Testes (UAT)', 'Deploy']
+const phases = ['Diagnóstico', 'Escopo', 'Desenho', 'Construção', 'Validação', 'Ativação']
 
 const typeColors: Record<string, string> = {
   automation: 'bg-purple-500/10 text-purple-400 border-purple-500/20',

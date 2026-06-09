@@ -168,7 +168,7 @@ export function ProjectDrawer({ project, onClose }: { project: any, onClose: () 
     setTasks(prev => prev.map(t => t.id === updatedTask.id ? updatedTask : t))
   }
 
-  const phaseNames = ['Discovery', 'Proposta', 'Design', 'Dev', 'UAT', 'Deploy']
+  const phaseNames = ['Diagnóstico', 'Escopo', 'Desenho', 'Construção', 'Validação', 'Ativação']
   
   const viewedTasks = tasks.filter(t => t.phase === viewingPhase)
   const currentPhaseTasks = tasks.filter(t => t.phase === project.current_phase)
@@ -325,7 +325,7 @@ export function ProjectDrawer({ project, onClose }: { project: any, onClose: () 
             
             {/* Phase Navigation Tabs */}
             <div>
-              <h3 className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider mb-3">Fases de Delivery</h3>
+              <h3 className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider mb-3">Etapas do Projeto</h3>
               <div className="flex gap-1 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
                 {phaseNames.map((name, idx) => (
                   <button

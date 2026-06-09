@@ -1,7 +1,7 @@
 'use client'
 
 export function ListView({ projects }: { projects: any[] }) {
-  const phases = ['Discovery', 'Proposta', 'Design', 'Dev', 'Testes', 'Deploy']
+  const phases = ['Diagnóstico', 'Escopo', 'Desenho', 'Construção', 'Validação', 'Ativação']
 
   return (
     <div className="bg-[#111113] border border-white/5 rounded-xl overflow-hidden">
@@ -51,7 +51,10 @@ export function ListView({ projects }: { projects: any[] }) {
                     project.status === 'attention' ? 'bg-yellow-500/10 text-yellow-500' :
                     'bg-white/10 text-zinc-400'
                   }`}>
-                  {project.status}
+                  {project.status === 'on-track' ? 'No Prazo' :
+                   project.status === 'delayed' ? 'Atrasado' :
+                   project.status === 'attention' ? 'Atenção' :
+                   project.status}
                 </span>
               </td>
             </tr>
