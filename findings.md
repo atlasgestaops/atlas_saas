@@ -41,6 +41,10 @@
 - Rate limit do WhatsApp Business API: atenção ao envio em massa
 - GitHub API: autenticação via Personal Access Token ou GitHub App
 
+### Ambiente de Desenvolvimento Local (SSL/Certificados)
+- O ambiente local do Next.js no Windows (dev server) encontra problemas de validação SSL ao bater nas requisições do banco de dados/Auth hospedados na VPS via Coolify, lançando o erro `UNABLE_TO_VERIFY_LEAF_SIGNATURE`.
+- **Solução:** Rodar o servidor local desativando temporariamente a rejeição de certificados não autorizados: `$env:NODE_TLS_REJECT_UNAUTHORIZED="0"; npm run dev` no PowerShell.
+
 ---
 
 ## Decisões de Design
@@ -52,15 +56,15 @@ O protótipo já usa dark mode. Manter como tema ÚNICO (sem toggle light/dark) 
 - **Inter** (body, UI) — excelente legibilidade em telas
 - **Outfit** (headings, logo) — geométrica, moderna, se destaca
 
-### Cores por módulo/fase
-| Fase Delivery | Cor | Hex |
+### Cores por módulo/etapa
+| Etapa do Projeto | Cor | Hex |
 |--------------|-----|-----|
-| Discovery | Purple | #7F77DD |
-| Proposta | Green | #1D9E75 |
-| Design (PDD) | Amber | #BA7517 |
-| Desenvolvimento | Blue | #378ADD |
-| Testes (UAT) | Olive | #639922 |
-| Deploy | Orange | #D85A30 |
+| Diagnóstico | Purple | #7F77DD |
+| Escopo | Green | #1D9E75 |
+| Desenho | Amber | #BA7517 |
+| Construção | Blue | #378ADD |
+| Validação | Olive | #639922 |
+| Ativação | Orange | #D85A30 |
 
 ### Status
 | Status | Cor | Uso |
@@ -68,3 +72,8 @@ O protótipo já usa dark mode. Manter como tema ÚNICO (sem toggle light/dark) 
 | No prazo | Green #8BC34A | Projeto dentro do cronograma |
 | Atenção | Amber #EF9F27 | Atraso leve ou risco identificado |
 | Atrasado | Red #E24B4A | Prazo estourado |
+
+### Comportamento do Flexbox & Menu Lateral
+- **Largura Mínima da Sidebar:** Para evitar que o menu lateral seja esmagado e empurrado para fora da tela devido à largura do Kanban de 6 colunas, a Sidebar deve conter obrigatoriamente a classe `shrink-0` e uma largura fixa (definida como `w-[240px]`).
+- **Overflow de Conteúdo:** O container principal do layout (`main`) precisa de `min-w-0` para confinar o overflow horizontal dentro dos filhos flex (a grade do Kanban), evitando empurrar outros elementos estáticos do DOM.
+- **Offset do Drawer:** O `ProjectDrawer` em desktops deve usar o offset `left-[240px]` permanentemente para coincidir com a largura física do menu e não sobrepor a navegação lateral.

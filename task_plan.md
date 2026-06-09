@@ -49,16 +49,16 @@
 - [x] Provider do Supabase
 - [x] Componentes base: Button, Card, Input, Modal, Badge, Table
 
-### Módulo 1: Delivery (Gestão de Projetos)
-- [x] Página `/delivery` — pipeline de projetos
-- [x] Visão Kanban (6 colunas por fase)
+### Módulo 1: Projetos (Gestão de Entregas)
+- [x] Página `/delivery` (Visual: Projetos) — pipeline de projetos
+- [x] Visão Kanban (6 colunas: Diagnóstico, Escopo, Desenho, Construção, Validação, Ativação)
 - [x] Visão Lista (com barra de progresso pipeline)
 - [x] Tab Playbook (referência de processo)
-- [x] Drawer de detalhes do projeto
-  - [x] Stepper de fases
-  - [x] Checklist interativo por fase
-  - [x] Entregáveis por fase
-  - [x] Quality Gates visuais (PDD, UAT)
+- [x] Drawer de detalhes do projeto (Novo layout de 2 colunas com o Cofre)
+  - [x] Stepper de fases (Navegação livre)
+  - [x] Checklist interativo por fase com auto-save
+  - [x] Campos e entregáveis dinâmicos (link, arquivo, texto longo)
+  - [x] Quality Gates visuais (Desenho e Validação)
 - [x] CRUD de projetos (criar, editar, arquivar)
 - [x] CRUD de clientes (criar, editar)
 - [x] Integração Supabase (queries reais e suporte a múltiplos serviços/checklists dinâmicos)
