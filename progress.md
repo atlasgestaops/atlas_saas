@@ -95,7 +95,27 @@
   - Integração de domínio configurada para `app.atlasbot.tech`.
 
 ### 🔜 Próximo
-- Aguardar alinhamento da equipe sobre os checklists para criar as migrations das novas colunas (`due_date`, `field_type`, `field_value`).
+- Iniciar **Módulo 2 (Comercial / CRM Básico)**.
+- Desdobrar o Kanban de vendas e cartões de *Deals*.
+
+---
+
+## Sprint 4 — Checklists Dinâmicos no Banco & Novo Layout do Drawer (Cofre)
+**Data:** 09/Jun/2026  
+**Responsável:** Antigravity  
+
+### ✅ Concluído
+- **Checklist Dinâmico no Banco:**
+  - Criadas e aplicadas migrações para adicionar `due_date`, `field_type` e `field_value` às tarefas (`project_tasks`).
+  - Implementado server action para extrair templates estruturados específicos para cada um dos 5 serviços contratados.
+  - Injeção dinâmica no banco ao criar um novo projeto.
+- **Refatoração do ProjectDrawer (Cofre & Duas Colunas):**
+  - Layout do painel expandido para `1050px` de largura com estrutura de duas colunas fixas lado a lado.
+  - **Coluna Esquerda (Cofre / Visão Geral):** Mantém visível o cabeçalho, status geral de delivery, ações de avanço de fase, o cofre reativo de links/documentos e a gaveta de notas/credenciais agregadas de todas as fases.
+  - **Coluna Direita (Operações):** Controle exclusivo de checklists e abas para navegar livremente entre as fases do projeto.
+  - Os campos especiais atualizados na direita refletem-se no Cofre instantaneamente ao salvar (onBlur).
+
+### 🔜 Próximo
 - Iniciar **Módulo 2 (Comercial / CRM Básico)**.
 - Desdobrar o Kanban de vendas e cartões de *Deals*.
 
