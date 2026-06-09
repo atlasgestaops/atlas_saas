@@ -189,7 +189,7 @@ export function ProjectDrawer({ project, onClose }: { project: any, onClose: () 
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+    <div className="fixed inset-y-0 right-0 left-0 md:left-[280px] z-40 flex justify-end">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       

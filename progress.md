@@ -114,6 +114,10 @@
   - **Coluna Esquerda (Cofre / Visão Geral):** Mantém visível o cabeçalho, status geral de delivery, ações de avanço de fase, o cofre reativo de links/documentos e a gaveta de notas/credenciais agregadas de todas as fases.
   - **Coluna Direita (Operações):** Controle exclusivo de checklists e abas para navegar livremente entre as fases do projeto.
   - Os campos especiais atualizados na direita refletem-se no Cofre instantaneamente ao salvar (onBlur).
+- **Renomeação de Fases e Módulos:**
+  - Renomeado o módulo geral 'Delivery' para 'Projetos' na barra lateral e cabeçalho da dashboard.
+  - Alterada a nomenclatura das etapas (0 a 5) para: Diagnóstico ➜ Escopo ➜ Desenho ➜ Construção ➜ Validação ➜ Ativação.
+  - Removidos termos e siglas excessivamente técnicos (como UAT, PDD, Bugs, Deploy) das descrições de tarefas automáticas geradas no banco, tornando a interface acessível para clientes e equipe comercial.
 
 ### 🔜 Próximo
 - Iniciar **Módulo 2 (Comercial / CRM Básico)**.
