@@ -106,3 +106,17 @@ Introduzir métricas que recompensem o progresso sequencial diário ou semanal.
 ### 4. Copywriting de Suporte e Incentivo (Humor Interno)
 Substituir mensagens neutras de conclusão por feedbacks dinâmicos que gerem micro-sorrisos.
 - **Implementação:** Textos de toast ou placeholder de "Tudo concluído" dinâmicos e aleatórios (ex: *"Menos uma planilha no mundo!"*, *"Detlef de hoje orgulhoso do Detlef de amanhã!"*, *"Sua sócia curtiu isso!"*, *"Status: Voando baixo 🚀"*).
+
+---
+
+## Gestão Administrativa de Usuários (Painel Equipe)
+
+### 1. Criação Administrativa de Contas
+No Supabase, a criação padrão de contas (`auth.signUp`) faz login imediato do novo usuário no navegador. Para cadastrar membros da equipe mantendo a sessão do administrador conectada:
+- **Solução:** Utilizar a API de administração do Supabase (`auth.admin.createUser`) no servidor.
+- **Segurança:** Requer a chave restrita de backend `SUPABASE_SERVICE_ROLE_KEY`. Essa chave nunca deve ser exposta no frontend e seu uso é blindado por Server Actions com validação prévia do perfil de permissão do usuário solicitante (permitindo apenas `dev` ou `gestao`).
+
+### 2. Sincronização de E-mail de Equipe
+Por padrão, a tabela de perfis `profiles` não guardava o e-mail dos usuários, que residia apenas na tabela privada do Supabase Auth.
+- **Solução:** Foi adicionada a coluna `email` na tabela `profiles` com migração SQL.
+- **Gatilho automático:** A função de trigger de criação de perfil (`handle_new_user`) foi estendida para clonar o e-mail do Auth para o perfil público automaticamente a cada novo cadastro.

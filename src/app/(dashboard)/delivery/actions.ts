@@ -315,19 +315,6 @@ export async function createProject(formData: FormData) {
 
   revalidatePath('/delivery')
   return { success: true }
-},
-        field_type: taskObj.field_type
-      })
-      index++;
-    }
-  }
-
-  if (tasksToInsert.length > 0) {
-    await supabase.from('project_tasks').insert(tasksToInsert)
-  }
-
-  revalidatePath('/delivery')
-  return { success: true }
 }
 
 export async function updateProjectPhase(projectId: string, newPhase: number) {

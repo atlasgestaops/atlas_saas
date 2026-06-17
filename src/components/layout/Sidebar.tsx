@@ -11,7 +11,8 @@ import {
   Coins, 
   Calendar, 
   Gavel,
-  LogOut 
+  LogOut,
+  Users
 } from 'lucide-react'
 
 const navigation = [
@@ -24,8 +25,14 @@ const navigation = [
   { name: 'Contratos', href: '/contratos', icon: Gavel },
 ]
 
-export function Sidebar() {
+export function Sidebar({ userRole }: { userRole?: string }) {
   const pathname = usePathname()
+
+  const isAdmin = userRole && ['admin', 'dev', 'gestao'].includes(userRole)
+  const currentNavigation = [
+    ...navigation,
+    ...(isAdmin ? [{ name: 'Equipe', href: '/team', icon: Users }] : [])
+  ]
 
   return (
     <aside className="w-[240px] shrink-0 bg-[#18181b] border-r border-white/10 sticky top-0 h-screen flex flex-col p-5 overflow-y-auto z-50">
@@ -37,7 +44,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-1 flex flex-col gap-1.5">
-        {navigation.map((item) => {
+        {currentNavigation.map((item) => {
           const isActive = pathname.startsWith(item.href)
           const Icon = item.icon
 

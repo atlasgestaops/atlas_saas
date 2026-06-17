@@ -165,6 +165,22 @@
   - Integrado o disparo de confete nos componentes `ProjectDrawer.tsx` e `MyTasks.tsx` ao clicar em `"Concluir"`.
   - Realizada e registrada pesquisa teórica de técnicas de gamificação de neurodesign (sons nativos com Web Audio API, combos/streaks de produtividade 🔥, copywriting descontraído) em `findings.md`.
 
+## Sprint 7 — Painel de Gestão de Usuários e Equipe
+**Data:** 17/Jun/2026  
+**Responsável:** Antigravity  
+
+### ✅ Concluído
+- **Banco de Dados (Schema):**
+  - Criada e aplicada migration SQL para adicionar a coluna `email` em `profiles` e recriar a trigger do Postgres para persistir e-mails automaticamente.
+  - Sincronizados todos os e-mails existentes de usuários antigos a partir de `auth.users` para `profiles` usando instrução DML do Postgres.
+- **Backend & Server Actions:**
+  - Criado o arquivo `src/lib/supabase/admin.ts` para prover de forma isolada e segura o cliente administrativo do Supabase (`adminClient`) utilizando a chave restrita de backend `SUPABASE_SERVICE_ROLE_KEY`.
+  - Criadas as Server Actions de equipe em `src/app/(dashboard)/team/actions.ts` para cadastrar novos usuários de forma administrativa (evitando deslogar a sessão corrente) e obter a lista de equipe estendida.
+- **Frontend & Controle de Acesso:**
+  - Configurado o Server Layout do painel (`layout.tsx`) para puxar o perfil e passar a role do usuário conectado para a Sidebar.
+  - Modificado o componente `Sidebar.tsx` para receber `userRole` e renderizar o link de **"Equipe"** (`/team`) sob o ícone de `Users` exclusivamente para os papéis `dev`, `gestao` e `admin`.
+  - Desenvolvida a página administrativa `/team` (`page.tsx` e `TeamClientPage.tsx`) contendo um formulário moderno de criação com validação de campos e uma tabela estilizada exibindo o time, funções (badges coloridos neon) e datas de entrada de forma profissional.
+
 ### 🔜 Próximo
 - Iniciar **Módulo 2 (Comercial / CRM Básico)**.
 - Desdobrar o Kanban de vendas e cartões de *Deals*.
