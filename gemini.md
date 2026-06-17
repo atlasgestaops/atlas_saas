@@ -31,8 +31,8 @@
 
 | Persona | Papel | Acesso |
 |---------|-------|--------|
-| **Detlef** | Admin / Dev | Acesso total. Todos os módulos. CRUD em tudo. Config do sistema. |
-| **Sócia** | Comercial / CS | Módulos: Comercial (CRM, funil, propostas), Customer Success (health score, rituais). Delivery: somente leitura. Sem acesso a config do sistema. |
+| **Detlef** | Admin / Dev / Gestão | Acesso total. Todos os módulos. CRUD em tudo. Config do sistema (Roles: 'dev' ou 'gestao'). |
+| **Sócia** | Comercial / CS | Módulos: Comercial (CRM, funil, propostas), Customer Success (health score, rituais). Delivery: somente leitura e conclusão de tarefas comerciais (Role: 'comercial'). |
 
 ---
 
@@ -78,7 +78,7 @@ Extensão da tabela `auth.users` do Supabase.
 |-------|------|------|---------|-----------|
 | `id` | uuid | ❌ | FK → auth.users.id | PK, mesmo ID do auth |
 | `full_name` | text | ❌ | — | Nome completo |
-| `role` | text | ❌ | 'admin' | 'admin' \| 'comercial' |
+| `role` | text | ❌ | 'comercial' | 'gestao' \| 'dev' \| 'comercial' |
 | `avatar_url` | text | ✅ | null | URL do avatar |
 | `created_at` | timestamptz | ❌ | now() | — |
 
@@ -152,6 +152,11 @@ Checklists de cada fase de cada projeto.
 | `is_done` | boolean | ❌ | false | Concluída? |
 | `completed_at` | timestamptz | ✅ | null | Quando foi marcada como feita |
 | `completed_by` | uuid | ✅ | FK → profiles.id | Quem marcou |
+| `assigned_to` | uuid | ✅ | null | FK → profiles.id (Atribuição individual) |
+| `due_date` | date | ✅ | null | Data limite de conclusão |
+| `field_type` | text | ❌ | 'checkbox' | 'checkbox' \| 'text' \| 'file' \| 'link' |
+| `field_value` | text | ✅ | null | Valor inserido para campos especiais |
+| `assigned_role` | text | ✅ | null | Papel responsável ('dev' \| 'comercial' \| 'gestao') |
 
 **Unique constraint:** (`project_id`, `phase`, `task_index`)
 
@@ -195,10 +200,10 @@ erDiagram
 | `profiles` | UPDATE | Apenas o próprio perfil (`auth.uid() = id`) |
 | `clients` | ALL | Todos autenticados |
 | `deals` | SELECT | Todos autenticados |
-| `deals` | INSERT/UPDATE/DELETE | `owner_id = auth.uid()` OU `role = 'admin'` |
-| `projects` | ALL | Todos autenticados (admin e comercial veem, admin edita) |
+| `deals` | INSERT/UPDATE/DELETE | `owner_id = auth.uid()` OU `role IN ('admin', 'dev', 'gestao')` |
+| `projects` | ALL | Todos autenticados (admin, dev, gestao e comercial veem; admin, dev, gestao editam) |
 | `project_tasks` | SELECT | Todos autenticados |
-| `project_tasks` | UPDATE | `role = 'admin'` (só dev marca tarefas) |
+| `project_tasks` | UPDATE | `role IN ('admin', 'dev', 'gestao', 'comercial')` (comercial pode marcar suas próprias tarefas) |
 | `deal_activities` | ALL | Todos autenticados |
 
 ---

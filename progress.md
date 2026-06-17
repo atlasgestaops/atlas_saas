@@ -132,6 +132,39 @@
   - Reduzida a largura das colunas do Kanban de `300px` para `260px`, melhorando o aproveitamento de espaço em tela e reduzindo o scroll horizontal desnecessário.
   - Implementado scroll horizontal por clique e arraste (Drag-to-Scroll) nativo no container, com alteração dinâmica de cursores de mouse (`grab` e `grabbing`) e proteção de seleção de texto para garantir gestos de arraste fluidos e orgânicos.
 
+---
+
+## Sprint 5 — Renderização Dinâmica de Diagramas Mermaid
+**Data:** 10/Jun/2026  
+**Responsável:** Antigravity  
+
+### ✅ Concluído
+- **Suporte a Mermaid no Checklist e Cofre:**
+  - Alterada a tarefa "Criar Desenho de Processo (Desenho Técnico) — fluxo detalhado" de tipo `'file'` (link do anexo) para tipo `'text'` (texto longo) no banco de dados e nos geradores de checklists dinâmicos (`actions.ts`). Isso permite que o usuário cole o código do diagrama Mermaid diretamente.
+  - Implementada detecção de código Mermaid e integração com a API segura de renderização de SVG `mermaid.ink` no `ProjectDrawer.tsx`.
+  - **Coluna Esquerda (Cofre):** Detecção automática de códigos de diagramas Mermaid inseridos em tarefas de texto longo. Se detectado, o diagrama é renderizado visualmente em um bloco responsivo escuro, mantendo o código-fonte original recolhido em um elemento `<details>` retrátil.
+  - **Coluna Direita (Checklist):** Inclusão de um painel de visualização em tempo real (Preview) abaixo da área de texto na própria tarefa do checklist à medida que o usuário edita ou cola o código Mermaid, fornecendo feedback visual imediato antes de perder o foco.
+
+## Sprint 6 — Gestão por Perfis, Vencimentos em Cascata e Gamificação
+**Data:** 17/Jun/2026  
+**Responsável:** Antigravity  
+
+### ✅ Concluído
+- **Filtro de Tarefas por Perfis (`dev`, `comercial`, `gestao`):**
+  - Criada e aplicada migration SQL para adicionar a coluna `assigned_role` à tabela `project_tasks`.
+  - Atualizada a constituição do produto (`gemini.md`) para contemplar as novas roles e os ajustes das políticas de RLS.
+  - Atualizada a lógica de criação de projeto (`createProject`) para classificar automaticamente cada tarefa padrão de acordo com a responsabilidade do papel (`comercial`, `dev` ou `gestao`).
+  - Reformulada a consulta central de tarefas do usuário (`getMyTasks`) para listar tarefas de projetos ativos onde o usuário está explicitamente atribuído (`assigned_to = user.id`) ou onde a tarefa sem atribuição individual corresponde à sua role (`assigned_role = user_role`).
+- **Prazos Presets Proporcionais e Cascata de Vencimento:**
+  - Adicionados campos de `Data de Início` e `Prazo Estimado de Entrega` no modal de Novo Projeto.
+  - Implementado algoritmo no `createProject` que distribui os dias totais proporcionalmente entre as 6 fases do projeto e gera as datas de vencimento (`due_date`) de cada tarefa de forma espaçada e sequencial.
+  - Criado mecanismo de efeito cascata na action `updateTaskDueDate`: ao prorrogar a data de uma tarefa, os prazos de todas as tarefas pendentes subsequentes (mesma fase de index superior ou fases posteriores) são automaticamente empurrados de forma a manter o sequenciamento lógico consecutivo.
+- **Ação Dopaminérgica de Conclusão (UX Gamificada):**
+  - Mapeado layout de checklist para o lado direito da tarefa: botões de ação `"Concluir"` pulsantes em tarefas pendentes e `"Concluída ✓"` discretos que mudam para `"Desfazer"` sob hover em tarefas concluídas.
+  - Desenvolvido arquivo de utilitário nativo `/src/lib/confetti.ts` em HTML5 Canvas e `requestAnimationFrame` que gera explosões de confete localizadas a partir das coordenadas exatas do clique do mouse.
+  - Integrado o disparo de confete nos componentes `ProjectDrawer.tsx` e `MyTasks.tsx` ao clicar em `"Concluir"`.
+  - Realizada e registrada pesquisa teórica de técnicas de gamificação de neurodesign (sons nativos com Web Audio API, combos/streaks de produtividade 🔥, copywriting descontraído) em `findings.md`.
+
 ### 🔜 Próximo
 - Iniciar **Módulo 2 (Comercial / CRM Básico)**.
 - Desdobrar o Kanban de vendas e cartões de *Deals*.

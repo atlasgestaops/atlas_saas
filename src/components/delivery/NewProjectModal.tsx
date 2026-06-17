@@ -64,6 +64,28 @@ export function NewProjectModal({ onClose }: { onClose: () => void }) {
               <label className="block text-sm font-medium text-zinc-400 mb-1">Nome do Projeto</label>
               <Input name="projectName" required placeholder="Ex: Portal de Vendas" />
             </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-zinc-400 mb-1">Data de Início</label>
+                <Input 
+                  type="date" 
+                  name="startDate" 
+                  defaultValue={new Date().toISOString().split('T')[0]} 
+                  required 
+                  className="bg-[#18181b] border-white/5 text-zinc-300 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-zinc-400 mb-1">Prazo Estimado</label>
+                <Input 
+                  type="date" 
+                  name="estimatedEndDate" 
+                  required 
+                  className="bg-[#18181b] border-white/5 text-zinc-300 focus:border-blue-500"
+                />
+              </div>
+            </div>
           </div>
 
           <div>

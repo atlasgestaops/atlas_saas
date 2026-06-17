@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from 'react'
 import { toggleTask } from '@/app/(dashboard)/delivery/actions'
-import { Clock, CheckCircle2, AlertTriangle, ChevronDown, ChevronRight } from 'lucide-react'
+import { Clock, CheckCircle2, AlertTriangle, ChevronDown, ChevronRight, Calendar } from 'lucide-react'
+import { triggerConfetti } from '@/lib/confetti'
 
 interface Task {
   id: string
@@ -10,6 +11,8 @@ interface Task {
   is_done: boolean
   phase: number
   task_index: number
+  assigned_role?: string | null
+  due_date?: string | null
 }
 
 interface ProjectGroup {
@@ -63,7 +66,10 @@ export function MyTasks({ projectGroups }: { projectGroups: ProjectGroup[] }) {
     })
   }
 
-  const handleToggleTask = (taskId: string) => {
+  const handleToggleTask = (e: React.MouseEvent<HTMLButtonElement>, taskId: string) => {
+    // Disparar comemoração dopaminérgica
+    triggerConfetti(e.clientX, e.clientY)
+
     setCompletedTasks(prev => {
       const next = new Set(prev)
       next.add(taskId)
@@ -195,26 +201,45 @@ export function MyTasks({ projectGroups }: { projectGroups: ProjectGroup[] }) {
               {/* Tasks */}
               {!isCollapsed && (
                 <div className="border-t border-white/5 divide-y divide-white/[0.03]">
-                  {pendingTasks.map(task => (
-                    <div
-                      key={task.id}
-                      className="flex items-center gap-3 px-6 py-3 hover:bg-white/[0.02] transition-all duration-200 group"
-                    >
-                      <button
-                        onClick={() => handleToggleTask(task.id)}
-                        disabled={isPending}
-                        className="flex-shrink-0 w-5 h-5 rounded border border-white/10 hover:border-blue-500 hover:bg-blue-500/10 transition-colors flex items-center justify-center group-hover:border-white/20"
+                  {pendingTasks.map(task => {
+                    const isOverdue = task.due_date && new Date(task.due_date) < new Date(new Date().setHours(0,0,0,0));
+                    return (
+                      <div
+                        key={task.id}
+                        className="flex items-center justify-between gap-4 px-6 py-3.5 hover:bg-white/[0.01] transition-all duration-200 group"
                       >
-                        <CheckCircle2 className="w-3 h-3 text-transparent group-hover:text-blue-400 transition-colors" />
-                      </button>
-                      <span className="text-sm text-zinc-300 group-hover:text-zinc-200 transition-colors">
-                        {task.description}
-                      </span>
-                      <span className="text-[10px] text-zinc-600 ml-auto">
-                        {phases[task.phase]}
-                      </span>
-                    </div>
-                  ))}
+                        <div className="flex-1 min-w-0">
+                          <span className="text-sm text-zinc-300 group-hover:text-zinc-200 transition-colors">
+                            {task.description}
+                          </span>
+                          <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                            <span className="text-[10px] text-zinc-500 bg-white/5 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                              {phases[task.phase]}
+                            </span>
+                            {task.assigned_role && (
+                              <span className="text-[10px] text-blue-400 bg-blue-500/5 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                                {task.assigned_role}
+                              </span>
+                            )}
+                            {task.due_date && (
+                              <span className={`text-[10px] flex items-center gap-1 px-1.5 py-0.5 rounded ${isOverdue ? 'text-red-400 bg-red-500/5' : 'text-zinc-500 bg-white/5'}`}>
+                                <Calendar className="w-3.5 h-3.5" />
+                                {task.due_date.split('-').reverse().join('/')}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={(e) => handleToggleTask(e, task.id)}
+                          disabled={isPending}
+                          className="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600/10 hover:bg-blue-600 text-blue-400 hover:text-white border border-blue-500/20 hover:border-blue-500 transition-all cursor-pointer active:scale-95 shadow-[0_0_10px_rgba(59,130,246,0.02)] hover:shadow-[0_0_15px_rgba(59,130,246,0.2)] w-24 text-center animate-pulse hover:animate-none"
+                        >
+                          Concluir
+                        </button>
+                      </div>
+                    )
+                  })}
 
                   {pendingTasks.length === 0 && (
                     <div className="px-6 py-4 text-center">
