@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useEffect, useTransition } from 'react'
 import { toggleTask } from '@/app/(dashboard)/delivery/actions'
 import { Clock, CheckCircle2, AlertTriangle, ChevronDown, ChevronRight, Calendar } from 'lucide-react'
 import { triggerConfetti } from '@/lib/confetti'
+import { playPopSound, playVictorySound } from '@/lib/audio'
 
 interface Task {
   id: string
@@ -56,6 +57,40 @@ export function MyTasks({ projectGroups }: { projectGroups: ProjectGroup[] }) {
   const [collapsedProjects, setCollapsedProjects] = useState<Set<string>>(new Set())
   const [isPending, startTransition] = useTransition()
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set())
+  const [streakCount, setStreakCount] = useState<number>(0)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const todayStr = new Date().toLocaleDateString('sv')
+      const stored = localStorage.getItem('atlas_tasks_streak')
+      if (stored) {
+        try {
+          const data = JSON.parse(stored)
+          if (data.date === todayStr) {
+            setStreakCount(data.count)
+          }
+        } catch (e) {
+          console.error(e)
+        }
+      }
+
+      const handleUpdate = () => {
+        const updatedStored = localStorage.getItem('atlas_tasks_streak')
+        if (updatedStored) {
+          try {
+            const data = JSON.parse(updatedStored)
+            if (data.date === todayStr) {
+              setStreakCount(data.count)
+            }
+          } catch (e) {
+            console.error(e)
+          }
+        }
+      }
+      window.addEventListener('atlas_streak_update', handleUpdate)
+      return () => window.removeEventListener('atlas_streak_update', handleUpdate)
+    }
+  }, [])
 
   const toggleCollapse = (projectId: string) => {
     setCollapsedProjects(prev => {
@@ -69,12 +104,46 @@ export function MyTasks({ projectGroups }: { projectGroups: ProjectGroup[] }) {
   const handleToggleTask = (e: React.MouseEvent<HTMLButtonElement>, taskId: string) => {
     // Disparar comemoração dopaminérgica
     triggerConfetti(e.clientX, e.clientY)
+    playPopSound()
+
+    // Registrar combo no localStorage
+    if (typeof window !== 'undefined') {
+      try {
+        const todayStr = new Date().toLocaleDateString('sv')
+        const stored = localStorage.getItem('atlas_tasks_streak')
+        let data = stored ? JSON.parse(stored) : { date: todayStr, count: 0 }
+        
+        if (data.date === todayStr) {
+          data.count += 1
+        } else {
+          data.date = todayStr
+          data.count = 1
+        }
+        localStorage.setItem('atlas_tasks_streak', JSON.stringify(data))
+        setStreakCount(data.count)
+        window.dispatchEvent(new Event('atlas_streak_update'))
+      } catch (e) {
+        console.error(e)
+      }
+    }
 
     setCompletedTasks(prev => {
       const next = new Set(prev)
       next.add(taskId)
       return next
     })
+
+    // Se for a última tarefa pendente desse grupo de projeto (fase ativa), comemoração épica!
+    const group = projectGroups.find(g => g.tasks.some(t => t.id === taskId))
+    if (group) {
+      const pendingTasks = group.tasks.filter(t => !completedTasks.has(t.id) && t.id !== taskId)
+      if (pendingTasks.length === 0) {
+        setTimeout(() => {
+          playVictorySound()
+          triggerConfetti(undefined, undefined, { goldOnly: true })
+        }, 150)
+      }
+    }
 
     startTransition(async () => {
       await toggleTask(taskId, true)
@@ -113,7 +182,7 @@ export function MyTasks({ projectGroups }: { projectGroups: ProjectGroup[] }) {
   return (
     <div>
       {/* Summary cards */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="bg-[#111113] border border-white/5 rounded-xl p-4">
           <p className="text-zinc-500 text-xs uppercase tracking-wider mb-1">Tarefas Pendentes</p>
           <p className="text-2xl font-bold text-zinc-100 font-outfit">{totalPending}</p>
@@ -127,6 +196,22 @@ export function MyTasks({ projectGroups }: { projectGroups: ProjectGroup[] }) {
           <p className={`text-2xl font-bold font-outfit ${urgentProjects > 0 ? 'text-red-400' : 'text-green-400'}`}>
             {urgentProjects}
           </p>
+        </div>
+        <div className="bg-[#111113] border border-white/5 rounded-xl p-4 relative overflow-hidden group">
+          <p className="text-zinc-500 text-xs uppercase tracking-wider mb-1 font-medium">Combo de Hoje</p>
+          <div className="flex items-baseline gap-2">
+            <p className={`text-2xl font-bold font-outfit transition-colors ${streakCount > 0 ? 'text-orange-500 animate-pulse' : 'text-zinc-500'}`}>
+              {streakCount} {streakCount > 0 ? '🔥' : '💤'}
+            </p>
+            {streakCount > 0 && (
+              <span className="text-[10px] text-orange-400/80 font-semibold animate-bounce">
+                {streakCount >= 5 ? 'Lendário! 🚀' : 'No pique!'}
+              </span>
+            )}
+          </div>
+          {streakCount > 0 && (
+            <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-orange-500 via-red-500 to-yellow-500" />
+          )}
         </div>
       </div>
 

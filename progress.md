@@ -185,3 +185,27 @@
 - Iniciar **Módulo 2 (Comercial / CRM Básico)**.
 - Desdobrar o Kanban de vendas e cartões de *Deals*.
 
+---
+
+## Sprint 8 — Módulo Comercial (CRM) & Gamificação Dopaminérgica
+**Data:** 14/Jul/2026  
+**Responsável:** Antigravity  
+
+### ✅ Concluído
+- **Módulo Comercial (CRM Básico):**
+  - Criada rota `/comercial` integrando a pipeline de prospecção e vendas ao Supabase.
+  - Implementado painel interativo (`ComercialClientPage.tsx`) com 4 abas premium: Funil de Vendas (Kanban), Cadência de Prospecção (8 toques em 21 dias com templates copiáveis), Roteiro de Discovery (playbook estratégico de reuniões) e Objeções Comuns (acordeão tático de contorno).
+  - Desenvolvidas Server Actions (`src/app/(dashboard)/comercial/actions.ts`) para CRUD completo de oportunidades (Deals), gerenciamento de status (com obrigatoriedade de preenchimento do motivo de perda se for arquivado como `'lost'`) e histórico cronológico de atividades (`deal_activities`).
+  - Criado o componente `DealDrawer.tsx` (duas colunas) com timeline de atividades de contato e formulário estruturado de perguntas de discovery com salvamento automático no banco.
+  - Injeção inteligente de dados seed fictícios altamente realistas sobre RPA e SaaS (se a tabela estiver vazia) para visualização imediata do módulo.
+- **Gamificação Dopaminérgica Avançada (Neurodesign):**
+  - Desenvolvido utilitário de áudio nativo (`src/lib/audio.ts`) gerando sons Pop (conclusão de tarefas comuns) e Vitória (arpejo harmônico maior para milestones de fim de fase ou fechamento de negócio) usando a Web Audio API (sem assets externos).
+  - Atualizado o utilitário de confetes (`src/lib/confetti.ts`) com modo Milestone Dourado (`goldOnly`), maior volume de partículas (130) e gravidade reduzida para flutuação.
+  - Integrada a detecção de metas importantes em `ProjectDrawer.tsx` (ao marcar a última tarefa pendente da fase ativa do projeto, toca o som de vitória e explode o confete dourado).
+  - Implementado contador de streaks 🔥 (Combo de Hoje) local via `localStorage` e eventos globais no Next.js em `MyTasks.tsx`, com copywriting motivador e card estético especial no summary.
+
+### 🔜 Próximo
+- Integrar notificações de webhook do n8n para mudanças de estágio de lead e fechamento de novos projetos.
+- Testar e refinar o fluxo de onboarding da sócia (role 'comercial') limitando visualizações.
+
+

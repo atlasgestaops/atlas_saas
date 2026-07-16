@@ -65,15 +65,15 @@
 - [x] Real-time updates (Supabase Realtime via revalidatePath)
 
 ### Módulo 2: Comercial (CRM Básico)
-- [ ] Página `/comercial` — funil de vendas
-- [ ] Kanban de oportunidades (7 etapas)
-- [ ] Card de deal com detalhes
-- [ ] Histórico de atividades por deal
-- [ ] Cadência de prospecção (template)
-- [ ] Roteiro de discovery embutido
-- [ ] Banco de objeções
-- [ ] CRUD de deals
-- [ ] Integração Supabase
+- [x] Página `/comercial` — funil de vendas
+- [x] Kanban de oportunidades (7 etapas)
+- [x] Card de deal com detalhes
+- [x] Histórico de atividades por deal
+- [x] Cadência de prospecção (template)
+- [x] Roteiro de discovery embutido
+- [x] Banco de objeções
+- [x] CRUD de deals
+- [x] Integração Supabase
 
 ---
 

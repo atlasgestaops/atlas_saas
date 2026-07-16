@@ -17,7 +17,11 @@ interface ConfettiParticle {
   shape: 'circle' | 'square' | 'triangle'
 }
 
-export function triggerConfetti(clientX?: number, clientY?: number) {
+export function triggerConfetti(
+  clientX?: number, 
+  clientY?: number, 
+  options?: { goldOnly?: boolean; particleCount?: number }
+) {
   if (typeof window === 'undefined') return
 
   const canvas = document.createElement('canvas')
@@ -49,8 +53,8 @@ export function triggerConfetti(clientX?: number, clientY?: number) {
   const startX = clientX !== undefined ? clientX : width / 2
   const startY = clientY !== undefined ? clientY : height / 2
 
-  // Paleta de cores vibrantes (estilo neon/premium)
-  const colors = [
+  // Paletas de cores
+  const defaultColors = [
     '#3b82f6', // azul
     '#60a5fa', // azul claro
     '#10b981', // esmeralda
@@ -65,25 +69,45 @@ export function triggerConfetti(clientX?: number, clientY?: number) {
     '#f472b6', // rosa claro
   ]
 
+  const goldColors = [
+    '#d97706', // amber-600
+    '#f59e0b', // amber-500
+    '#fbbf24', // amber-400
+    '#fef08a', // yellow-200
+    '#ca8a04', // yellow-600
+    '#eab308', // yellow-500
+    '#ffd700', // gold
+    '#ffdf00', // gold light
+    '#b45309', // amber-800
+  ]
+
+  const colors = options?.goldOnly ? goldColors : defaultColors
   const shapes: ('circle' | 'square' | 'triangle')[] = ['circle', 'square', 'triangle']
   const particles: ConfettiParticle[] = []
 
-  // Criar 70 partículas para a explosão
-  for (let i = 0; i < 70; i++) {
-    // Ângulo de dispersão radial (principalmente para cima)
-    const angle = Math.random() * Math.PI * 1.3 + Math.PI * 1.35 
-    const speed = Math.random() * 8 + 6
+  const count = options?.particleCount || (options?.goldOnly ? 130 : 70)
+
+  // Criar partículas para a explosão
+  for (let i = 0; i < count; i++) {
+    // Ângulo de dispersão radial (se for dourado, dispersa mais horizontalmente também)
+    const angle = options?.goldOnly
+      ? Math.random() * Math.PI * 2 // Círculo completo 360
+      : Math.random() * Math.PI * 1.3 + Math.PI * 1.35 // Direcionado para cima
+    
+    const speed = options?.goldOnly
+      ? Math.random() * 12 + 6 // Explosão maior
+      : Math.random() * 8 + 6
 
     particles.push({
       x: startX,
       y: startY,
       vx: Math.cos(angle) * speed + (Math.random() - 0.5) * 3,
-      vy: Math.sin(angle) * speed - (Math.random() * 2 + 1),
-      size: Math.random() * 6 + 5,
+      vy: Math.sin(angle) * speed - (options?.goldOnly ? Math.random() * 4 : Math.random() * 2 + 1),
+      size: Math.random() * (options?.goldOnly ? 8 : 6) + 5,
       color: colors[Math.floor(Math.random() * colors.length)],
       rotation: Math.random() * 360,
       rotationSpeed: (Math.random() - 0.5) * 10,
-      gravity: 0.35,
+      gravity: options?.goldOnly ? 0.22 : 0.35, // gravidade menor para flutuar no dourado
       opacity: 1,
       shape: shapes[Math.floor(Math.random() * shapes.length)],
     })

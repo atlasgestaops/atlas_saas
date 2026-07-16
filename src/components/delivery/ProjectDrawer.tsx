@@ -4,6 +4,7 @@ import { X, CheckCircle2, Circle, Paperclip, Link as LinkIcon, FileText, UserCir
 import { useState, useEffect, useTransition } from 'react'
 import { getProjectTasks, toggleTask, updateProjectPhase, getTeamMembers, updateTaskField, updateTaskAssignment, updateTaskDueDate, getUserRole, deleteProject, updateProjectStatus } from '@/app/(dashboard)/delivery/actions'
 import { triggerConfetti } from '@/lib/confetti'
+import { playPopSound, playVictorySound } from '@/lib/audio'
 
 function isMermaidCode(text: string): boolean {
   if (!text) return false
@@ -280,7 +281,49 @@ export function ProjectDrawer({ project, onClose }: { project: any, onClose: () 
   if (!project) return null
 
   const handleTaskChange = (updatedTask: any) => {
-    setTasks(prev => prev.map(t => t.id === updatedTask.id ? updatedTask : t))
+    setTasks(prev => {
+      const newTasks = prev.map(t => t.id === updatedTask.id ? updatedTask : t)
+      
+      const wasDone = prev.find(t => t.id === updatedTask.id)?.is_done
+      if (updatedTask.is_done && !wasDone) {
+        // Tocar som Pop
+        playPopSound()
+        
+        // Registrar combo/streak localmente
+        if (typeof window !== 'undefined') {
+          try {
+            const todayStr = new Date().toLocaleDateString('sv') // Formato YYYY-MM-DD
+            const stored = localStorage.getItem('atlas_tasks_streak')
+            let data = stored ? JSON.parse(stored) : { date: todayStr, count: 0 }
+            
+            if (data.date === todayStr) {
+              data.count += 1
+            } else {
+              data.date = todayStr
+              data.count = 1
+            }
+            localStorage.setItem('atlas_tasks_streak', JSON.stringify(data))
+            window.dispatchEvent(new Event('atlas_streak_update'))
+          } catch (e) {
+            console.error('Erro ao atualizar streak:', e)
+          }
+        }
+
+        // Verificar se todas as tarefas da fase da tarefa alterada estão prontas
+        const phaseTasks = newTasks.filter(t => t.phase === updatedTask.phase)
+        const isPhaseDone = phaseTasks.length > 0 && phaseTasks.every(t => t.is_done)
+        
+        if (isPhaseDone) {
+          // Vitória da etapa!
+          setTimeout(() => {
+            playVictorySound()
+            triggerConfetti(undefined, undefined, { goldOnly: true })
+          }, 150)
+        }
+      }
+      
+      return newTasks
+    })
   }
 
   const phaseNames = ['Diagnóstico', 'Escopo', 'Desenho', 'Construção', 'Validação', 'Ativação']
